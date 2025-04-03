@@ -21,8 +21,8 @@ const loginUser = async (req, res) => {   // router 로 부터 연결된 loginUs
     if (!match) {   // 일치하지 않을 경우
       return res.render('login', { error: '비밀번호 불일치' }); // error code 를 login.ejs 로 전달 :  error 객체 값 {error: '비밀번호 불일치'}  
     }
-    }
-
+    
+    // redis 사용하여 로그인 성공시 req.session.user 에 id, username, role 에 값들을 저장
     req.session.user = {    // 로그인 성공시 req.session.user 에 id, username, role 에 값들을 저장
       id: user.id,
       username: user.username,

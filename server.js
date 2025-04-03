@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session'); // 세션 미들웨서 설정 (아래 session 사용에 필요)
+const RedisStore = require('connect-redis')(session); //  redis session 을 사용하기 위해 설정 1
+const { createClient } = require('redis'); // redis session 을 사용하기 위해 설정 2
 
 const app = express();
 
@@ -9,17 +11,30 @@ const app = express();
 app.use(express.urlencoded({ extended: true })); // HTML <form> </form> 전송에 필요
 app.use(express.json());  // JavaScript fetch 나 axios 전송에 필요
 
-// ===== 세션 설정 ===== \\ : 로그인 후 세션을 저장하면 RAM 에 저장되며 서버가 재시작 되면 사라짐 (저장된 세션의 ID와 PATH 는 Client 에 쿠키 형태로 저장장)
-app.use(session({                   // module 에서 session 으로 할당된 객체를 사용
-    secret: process.env.SESSION_SECRET || 'my_secret_key',  // 보안을 위해 환경변수 사용 권장
-    resave: false,               // 세션을 매 요청마다 다시 저장하지 않음
-    saveUninitialized: false,    // 로그인 등 세션에 변화가 없으면 저장하지 않음
-    cookie: {
-      maxAge: 1000 * 60 * 60,    // 쿠키 유효시간: 1시간 (밀리초 단위) : Client 의 세션 유지 시간 (아무 활동이 없으면 사라지게 하는 시간- 맨 끝자리수가 분)
-      httpOnly: true,            // 클라이언트 JS에서 쿠키 접근 차단
-      secure: false              // HTTPS 환경에서는 true로 설정
-    }
-  }));
+// ===== redis 세션 설정 ===== \\ : 로그인 후 세션을 저장하면 RAM 에 저장되며 서버가 재시작 되면 사라짐 (저장된 세션의 ID와 PATH 는 Client 에 쿠키 형태로 저장장)
+// redis Client 생성 및 연결
+const redisClient = createClient({
+  legacyMode: true,
+  socket: {
+    host: 'localhost',
+    port: 6379
+  }
+});
+
+
+redisClient.connect().catch(console.error);   //// redis connect
+
+// ====== express-session + redis 연동 ======
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: process.env.SESSION_SECRET || 'my-secret-key', // ✅ .env 사용 권장
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 30,
+    httpOnly: true
+  }
+}));
 
 // ===== 정적 파일 제공 ===== \\
 app.use(express.static(path.join(__dirname, 'public')));  // 정적파일 [현재 실행중인(server.js)디렉토리/public]
