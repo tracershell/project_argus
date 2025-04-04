@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    form {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<!-- authController.js 에서 error 변수가 전달 되면 alert() 을 띄운다 -->
+<% if (typeof error !== 'undefined') { %>
+  <script>alert("<%= error %>")</script>
+<% } %>
+
+<body>
+
+  <form action="/login" method="POST">  <!--req.body 로 {username, password} 을 실어 router 로 전달 --> 
+    <h2>로그인</h2>
+    <input type="text" name="username" placeholder="아이디" required />
+    <input type="password" name="password" placeholder="비밀번호" required />
+    <button type="submit">로그인</button>
+    <button type="button" onclick="location.href='/register'" style="margin-top: 10px; background-color: #6c757d;">
+      등록하기
+    </button>
+  </form>
+
+</body>
+</html>

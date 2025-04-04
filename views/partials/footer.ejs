@@ -1,0 +1,24 @@
+<style>
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ccc;
+  }
+  </style>
+  
+    <!-- Footer: 로그인 상태가 아니면 보여줌 -->
+    <% if (isAuthenticated) { %>
+      <footer class="footer">
+        <p>Current server time: <%= typeof now !== 'undefined' ? now : '' %></p>
+      </footer>
+    <% } %>
+  </body>
+  </html>
+  

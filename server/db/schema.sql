@@ -1,6 +1,6 @@
-CREATE DATABASE project_redis_test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE project_layout_test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE project_redis_test_db;
+USE project_layout_test_db;
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,                     -- 고유 ID (자동 증가)
