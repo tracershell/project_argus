@@ -1,8 +1,4 @@
-/* ──────────────── */
-/* Header 영역 전용 스타일 */
-/* ──────────────── */
 
-/* Top Notification Bar */
 <style>
 .top-bar {
   background-color: #001c48;
@@ -128,11 +124,11 @@
 
     <div class="auth-buttons">
       <% if (isAuthenticated) { %>
-        <span class="btn-welcome">Welcome, <%= name %>!</span>
+        <span class="btn-welcome">Welcome, <%= typeof username !== 'undefined' ? username : 'User' %>!</span>
         <a href="/logout" class="btn-signin">Log out</a>
       <% } else { %>
         <a href="/login" class="btn-signin">Sign In</a>
-        <button class="btn-get-started">Get Started</button>
+        <a href="/register" class="btn-signin">Registration</a>
       <% } %>
     </div>
   </nav>

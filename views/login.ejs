@@ -1,32 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      padding: 1rem;
+      margin: 0;
+      font-size: 0.8rem;
+      color: #333;
+      zoom: 0.8;
+    }
 
-<div class="login-wrapper">
-  <div class="login-box">
-    <img src="/images/water-drop.png" alt="Docker Logo" class="logo" /> <!--  이미 satic 의 위치를 /public 으로 지정해 놓았으므로로  -->
-    <h2>Sign in</h2>
-    <p class="login-description">
-      Using Docker for work? We recommend signing in with your work email address.
-    </p>
+    .container {
+      max-width: 750px;
+      margin: 0 auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
-    <% if (error) { %>
-      <div class="login-error"><%= error %></div>
-    <% } %>
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-    <form method="POST" action="/login">
-      <input type="text" id="username" name="username" placeholder="Username or email address" required class="input-field" />
-      <input type="password" id="password" name="password" placeholder="Password" required class="input-field" />
-      <button type="submit" class="btn-primary">Continue</button>
-    </form>
+    .login-box {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
 
-    <div class="login-divider">OR</div>
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 1rem;
+    }
 
-    <div class="social-login">
-      <button class="btn-social google">
-        <a href="/">Never mind !</a>
-      </button>      
+    h2 {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    .login-description {
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      color: #555;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+
+    .login-divider {
+      margin: 1.5rem 0;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .btn-social {
+      background-color: #ddd;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-social a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    .btn-social:hover {
+      background-color: #ccc;
+    }
+
+    .login-error {
+      background-color: #ffdddd;
+      color: #a94442;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      font-size: 0.85rem;
+    }
+
+    .signup-text {
+      font-size: 0.8rem;
+      margin-top: 1.5rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-box">
+      <img src="/images/water-drop.png" alt="Docker Logo" class="logo" />
+      <h2>Sign in</h2>
+      <p class="login-description">
+        Using Docker for work? We recommend signing in with your work email address.
+      </p>
+
+      <% if (error) { %>
+        <div class="login-error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <input type="text" id="username" name="username" placeholder="Username" required class="input-field" />
+        <input type="password" id="password" name="password" placeholder="Password" required class="input-field" />
+        <button type="submit" class="btn-primary">Continue</button>
+      </form>
+
+      <div class="login-divider">OR</div>
+
+      <div class="social-login">
+        <button class="btn-social google">
+          <a href="/">Never mind !</a>
+        </button>
+      </div>
+
+      <p class="signup-text">
+        <!-- Don't have an account? <a href="/signup">Sign Up</a> -->
+      </p>
     </div>
-
-    <p class="signup-text">
-      <!-- Don't have an account? <a href="/signup">Sign Up</a> -->
-    </p>
   </div>
-</div>
+</body>
+</html>
