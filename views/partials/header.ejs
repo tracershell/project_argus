@@ -89,6 +89,12 @@
 .auth-buttons .btn-get-started:hover {
   background-color: #055c8a;
 }
+
+  .username-blue {
+    color: #00aaff;
+    font-weight: bold;
+  }
+
 </style>
 
 <!DOCTYPE html>
@@ -131,7 +137,7 @@
     <div class="auth-buttons">
       <% if (isAuthenticated) { %>
         <span class="btn-welcome">
-          Welcome, <%= typeof user !== 'undefined' ? user.username : 'User' %>!
+          Welcome,👤 <span class="username-blue"><%= typeof user !== 'undefined' ? user.username : 'User' %></span>! (<%= user.role %>)
         </span>
         <a href="/logout" class="btn-signin">Log out</a>
       <% } else { %>
@@ -140,3 +146,36 @@
       <% } %>
     </div>
   </nav>
+
+  <script>
+    // ===== 자동 로그아웃 기능 ===== \\
+    let timer, warningTimer;
+  const inactivityLimit = 15 * 60 * 1000; // 15분
+  const warningTime = 1 * 60 * 1000; // 1분 전 경고
+
+  function resetTimers() {
+    clearTimeout(timer);
+    clearTimeout(warningTimer);
+
+    // 14분 후 경고창 띄우기
+    warningTimer = setTimeout(showWarning, inactivityLimit - warningTime);
+
+    // 15분 후 자동 로그아웃
+    timer = setTimeout(() => {
+      alert('세션이 만료되어 로그아웃됩니다.');
+      window.location.href = '/logout';
+    }, inactivityLimit);
+  }
+
+  function showWarning() {
+    const extend = confirm('곧 자동 로그아웃됩니다.\n세션을 연장하시겠습니까?');
+    if (extend) {
+      resetTimers(); // 사용자가 [연장] 선택 시 타이머 리셋
+    }
+  }
+
+  // 페이지 로딩 및 사용자 활동 감지
+  window.onload = resetTimers;
+  document.onmousemove = resetTimers;
+  document.onkeypress = resetTimers;
+  </script>
