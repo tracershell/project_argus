@@ -1,0 +1,181 @@
+
+<style>
+.top-bar {
+  background-color: #001c48;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.top-bar a {
+  color: #00aaff;
+  text-decoration: none;
+}
+
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar .logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #066da5;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  white-space: nowrap;     /* 한 줄 유지 */
+  line-height: 1;          /* 줄 간격 축소 */
+}
+
+.logo-text {
+  white-space: nowrap;  /* 줄바꿈 금지 */
+}
+
+.navbar .menu {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar .menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  position: relative;
+}
+
+/* 로그인/로그아웃 버튼 영역 */
+.navbar .auth-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.auth-buttons .btn-signin {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #066da5;
+  color: #066da5;
+  border-radius: 4px;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.auth-buttons .btn-signin:hover {
+  background-color: #e6f3fb;
+}
+
+.auth-buttons .btn-get-started {
+  padding: 4px 8px;
+  background-color: #066da5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-buttons .btn-get-started:hover {
+  background-color: #055c8a;
+}
+
+  .username-blue {
+    color: #00aaff;
+    font-weight: bold;
+  }
+
+</style>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - ARGUS US INC.</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    2055 E. 51st Street, Vernon, CA 90058&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#">Read More →</a>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">ARGUS US INC.</div>
+
+    <% if (isAuthenticated) { %>
+    <div class="menu">
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+      <a href="#">x</a>
+    </div>
+    <% } %>
+
+    <div class="auth-buttons">
+      <% if (isAuthenticated) { %>
+        <span class="btn-welcome">
+          Welcome,👤 <span class="username-blue"><%= typeof user !== 'undefined' ? user.username : 'User' %></span>! (<%= user.role %>)
+        </span>
+        <a href="/logout" class="btn-signin">Log out</a>
+      <% } else { %>
+        <a href="/login" class="btn-signin">Log in</a>
+        <a href="/register" class="btn-signin">Register</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <script>
+    // ===== 자동 로그아웃 기능 ===== \\
+    let timer, warningTimer;
+  const inactivityLimit = 15 * 60 * 1000; // 15분
+  const warningTime = 1 * 60 * 1000; // 1분 전 경고
+
+  function resetTimers() {
+    clearTimeout(timer);
+    clearTimeout(warningTimer);
+
+    // 14분 후 경고창 띄우기
+    warningTimer = setTimeout(showWarning, inactivityLimit - warningTime);
+
+    // 15분 후 자동 로그아웃
+    timer = setTimeout(() => {
+      alert('세션이 만료되어 로그아웃됩니다.');
+      window.location.href = '/logout';
+    }, inactivityLimit);
+  }
+
+  function showWarning() {
+    const extend = confirm('곧 자동 로그아웃됩니다.\n세션을 연장하시겠습니까?');
+    if (extend) {
+      resetTimers(); // 사용자가 [연장] 선택 시 타이머 리셋
+    }
+  }
+
+  // 페이지 로딩 및 사용자 활동 감지
+  window.onload = resetTimers;
+  document.onmousemove = resetTimers;
+  document.onkeypress = resetTimers;
+  </script>

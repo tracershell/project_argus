@@ -31,7 +31,15 @@ const loginUser = async (req, res) => {   // router 로 부터 연결된 loginUs
 
     await db.execute('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]); // user id 값을 가지고 있는 last_login 값을 현재값으로 변경
 
-    res.redirect('/dashboard'); // 데이터는 세션을 통해 전달 : redirect 는 데이터를 전달할 수 없음음
+    // ===== admin 확인 후 /admin/a_dashboard.ejs 로 ===== \\: 데이터는 세션을 통해 전달 : redirect 는 데이터를 전달할 수 없음음
+    if (user.role === 'admin') {
+      res.redirect('/admin/a_dashboard');
+    } else if (user.role === 'user') {
+      res.redirect('/user/u_dashboard');
+    } else {
+      // 예외 처리 (알 수 없는 role)
+      res.redirect('/login');
+    }
 
   } catch (err) {   // 로그인 과정에서 err 처리
     console.error(err); // console 에 에러 표시시

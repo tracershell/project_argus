@@ -5,7 +5,8 @@ const session = require('express-session'); // 세션 미들웨서 설정 (아�
 const RedisStore = require('connect-redis')(session); //  redis session 을 사용하기 위해 설정 1
 const { createClient } = require('redis'); // redis session 을 사용하기 위해 설정 2
 const expressLayouts = require('express-ejs-layouts');  // 공통 layout 설정 위해해
-const injectUser = require('./middleware/auth'); // 로그인 여부 확인 미들웨서 설정 (아래 injectUser 사용에 필요) : isAuthenticated 자동사용 위해
+const injectUser = require('./middleware/injectUser'); // res.render() 마다 user 를 넘기지 않아도/ isAuthenticated  자동으로 접근 가능하게 하는 미들웨어 
+
 const app = express();
 
 
@@ -35,9 +36,10 @@ app.use(session({
   }
 }));
 
-// ===== session 등록 후 isAuthenticated 미들웨어 설정 ===== \\
+// ===== session 등록 후 isAuthenticated, req.session  미들웨어 설정 ===== \\
 // 로그인 여부 확인 미들웨서 설정 (아래 injectUser 사용에 필요) : isAuthenticated 자동사용 위해
 app.use(injectUser); // 이거 하나면 모든 EJS에서 user / isAuthenticated 자동 사용 가능  
+
 
 // ====== Middleware 설정 ====== \\
 app.use(express.urlencoded({ extended: true })); // HTML <form> </form> 전송에 필요
@@ -61,6 +63,14 @@ app.set('views', path.join(__dirname, 'views'));    // views 가 있는 곳: 현
 // ===== 공통 layout 을 사용하기 위한 미들 웨어 ===== \\
 app.use(expressLayouts);
 app.set('layout', 'layout'); // 'views/layout.ejs'를 기본 레이아웃으로 사용 
+
+// ===== admin Routes 설정 ===== \\
+const a_dashboardRoutes = require('./server/routes/admin/a_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
+app.use('/admin', a_dashboardRoutes);   // 라우터 등록 : router.get(), router.post() 를 처리 가능
+
+// ===== user Routes 설정 ===== \\
+const u_dashboardRoutes = require('./server/routes/user/u_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
+app.use('/user', u_dashboardRoutes);   // 라우터 등록 : router.get(), router.post() 를 처리 가능
 
 
 // ===== Express 웹서버에서 라우터를 연결하는 핵심역할 : 라우터 연결 ===== \\

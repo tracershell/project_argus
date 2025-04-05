@@ -1,4 +1,10 @@
-<%- include('partials/header') %>
+<% if (user && user.role === 'admin') { %>
+  <%- include('partials/a_header') %>           <!-- views folder 기준 -->
+<% } else if (user && user.role === 'user') { %>
+  <%- include('partials/u_header') %>
+<% } else { %>
+  <%- include('partials/default_header') %>
+<% } %>
 
 <main>
   <%- body %>

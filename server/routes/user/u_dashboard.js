@@ -10,10 +10,10 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-router.get('/a_dashboard', isAuthenticated, (req, res) => {  // ✅ 여기서 req.session.user 를 EJS에 user 변수로 전달
-  res.render('admin/a_dashboard', {
+router.get('/u_dashboard', isAuthenticated, (req, res) => {  // ✅ 여기서 req.session.user 를 EJS에 user 변수로 전달
+  res.render('user/u_dashboard', {
     user: req.session.user,
-    title: 'Admin Dashboard'
+    title: 'User Dashboard'
   });
 });    // ✅ req 전달 : res.render('dashboard') => res.render('dashboard',{user: req.session.user}) 세션 정보 담아 전달  
 
