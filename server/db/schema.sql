@@ -15,3 +15,15 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
               ON UPDATE CURRENT_TIMESTAMP                -- 수정 시간 자동 업데이트
 );
+
+
+CREATE TABLE photos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  original VARCHAR(255),
+  thumbnail VARCHAR(255),
+  date DATE,
+  comment TEXT,
+  place VARCHAR(100),
+  category VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

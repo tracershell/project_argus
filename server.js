@@ -66,11 +66,14 @@ app.set('layout', 'layout'); // 'views/layout.ejs'를 기본 레이아웃으로 
 
 // ===== admin Routes 설정 ===== \\
 const a_dashboardRoutes = require('./server/routes/admin/a_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
-app.use('/admin', a_dashboardRoutes);   // 라우터 등록 : router.get(), router.post() 를 처리 가능
+app.use('/admin', a_dashboardRoutes);   // 라우터 접두어 /admin
 
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
-app.use('/user', u_dashboardRoutes);   // 라우터 등록 : router.get(), router.post() 를 처리 가능
+app.use('/user', u_dashboardRoutes);   // 라우터 접두어 /user
+// ===== photo Routes 설정 ===== \\
+const photoRoutes = require('./server/routes/user/photo'); // ./routes/user/photo.js 파일을 불러옴 (라우터 객체를 받음)
+app.use('/photo', photoRoutes);   // router 접두어 /photos
 
 
 // ===== Express 웹서버에서 라우터를 연결하는 핵심역할 : 라우터 연결 ===== \\

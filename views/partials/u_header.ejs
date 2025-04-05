@@ -101,7 +101,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title><%= title %> - ARGUS US INC.</title>
+  <title><%= typeof title !== 'undefined' ? title + ' - ARGUS US INC.' : 'ARGUS US INC.' %></title>
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
@@ -118,7 +118,7 @@
 
     <% if (isAuthenticated) { %>
     <div class="menu">
-      <a href="#">a</a>
+      <a href="/photo">photo</a>
       <a href="#">b</a>
       <a href="#">c</a>
       <a href="#">d</a>
