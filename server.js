@@ -5,12 +5,9 @@ const session = require('express-session'); // 세션 미들웨서 설정 (아�
 const RedisStore = require('connect-redis')(session); //  redis session 을 사용하기 위해 설정 1
 const { createClient } = require('redis'); // redis session 을 사용하기 위해 설정 2
 const expressLayouts = require('express-ejs-layouts');  // 공통 layout 설정 위해해
-
+const injectUser = require('./middleware/auth'); // 로그인 여부 확인 미들웨서 설정 (아래 injectUser 사용에 필요) : isAuthenticated 자동사용 위해
 const app = express();
 
-// ====== Middleware 설정 ====== \\
-app.use(express.urlencoded({ extended: true })); // HTML <form> </form> 전송에 필요
-app.use(express.json());  // JavaScript fetch 나 axios 전송에 필요
 
 
 // ===== redis 세션 설정 ===== \\ : 로그인 후 세션을 저장하면 RAM 에 저장되며 서버가 재시작 되면 사라짐 (저장된 세션의 ID와 PATH 는 Client 에 쿠키 형태로 저장장)
@@ -37,6 +34,14 @@ app.use(session({
     httpOnly: true
   }
 }));
+
+// ===== session 등록 후 isAuthenticated 미들웨어 설정 ===== \\
+// 로그인 여부 확인 미들웨서 설정 (아래 injectUser 사용에 필요) : isAuthenticated 자동사용 위해
+app.use(injectUser); // 이거 하나면 모든 EJS에서 user / isAuthenticated 자동 사용 가능  
+
+// ====== Middleware 설정 ====== \\
+app.use(express.urlencoded({ extended: true })); // HTML <form> </form> 전송에 필요
+app.use(express.json());  // JavaScript fetch 나 axios 전송에 필요
 
 // ====== 세션과 별도로 현재 사용자가 로그인 되어 있는지 여부 판단을 위해 ===== : 라우터 설치 전에 위치치\\
 app.use((req, res, next) => {

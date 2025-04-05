@@ -1,51 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Login</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
-      padding: 1rem;
-      margin: 0;
-      font-size: 0.8rem;
-      color: #333;
-      zoom: 0.8;
-    }
+<style>
+.container_login {
+  max-width: 300px;
+  margin: 60px auto 0 auto;  /* 상단 여백 + 가운데 정렬 */
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
 
-    .container {
-      max-width: 750px;
-      margin: 0 auto;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .login-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .login-box {
-      background-color: #ffffff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    .logo {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 1rem;
-    }
-
+.logo {
+  width: 80px;       /* 너비 조절 */
+  height: auto;      /* 비율 유지하며 높이 자동 조절 */
+  margin-bottom: 1rem; /* 아래 여백 */
+}
+  
     h2 {
       font-size: 1.3rem;
       color: #2c3e50;
@@ -121,15 +90,15 @@
       margin-top: 1.5rem;
       color: #888;
     }
-  </style>
-</head>
-<body>
-  <div class="login-wrapper">
+
+</style>      
+
+  <div class="container_login">
     <div class="login-box">
-      <img src="/images/water-drop.png" alt="Docker Logo" class="logo" />
-      <h2>Sign in</h2>
+      <img src="/images/logo_origami.png" alt="Docker Logo" class="logo" />
+      <h2>Log in</h2>
       <p class="login-description">
-        Using Docker for work? We recommend signing in with your work email address.
+        If you haven't registered yet, you'll need to register first.
       </p>
 
       <% if (error) { %>
@@ -137,7 +106,7 @@
       <% } %>
 
       <form method="POST" action="/login">
-        <input type="text" id="username" name="username" placeholder="Username" required class="input-field" />
+        <input type="text" id="username" name="username" placeholder="User name" required class="input-field" />
         <input type="password" id="password" name="password" placeholder="Password" required class="input-field" />
         <button type="submit" class="btn-primary">Continue</button>
       </form>
@@ -155,5 +124,5 @@
       </p>
     </div>
   </div>
-</body>
-</html>
+
+

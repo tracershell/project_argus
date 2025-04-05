@@ -30,6 +30,12 @@
   margin: 0;
   padding: 0;
   line-height: 1.2;
+  white-space: nowrap;     /* 한 줄 유지 */
+  line-height: 1;          /* 줄 간격 축소 */
+}
+
+.logo-text {
+  white-space: nowrap;  /* 줄바꿈 금지 */
 }
 
 .navbar .menu {
@@ -69,7 +75,7 @@
 }
 
 .auth-buttons .btn-get-started {
-  padding: 8px 16px;
+  padding: 4px 8px;
   background-color: #066da5;
   color: white;
   border: none;
@@ -124,11 +130,13 @@
 
     <div class="auth-buttons">
       <% if (isAuthenticated) { %>
-        <span class="btn-welcome">Welcome, <%= typeof username !== 'undefined' ? username : 'User' %>!</span>
+        <span class="btn-welcome">
+          Welcome, <%= typeof user !== 'undefined' ? user.username : 'User' %>!
+        </span>
         <a href="/logout" class="btn-signin">Log out</a>
       <% } else { %>
-        <a href="/login" class="btn-signin">Sign In</a>
-        <a href="/register" class="btn-signin">Registration</a>
+        <a href="/login" class="btn-signin">Log in</a>
+        <a href="/register" class="btn-signin">Register</a>
       <% } %>
     </div>
   </nav>
