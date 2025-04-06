@@ -28,5 +28,8 @@ dist/
 build/
 
 # thumbnails 와 uploads 사진을 제외
+/public/m_uploads/
 /public/uploads/
 /public/thumbnails/
+/public/v_uploads/
+/public/v_thumbnails/
