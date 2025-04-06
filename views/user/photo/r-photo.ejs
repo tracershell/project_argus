@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Photo Gallery</h1>
+
+  <form action="/photo/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="photo" required>
+    <input type="date" name="date" required>
+    <input type="text" name="comment" placeholder="Comment" required>
+    <input type="text" name="place" placeholder="Place" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  <div class="gallery">
+    <% photos.forEach(photo => { %>
+      <div class="photo-card">
+        <img src="/thumbnails/<%= photo.thumbnail %>" onclick="showImage('<%= photo.original %>')" />
+        <div><%= photo.date %> - <%= photo.comment %> - <%= photo.place %></div>
+        <div class="buttons">
+          <a href="/download/<%= photo.original %>">Download</a>
+          <a href="#">Edit</a>
+          <a href="/delete/<%= photo.id %>">Delete</a>
+          <a href="/photos/edit/<%= photo.id %>">Edit</a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <div id="overlay" onclick="hideImage()">
+    <img id="fullImage" />
+  </div>
+
+  <script>
+    function showImage(filename) {
+      document.getElementById('fullImage').src = '/uploads/' + filename;
+      document.getElementById('overlay').style.display = 'block';
+    }
+    function hideImage() {
+      document.getElementById('overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

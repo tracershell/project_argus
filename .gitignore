@@ -26,3 +26,7 @@ docker-compose.override.yml
 # Build 결과물 (예: 나중에 빌드 도구 추가 시)
 dist/
 build/
+
+# thumbnails 와 uploads 사진을 제외
+/public/uploads/
+/public/thumbnails/
