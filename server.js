@@ -73,6 +73,10 @@ app.use('/admin', a_dashboardRoutes);   // url 이 /admin 으로 시작하는 �
 const photo_adminRoutes = require('./server/routes/admin/photo_admin');
 app.use('/photo_admin', photo_adminRoutes);   // url 이 /photo_admin 으로 시작하는 모든 요청은 photo_admin.js 에서 처리됨
 
+// ===== music_admin Routes 설정 ===== \\
+const music_adminRoutes = require('./server/routes/admin/music_admin');
+app.use('/music_admin', music_adminRoutes);   // url 이 /music_admin 으로 시작하는 모든 요청은 music_admin.js 에서 처리됨
+
 
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
