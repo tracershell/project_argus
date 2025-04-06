@@ -1,0 +1,68 @@
+<h3>Upload Music</h3>
+<form class="upload-form" action="/music_admin/upload" method="POST" enctype="multipart/form-data">
+  <label for="music">Choose music:</label>
+  <input type="file" name="music" id="music" required>
+  <label for="text">Choose text:</label>
+  <input type="file" name="text" id="text" accept=".txt">
+  <input type="date" name="date" required>
+  <input type="text" name="comment" placeholder="Comment" required>
+  <input type="text" name="keyword" placeholder="Keyword" required>
+  <button type="submit">Upload</button>
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Date</th>
+      <th>Comment</th>
+      <th>Keyword</th>
+      <th class="actions-col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% musics.forEach(m => { 
+      const dateObj = new Date(m.date);
+      const formattedDate = `${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+    %>
+      <tr>
+        <td>
+          <a href="/m_uploads/<%= m.original %>" target="_blank" onclick="showText('<%= m.textfile %>'); return false;"><%= m.original %></a>
+        </td>
+        <td><%= formattedDate %></td>
+        <td><%= m.comment %></td>
+        <td><%= m.keyword %></td>
+        <td class="actions-col">
+          <a href="/music_admin/download/<%= m.original %>">
+            <button class="action-btn">Download</button>
+          </a>
+          <a href="/music_admin/edit/<%= m.id %>">
+            <button class="action-btn edit">Edit</button>
+          </a>
+          <a href="/music_admin/delete/<%= m.id %>" onclick="return confirm('삭제하시겠습니까?')">
+            <button class="action-btn delete">Delete</button>
+          </a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<!-- 가사 보기 팝업 -->
+<div id="textPopup" style="display:none; position:fixed; top:10%; left:20%; width:60%; height:60%; background:#fff; border:1px solid #ccc; padding:20px; overflow:auto; z-index:9999;">
+  <button onclick="document.getElementById('textPopup').style.display='none'" style="float:right;">Close</button>
+  <pre id="textContent" style="white-space: pre-wrap; font-size:0.9rem;"></pre>
+</div>
+
+<script>
+  function showText(filename) {
+    if (!filename) return alert('No text file available.');
+    fetch('/music_admin/text/' + filename)
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('textContent').innerText = data;
+        document.getElementById('textPopup').style.display = 'block';
+      })
+      .catch(() => alert('Text file could not be loaded.'));
+  }
+</script>

@@ -28,6 +28,16 @@ CREATE TABLE photos (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE musics (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  original VARCHAR(255) NOT NULL,        -- 음악 파일명 (파일시스템에 저장된 이름)
+  textfile VARCHAR(255),                 -- 선택적으로 업로드한 텍스트 파일명 (.txt)
+  date DATE NOT NULL,                    -- 음악과 관련된 날짜
+  comment TEXT NOT NULL,                 -- 코멘트 입력
+  keyword VARCHAR(255) NOT NULL,         -- 키워드 입력
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- 레코드 생성 시각
+);
+
 CREATE TABLE movies (
   id INT AUTO_INCREMENT PRIMARY KEY,
   video_filename VARCHAR(255),
