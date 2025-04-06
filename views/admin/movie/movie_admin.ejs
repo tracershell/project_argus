@@ -44,13 +44,19 @@
     margin: 4px;
     padding: 6px;
   }
+  #uploading-message {
+    display: none;
+    font-weight: bold;
+    color: green;
+    margin-bottom: 15px;
+  }
 </style>
 
 <h2>🎮 Movie Admin</h2>
 
 <!-- Upload Form -->
 <h3>Upload Movie</h3>
-<form class="upload-form" action="/movie_admin/upload" method="POST" enctype="multipart/form-data">
+<form class="upload-form" action="/movie_admin/upload" method="POST" enctype="multipart/form-data" onsubmit="return showUploading()">
   <input type="file" name="movie" accept="video/*" required>
   <input type="file" name="thumbnail" accept="image/*" required>
   <input type="date" name="date" required>
@@ -58,6 +64,9 @@
   <input type="text" name="keyword" placeholder="Keyword" required>
   <button type="submit">Upload</button>
 </form>
+
+<!-- Upload 진행 메시지 -->
+<div id="uploading-message">📤 Uploading... Please wait</div>
 
 <!-- Movie Table -->
 <table class="table table-bordered">
@@ -99,3 +108,11 @@
     <% }) %>
   </tbody>
 </table>
+
+<!-- Upload 상태 표시 스크립트 -->
+<script>
+  function showUploading() {
+    document.getElementById('uploading-message').style.display = 'block';
+    return true; // 폼 전송 계속 진행
+  }
+</script>
