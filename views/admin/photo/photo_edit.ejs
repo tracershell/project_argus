@@ -1,0 +1,90 @@
+<style>
+
+.container {
+max-width: 300px;
+margin: 60px auto 0 auto;  /* 상단 여백 + 가운데 정렬 */
+background: white;
+padding: 1.5rem;
+border-radius: 8px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+text-align: center;
+}
+.logo {
+width: 200px;       /* 너비 조절 */
+height: auto;      /* 비율 유지하며 높이 자동 조절 */
+margin-bottom: 1rem; /* 아래 여백 */
+}
+
+  h2 {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #2980b9;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    margin-top: 10px;
+  }
+
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+
+  .login-error {
+    background-color: #ffdddd;
+    color: #a94442;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }
+</style>
+
+<div class="container">
+  <h2>Edit Photo</h2>
+
+  <!-- 썸네일 -->
+  <img src="/thumbnails/<%= photo.thumbnail %>" alt="Thumbnail" class="logo" />
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="login-error"><%= error %></div>
+  <% } %>
+
+  <!-- 수정 폼 -->
+  <form action="/photo_admin/edit/<%= photo.id %>" method="POST">
+    <input type="date" name="date" value="<%= photo.date.toISOString().split('T')[0] %>" class="input-field" required />
+    <input type="text" name="comment" value="<%= photo.comment %>" placeholder="Comment" class="input-field" required />
+    <input type="text" name="place" value="<%= photo.place %>" placeholder="Place" class="input-field" required />
+
+    <button type="submit" class="btn-primary">Update</button>
+    <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+  </form>
+</div>

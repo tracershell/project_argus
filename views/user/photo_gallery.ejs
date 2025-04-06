@@ -2,14 +2,28 @@
   .filter-bar {
     margin-bottom: 20px;
   }
+
+  .selected-info {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #e6f2ff; /* 연한 하늘색 배경 */
+    border-top: 2px solid #99ccff;
+    border-bottom: 2px solid #99ccff;
+  }
+
   .thumbnail-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
   }
+
   .thumbnail-grid img {
-    width: 100%;
-    height: auto;
+    width: 146px;
+    height: 110px;
+    object-fit: cover;
     border-radius: 6px;
     cursor: pointer;
     border: 1px solid #ccc;
@@ -37,6 +51,18 @@
     <button type="submit">🔍 검색</button>
   </form>
 </div>
+
+<% if (selectedYear || selectedPlace) { %>
+  <div class="selected-info">
+    <% if (selectedYear && selectedPlace) { %>
+      <%= selectedYear %> - <%= selectedPlace %>
+    <% } else if (selectedYear) { %>
+      <%= selectedYear %>
+    <% } else if (selectedPlace) { %>
+      <%= selectedPlace %>
+    <% } %>
+  </div>
+<% } %>
 
 <div class="thumbnail-grid">
   <% photos.forEach(photo => { %>

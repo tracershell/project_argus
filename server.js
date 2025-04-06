@@ -69,13 +69,14 @@ app.set('layout', 'layout'); // 'views/layout.ejs'를 기본 레이아웃으로 
 const a_dashboardRoutes = require('./server/routes/admin/a_dashboard');
 app.use('/admin', a_dashboardRoutes);   // url 이 /admin 으로 시작하는 모든 요청은 a_dashboard.js 에서 처리됨
 
+// ===== photo_admin Routes 설정 ===== \\
+const photo_adminRoutes = require('./server/routes/admin/photo_admin');
+app.use('/photo_admin', photo_adminRoutes);   // url 이 /photo_admin 으로 시작하는 모든 요청은 photo_admin.js 에서 처리됨
+
+
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨
-
-// ===== photo Routes 설정 ===== \\
-const photoRoutes = require('./server/routes/user/photo');
-app.use('/photo', photoRoutes);   // url 이 /photo 으로 시작하는 모든 요청은 photo.js 에서 처리됨
 
 // ===== photo_gallery Routes 설정 ===== \\
 const photo_galleryRoutes = require('./server/routes/user/photo_gallery');

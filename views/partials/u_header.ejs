@@ -140,6 +140,7 @@
           Welcome,👤 <span class="username-blue"><%= typeof user !== 'undefined' ? user.username : 'User' %></span>! (<%= user.role %>)
         </span>
         <a href="/logout" class="btn-signin">Log out</a>
+        <a href="#" class="btn-signin" onclick="alert('일반 user 는 사용할 수 없습니다.'); return false;">Register</a>        
       <% } else { %>
         <a href="/login" class="btn-signin">Log in</a>
         <a href="/register" class="btn-signin">Register</a>

@@ -1,106 +1,105 @@
 
-  <style>
-    .container {
-  max-width: 300px;
-  margin: 60px auto 0 auto;  /* 상단 여백 + 가운데 정렬 */
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  text-align: center;
+<style>
+  .container {
+max-width: 300px;
+margin: 60px auto 0 auto;  /* 상단 여백 + 가운데 정렬 */
+background: white;
+padding: 1.5rem;
+border-radius: 8px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+text-align: center;
 }
 
 .logo {
-  width: 80px;       /* 너비 조절 */
-  height: auto;      /* 비율 유지하며 높이 자동 조절 */
-  margin-bottom: 1rem; /* 아래 여백 */
+width: 80px;       /* 너비 조절 */
+height: auto;      /* 비율 유지하며 높이 자동 조절 */
+margin-bottom: 1rem; /* 아래 여백 */
 }
 h2 {
-      font-size: 1.3rem;
-      color: #2c3e50;
-      margin-bottom: 1rem;
-    }
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
 
-    .input-field, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
+  .input-field, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
 
-    .btn-primary, .btn-secondary {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
 
-    .btn-primary {
-      background-color: #3498db;
-      color: white;
-    }
+  .btn-primary {
+    background-color: #3498db;
+    color: white;
+  }
 
-    .btn-primary:hover {
-      background-color: #2980b9;
-    }
+  .btn-primary:hover {
+    background-color: #2980b9;
+  }
 
-    .btn-secondary {
-      background-color: #6c757d;
-      color: white;
-      margin-top: 10px;
-    }
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    margin-top: 10px;
+  }
 
-    .btn-secondary:hover {
-      background-color: #5a6268;
-    }
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
 
-    .login-error {
-      background-color: #ffdddd;
-      color: #a94442;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      font-size: 0.85rem;
-    }
+  .login-error {
+    background-color: #ffdddd;
+    color: #a94442;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }
 
-  </style>
+</style>
 
-  
-  <div class="container">
-    <div class="login-box">
-      <img src="/images/logo_origami.png" alt="Docker Logo" class="logo" />
-      <h2>Register</h2>
 
-      <% if (typeof error !== 'undefined' && error) { %>
-        <div class="login-error"><%= error %></div>
-      <% } %>
+<div class="container">
+  <div class="login-box">
+    <img src="/images/logo_origami.png" alt="Docker Logo" class="logo" />
+    <h2>Register</h2>
 
-      <form action="/register" method="POST">
-        <input type="text" name="username" placeholder="User name" required class="input-field" />
-        <input type="password" name="password" placeholder="Password" required class="input-field" />
-        <input type="email" name="email" placeholder="email (Option)" class="input-field" />
-        <input type="text" name="name" placeholder="Name (Option)" class="input-field" />
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="login-error"><%= error %></div>
+    <% } %>
 
-        <label for="role" style="float: left; font-size: 0.85rem; margin-bottom: 4px;">Authority</label>
-        <select name="role" id="role" class="input-field">
-          <option value="user" selected>General user</option>
-          <option value="admin">Administrator</option>
-        </select>
+    <form action="/register" method="POST">
+      <input type="text" name="username" placeholder="User name" required class="input-field" />
+      <input type="password" name="password" placeholder="Password" required class="input-field" />
+      <input type="email" name="email" placeholder="email (Option)" class="input-field" />
+      <input type="text" name="name" placeholder="Name (Option)" class="input-field" />
 
-        <label for="status" style="float: left; font-size: 0.85rem; margin-bottom: 4px;">Status</label>
-        <select name="status" id="status" class="input-field">
-          <option value="active" selected>Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+      <label for="role" style="float: left; font-size: 0.85rem; margin-bottom: 4px;">Authority</label>
+      <select name="role" id="role" class="input-field">
+        <option value="user" selected>General user</option>
+        <option value="admin">Administrator</option>
+      </select>
 
-        <button type="submit" class="btn-primary">Register</button>
+      <label for="status" style="float: left; font-size: 0.85rem; margin-bottom: 4px;">Status</label>
+      <select name="status" id="status" class="input-field">
+        <option value="active" selected>Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
 
-        <button type="button" class="btn-secondary" onclick="location.href='/admin/a_dashboard'">Dashboard</button>
-      </form>
-    </div>
+      <button type="submit" class="btn-primary">Register</button>
+
+      <button type="button" class="btn-secondary" onclick="location.href='/admin/a_dashboard'">Dashboard</button>
+    </form>
   </div>
-
+</div>

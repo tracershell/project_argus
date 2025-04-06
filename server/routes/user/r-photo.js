@@ -7,7 +7,7 @@ const fs = require('fs'); // 파일 시스템 모듈
 const util = require('util'); // util 모듈
 console.log('Jimp 타입:', typeof Jimp.read);  // 디버깅용
 const path = require('path');
-const db = require('../../../server/db/mysql'); // DB 연결
+const db = require('../../db/mysql'); // DB 연결
 
 // 파일 저장 설정
 const storage = multer.diskStorage({
