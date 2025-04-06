@@ -1,0 +1,73 @@
+<style>
+  .player-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  video {
+    width: 100%;
+    max-width: 640px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  .btn-back {
+    margin-top: 24px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-back:hover {
+    background-color: #2980b9;
+  }
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+    }
+
+    .btn-back {
+      font-size: 0.95rem;
+      padding: 10px 20px;
+    }
+  }
+</style>
+
+<div class="player-container">
+  <h2>🎬 Movie Player</h2>
+
+  <video controls>
+    <source src="/v_uploads/<%= movie.video_filename %>" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <p><strong>Comment:</strong> <%= movie.comment %></p>
+  <p><strong>Keyword:</strong> <%= movie.keyword %></p>
+
+  <button onclick="location.href='/movie_admin'" class="btn-back">← Back to Movie Admin</button>
+</div>

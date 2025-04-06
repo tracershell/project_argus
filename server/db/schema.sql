@@ -27,3 +27,13 @@ CREATE TABLE photos (
   category VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE movies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  video_filename VARCHAR(255),
+  thumbnail VARCHAR(255),
+  date DATE,
+  comment TEXT,
+  keyword VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -62,11 +62,31 @@ router.get('/download/:filename', (req, res) => {
   });
 });
 
+// ===== 화면에서 사진 삭제시 db data 및 저장 폴더의 thumbnail 삭제 및 원본사진 삭제 ===== \\
 router.get('/delete/:id', async (req, res) => {
-  await db.query('DELETE FROM photos WHERE id = ?', [req.params.id]);
-  res.redirect('/photo_admin');  // 삭제 후 메인 페이지로 리다이렉트
-});
+  try {
+    const [rows] = await db.query('SELECT original, thumbnail FROM photos WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).send('Photo not found');
 
+    const { original, thumbnail } = rows[0];
+
+    // 경로 설정
+    const originalPath = path.join(__dirname, '../../../public/uploads', original);
+    const thumbnailPath = path.join(__dirname, '../../../public/thumbnails', thumbnail);
+
+    // 실제 파일 삭제
+    if (fs.existsSync(originalPath)) fs.unlinkSync(originalPath);
+    if (fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);
+
+    // DB에서 삭제
+    await db.query('DELETE FROM photos WHERE id = ?', [req.params.id]);
+
+    res.redirect('/photo_admin');
+  } catch (err) {
+    console.error('Delete Error:', err);
+    res.status(500).send('Delete failed');
+  }
+});
 
 // 수정 폼
 router.get('/edit/:id', async (req, res) => {

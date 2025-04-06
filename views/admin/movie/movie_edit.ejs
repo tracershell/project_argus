@@ -1,0 +1,58 @@
+<style>
+  .container {
+    max-width: 320px;
+    margin: 60px auto 0 auto;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+  h2 {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background-color: #3498db;
+    color: white;
+  }
+  .btn-primary:hover {
+    background-color: #2980b9;
+  }
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    margin-top: 10px;
+  }
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+</style>
+
+<div class="container">
+  <h2>Edit Movie Info</h2>
+  <img src="/v_thumbnails/<%= movie.thumbnail %>" width="200" style="margin-bottom: 10px; border-radius: 6px;" />
+  <form action="/movie_admin/edit/<%= movie.id %>" method="POST">
+    <input type="text" name="comment" value="<%= movie.comment %>" class="input-field" placeholder="Comment" required />
+    <input type="text" name="keyword" value="<%= movie.keyword %>" class="input-field" placeholder="Keyword" required />
+    <button type="submit" class="btn-primary">Update</button>
+    <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+  </form>
+</div>

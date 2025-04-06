@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
 const db = require('../../db/mysql');
 
@@ -48,11 +49,27 @@ router.get('/download/:filename', (req, res) => {
   });
 });
 
+// ===== 화면 삭제시 db id 삭제 및 폴더에 있는 파일 삭제 ===== \\
 router.get('/delete/:id', async (req, res) => {
-  await db.query('DELETE FROM musics WHERE id = ?', [req.params.id]);
-  res.redirect('/music_admin');
-});
+  try {
+    const [rows] = await db.query('SELECT original FROM musics WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).send('Music not found');
 
+    const { original } = rows[0];
+    const filePath = path.join(__dirname, '../../../public/m_uploads', original);
+
+    // 파일 삭제
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    // DB 삭제
+    await db.query('DELETE FROM musics WHERE id = ?', [req.params.id]);
+
+    res.redirect('/music_admin');
+  } catch (err) {
+    console.error('Music Delete Error:', err);
+    res.status(500).send('Delete failed');
+  }
+});
 router.get('/edit/:id', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM musics WHERE id = ?', [req.params.id]);
   res.render('admin/music/music_edit', { music: rows[0] });

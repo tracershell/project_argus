@@ -1,0 +1,101 @@
+<style>
+  table {
+    font-size: 0.9rem;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+  th.thumbnail-col, td.thumbnail-col {
+    width: 80px;
+  }
+  th.date-col, td.date-col {
+    width: 100px;
+  }
+  th.actions-col, td.actions-col {
+    width: 300px;
+  }
+  img {
+    border-radius: 6px;
+  }
+  button.action-btn {
+    padding: 4px 10px;
+    margin: 2px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button.action-btn.delete {
+    background-color: #dc3545;
+  }
+  button.action-btn.edit {
+    background-color: #28a745;
+  }
+  form.upload-form {
+    margin-bottom: 20px;
+  }
+  form.upload-form input,
+  form.upload-form button {
+    margin: 4px;
+    padding: 6px;
+  }
+</style>
+
+<h2>🎮 Movie Admin</h2>
+
+<!-- Upload Form -->
+<h3>Upload Movie</h3>
+<form class="upload-form" action="/movie_admin/upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="movie" accept="video/*" required>
+  <input type="file" name="thumbnail" accept="image/*" required>
+  <input type="date" name="date" required>
+  <input type="text" name="comment" placeholder="Comment" required>
+  <input type="text" name="keyword" placeholder="Keyword" required>
+  <button type="submit">Upload</button>
+</form>
+
+<!-- Movie Table -->
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th class="thumbnail-col">Thumbnail</th>
+      <th class="date-col">Date</th>
+      <th>Comment</th>
+      <th>Keyword</th>
+      <th class="actions-col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% movies.forEach(m => { 
+      const dateObj = new Date(m.date);
+      const formattedDate = `${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+    %>
+      <tr>
+        <td class="thumbnail-col">
+          <a href="/movie_admin/play/<%= m.id %>">
+            <img src="/v_thumbnails/<%= m.thumbnail %>" width="66">
+          </a>
+        </td>
+        <td class="date-col"><%= formattedDate %></td>
+        <td><%= m.comment %></td>
+        <td><%= m.keyword %></td>
+        <td class="actions-col">
+          <a href="/movie_admin/download/<%= m.video_filename %>">
+            <button class="action-btn">Download</button>
+          </a>
+          <a href="/movie_admin/edit/<%= m.id %>">
+            <button class="action-btn edit">Edit</button>
+          </a>
+          <a href="/movie_admin/delete/<%= m.id %>" onclick="return confirm('삭제하시겠습니까?')">
+            <button class="action-btn delete">Delete</button>
+          </a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
