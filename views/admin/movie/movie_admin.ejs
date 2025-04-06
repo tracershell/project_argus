@@ -1,13 +1,80 @@
+<h2>🎬 Movie Admin</h2>
+
+<!-- Upload Form -->
+<h3>Upload Movie</h3>
+<form id="upload-form">
+  <input type="file" name="movie" accept="video/*" required>
+  <input type="file" name="thumbnail" accept="image/*" required>
+  <input type="date" name="date" required>
+  <input type="text" name="comment" placeholder="Comment" required>
+  <input type="text" name="keyword" placeholder="Keyword" required>
+  <button type="submit">Upload</button>
+</form>
+
+<!-- 진행률 표시 -->
+<div id="progress-container" style="margin-top: 10px; display: none;">
+  <div style="width: 100%; background: #eee; border-radius: 4px;">
+    <div id="progress-bar" style="width: 0%; height: 20px; background: #3498db; border-radius: 4px;"></div>
+  </div>
+  <p id="progress-text" style="font-size: 0.9rem; margin-top: 4px;">0%</p>
+</div>
+
+<!-- Movie List Table -->
+<table class="table table-bordered" style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+  <thead>
+    <tr>
+      <th style="width: 80px;">Thumbnail</th>
+      <th style="width: 100px;">Date</th>
+      <th>Comment</th>
+      <th>Keyword</th>
+      <th style="width: 300px;">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (movies.length === 0) { %>
+      <tr><td colspan="5" style="text-align: center; color: #777;">등록된 영화가 없습니다.</td></tr>
+    <% } else { %>
+      <% movies.forEach(m => { 
+        const dateObj = new Date(m.date);
+        const formattedDate = `${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+      %>
+      <tr>
+        <td>
+          <a href="/movie_admin/play/<%= m.id %>">
+            <img src="/v_thumbnails/<%= m.thumbnail %>" width="66" style="border-radius: 6px;" />
+          </a>
+        </td>
+        <td><%= formattedDate %></td>
+        <td><%= m.comment %></td>
+        <td><%= m.keyword %></td>
+        <td>
+          <a href="/movie_admin/download/<%= m.video_filename %>">
+            <button class="action-btn">Download</button>
+          </a>
+          <a href="/movie_admin/edit/<%= m.id %>">
+            <button class="action-btn edit">Edit</button>
+          </a>
+          <a href="/movie_admin/delete/<%= m.id %>" onclick="return confirm('삭제하시겠습니까?')">
+            <button class="action-btn delete">Delete</button>
+          </a>
+        </td>
+      </tr>
+      <% }) %>
+    <% } %>
+  </tbody>
+</table>
+
 <style>
   table {
     font-size: 0.9rem;
     width: 100%;
     border-collapse: collapse;
+    border: 1px solid #ccc; /* 테두리 보이게 추가 */
   }
   th, td {
     padding: 6px;
     text-align: center;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc; /* 개별 셀에도 테두리 */
   }
   th.thumbnail-col, td.thumbnail-col {
     width: 80px;
@@ -25,94 +92,54 @@
     padding: 4px 10px;
     margin: 2px;
     border: none;
-    background-color: #007bff;
     color: white;
     border-radius: 4px;
     cursor: pointer;
   }
-  button.action-btn.delete {
-    background-color: #dc3545;
-  }
-  button.action-btn.edit {
+  .action-btn.edit {
     background-color: #28a745;
   }
-  form.upload-form {
-    margin-bottom: 20px;
+  .action-btn.delete {
+    background-color: #dc3545;
   }
-  form.upload-form input,
-  form.upload-form button {
-    margin: 4px;
-    padding: 6px;
-  }
-  #uploading-message {
-    display: none;
-    font-weight: bold;
-    color: green;
-    margin-bottom: 15px;
+  .action-btn:not(.edit):not(.delete) {
+    background-color: #007bff;
   }
 </style>
 
-<h2>🎮 Movie Admin</h2>
-
-<!-- Upload Form -->
-<h3>Upload Movie</h3>
-<form class="upload-form" action="/movie_admin/upload" method="POST" enctype="multipart/form-data" onsubmit="return showUploading()">
-  <input type="file" name="movie" accept="video/*" required>
-  <input type="file" name="thumbnail" accept="image/*" required>
-  <input type="date" name="date" required>
-  <input type="text" name="comment" placeholder="Comment" required>
-  <input type="text" name="keyword" placeholder="Keyword" required>
-  <button type="submit">Upload</button>
-</form>
-
-<!-- Upload 진행 메시지 -->
-<div id="uploading-message">📤 Uploading... Please wait</div>
-
-<!-- Movie Table -->
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th class="thumbnail-col">Thumbnail</th>
-      <th class="date-col">Date</th>
-      <th>Comment</th>
-      <th>Keyword</th>
-      <th class="actions-col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% movies.forEach(m => { 
-      const dateObj = new Date(m.date);
-      const formattedDate = `${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-    %>
-      <tr>
-        <td class="thumbnail-col">
-          <a href="/movie_admin/play/<%= m.id %>">
-            <img src="/v_thumbnails/<%= m.thumbnail %>" width="66">
-          </a>
-        </td>
-        <td class="date-col"><%= formattedDate %></td>
-        <td><%= m.comment %></td>
-        <td><%= m.keyword %></td>
-        <td class="actions-col">
-          <a href="/movie_admin/download/<%= m.video_filename %>">
-            <button class="action-btn">Download</button>
-          </a>
-          <a href="/movie_admin/edit/<%= m.id %>">
-            <button class="action-btn edit">Edit</button>
-          </a>
-          <a href="/movie_admin/delete/<%= m.id %>" onclick="return confirm('삭제하시겠습니까?')">
-            <button class="action-btn delete">Delete</button>
-          </a>
-        </td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
-
-<!-- Upload 상태 표시 스크립트 -->
+<!-- Upload Progress Script -->
 <script>
-  function showUploading() {
-    document.getElementById('uploading-message').style.display = 'block';
-    return true; // 폼 전송 계속 진행
-  }
+  const form = document.getElementById('upload-form');
+  const progressContainer = document.getElementById('progress-container');
+  const progressBar = document.getElementById('progress-bar');
+  const progressText = document.getElementById('progress-text');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener('progress', function (e) {
+      if (e.lengthComputable) {
+        const percent = Math.round((e.loaded / e.total) * 100);
+        progressBar.style.width = percent + '%';
+        progressText.innerText = percent + '%';
+      }
+    });
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        alert('Upload complete!');
+        window.location.href = '/movie_admin'; // 업로드 후 페이지 새로고침
+      }
+    };
+
+    xhr.open('POST', '/movie_admin/upload');
+    xhr.send(formData);
+
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressText.innerText = '0%';
+  });
 </script>
