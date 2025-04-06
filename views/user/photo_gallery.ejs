@@ -1,0 +1,47 @@
+<style>
+  .filter-bar {
+    margin-bottom: 20px;
+  }
+  .thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .thumbnail-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+  }
+</style>
+
+<h2>📷 Photo Gallery</h2>
+
+<div class="filter-bar">
+  <form method="GET" action="/photo_gallery">
+    <select name="year">
+      <option value="">-- 연도 선택 --</option>
+      <% years.forEach(y => { %>
+        <option value="<%= y %>" <%= selectedYear === y ? 'selected' : '' %>><%= y %></option>
+      <% }) %>
+    </select>
+
+    <select name="place">
+      <option value="">-- 장소 선택 --</option>
+      <% places.forEach(p => { %>
+        <option value="<%= p %>" <%= selectedPlace === p ? 'selected' : '' %>><%= p %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit">🔍 검색</button>
+  </form>
+</div>
+
+<div class="thumbnail-grid">
+  <% photos.forEach(photo => { %>
+    <a href="/uploads/<%= photo.original %>" target="_blank" title="<%= photo.comment %>">
+      <img src="/thumbnails/<%= photo.thumbnail %>" alt="thumbnail">
+    </a>
+  <% }) %>
+</div>

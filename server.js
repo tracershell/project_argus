@@ -64,17 +64,22 @@ app.set('views', path.join(__dirname, 'views'));    // views 가 있는 곳: 현
 app.use(expressLayouts);
 app.set('layout', 'layout'); // 'views/layout.ejs'를 기본 레이아웃으로 사용 
 
+// ===== webpage 마다 route 설정 \\
 // ===== admin Routes 설정 ===== \\
-const a_dashboardRoutes = require('./server/routes/admin/a_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
-app.use('/admin', a_dashboardRoutes);   // 라우터 접두어 /admin
+const a_dashboardRoutes = require('./server/routes/admin/a_dashboard');
+app.use('/admin', a_dashboardRoutes);   // url 이 /admin 으로 시작하는 모든 요청은 a_dashboard.js 에서 처리됨
 
 // ===== user Routes 설정 ===== \\
-const u_dashboardRoutes = require('./server/routes/user/u_dashboard'); // ./routes/admin/a_dashboard.js 파일을 불러옴 (라우터 객체를 받음)
-app.use('/user', u_dashboardRoutes);   // 라우터 접두어 /user
-// ===== photo Routes 설정 ===== \\
-const photoRoutes = require('./server/routes/user/photo'); // ./routes/user/photo.js 파일을 불러옴 (라우터 객체를 받음)
-app.use('/photo', photoRoutes);   // router 접두어 /photos
+const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
+app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨
 
+// ===== photo Routes 설정 ===== \\
+const photoRoutes = require('./server/routes/user/photo');
+app.use('/photo', photoRoutes);   // url 이 /photo 으로 시작하는 모든 요청은 photo.js 에서 처리됨
+
+// ===== photo_gallery Routes 설정 ===== \\
+const photo_galleryRoutes = require('./server/routes/user/photo_gallery');
+app.use('/photo_gallery', photo_galleryRoutes);   // url 이 /photo_gallery 으로 시작하는 모든 요청은 photo.js 에서 처리됨
 
 // ===== Express 웹서버에서 라우터를 연결하는 핵심역할 : 라우터 연결 ===== \\
 const startRoutes = require('./server/routes/start');  // start.js 라우터 파일 연결 (시작화면 start.ejs 와 연결위해)
