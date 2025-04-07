@@ -50,6 +50,12 @@
   position: relative;
 }
 
+.navbar .menu a:hover {
+  background-color: #cae7bf;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
 /* 로그인/로그아웃 버튼 영역 */
 .navbar .auth-buttons {
   display: flex;
@@ -95,6 +101,37 @@
     font-weight: bold;
   }
 
+/* Dropdown menu */
+.navbar .menu .dropdown {
+  position: relative;
+}
+
+.navbar .menu .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.navbar .menu .dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  min-width: 160px;
+  z-index: 1;
+}
+
+.navbar .menu .dropdown .dropdown-content a {
+  color: #333;
+  padding: 4px 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.navbar .menu .dropdown .dropdown-content a:hover {
+  background-color: #9cbcf0;
+}
+
 </style>
 
 <!DOCTYPE html>
@@ -121,16 +158,28 @@
       <a href="/">General</a>
       <a href="/employees">employees</a>
       <a href="/payroll">paylist</a>
-      <a href="#">Support</a>
+      <div class="dropdown">
+        <a href="#">import</a>
+          <div class="dropdown-content">
+            <a href="/import/vendor">vendor list</a>
+            <a href="/import/po">import po</a>
+            <a href="/import/payment">import payment</a>
+          </div>
+      </div>  
+      <a href="/import_an">Anmiwha</a>
+      <a href="/import_vendor">Vendor</a>
       <a href="#">Blog</a>
       <a href="#">Company</a>
       <a href="/import_an">Anmiwha</a>
       <a href="/import_vendor">Vendor</a>
-      <a href="/test01">Test01</a>
-      <a href="/test02">Test02</a>
-      <a href="/photo_admin">Photo</a>
-      <a href="/music_admin">music</a>
-      <a href="/movie_admin">movie</a>
+      <div class="dropdown">
+        <a href="#">Personal</a>
+          <div class="dropdown-content">
+            <a href="/photo_admin">photo</a>
+            <a href="/music_admin">music</a>
+            <a href="/movie_admin">video</a>
+          </div>
+      </div>  
     </div>
     <% } %>
 

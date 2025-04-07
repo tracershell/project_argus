@@ -50,6 +50,12 @@
   position: relative;
 }
 
+.navbar .menu a:hover {
+  background-color: #cae7bf;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
 /* 로그인/로그아웃 버튼 영역 */
 .navbar .auth-buttons {
   display: flex;
@@ -95,6 +101,36 @@
     font-weight: bold;
   }
 
+/* Dropdown menu */
+.navbar .menu .dropdown {
+  position: relative;
+}
+
+.navbar .menu .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.navbar .menu .dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  min-width: 160px;
+  z-index: 1;
+}
+
+.navbar .menu .dropdown .dropdown-content a {
+  color: #333;
+  padding: 4px 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.navbar .menu .dropdown .dropdown-content a:hover {
+  background-color: #9cbcf0;
+}
 </style>
 
 <!DOCTYPE html>
@@ -118,14 +154,14 @@
 
     <% if (isAuthenticated) { %>
     <div class="menu">
-      <a href="/photo_gallery">photo gallery</a> <!-- /photo_gallery (url)  (server.js 의 라우터의 /photo 지정에 따라 ==> photo_gallery.js 로 라우트로  -->
-      <a href="/music_gallery">music gallery</a>
-      <a href="/movie_gallery">movie gallery</a>
-      <a href="#">e</a>
-      <a href="#">f</a>
-      <a href="#">g</a>
-      <a href="#">h</a>
-      <a href="#">i</a>
+      <div class="dropdown">
+        <a href="#">Personal</a>
+          <div class="dropdown-content">
+            <a href="/photo_gallery">photo gallery</a> <!-- /photo_gallery (url)  (server.js 의 라우터의 /photo 지정에 따라 ==> photo_gallery.js 로 라우트로  -->
+            <a href="/music_gallery">music gallery</a>
+            <a href="/movie_gallery">movie gallery</a>
+          </div>
+      </div> 
       <a href="#">j</a>
       <a href="#">k</a>
       <a href="#">l</a>
