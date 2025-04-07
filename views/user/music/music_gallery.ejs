@@ -1,0 +1,170 @@
+<h2>🎵 Music Gallery</h2>
+
+<div class="filter-bar">
+  <form method="GET" action="/music_gallery">
+    <select name="year">
+      <option value="">--- Year ---</option>
+      <% years.forEach(y => { %>
+        <option value="<%= y %>" <%= selectedYear == y ? 'selected' : '' %>><%= y %></option>
+      <% }) %>
+    </select>
+
+    <select name="keyword">
+      <option value="">-- Key word --</option>
+      <% keywords.forEach(k => { %>
+        <option value="<%= k %>" <%= selectedKeyword == k ? 'selected' : '' %>><%= k %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit">🔍 검색</button>
+  </form>
+</div>
+
+<% if (selectedYear || selectedKeyword) { %>
+  <div class="selected-info">
+    <%= selectedYear ? selectedYear : '' %>
+    <%= selectedYear && selectedKeyword ? ' - ' : '' %>
+    <%= selectedKeyword ? selectedKeyword : '' %>
+  </div>
+<% } %>
+
+<table class="music-table">
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Date</th>
+      <th>Comment</th>
+      <th>Keyword</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% musics.forEach(m => { 
+      const dateObj = new Date(m.date);
+      const formattedDate = `${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+    %>
+      <tr>
+        <td class="file-col">
+          <a href="#" onclick="playMusic('<%= m.original %>', '<%= m.textfile %>'); return false;">
+            <%= m.original %>
+          </a>
+        </td>
+        <td class="date-col"><%= formattedDate %></td>
+        <td><%= m.comment %></td>
+        <td class="keyword-col"><%= m.keyword %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<audio id="audioPlayer" controls style="display:none; margin-top:10px;"></audio>
+
+<div id="textPopup" style="display:none; position:fixed; top:10%; left:20%; width:60%; height:60%; background:#fff; border:1px solid #ccc; padding:20px; overflow:auto; z-index:9999;">
+  <button onclick="document.getElementById('textPopup').style.display='none'" style="float:right;">Close</button>
+  <pre id="textContent" style="white-space: pre-wrap; font-size:0.9rem;"></pre>
+</div>
+
+<script>
+  function playMusic(filename, textfile) {
+    const audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.src = '/m_uploads/' + filename;
+    audioPlayer.style.display = 'block';
+    audioPlayer.play();
+
+    if (textfile) {
+      fetch('/music_admin/text/' + textfile)
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById('textContent').innerText = data;
+          document.getElementById('textPopup').style.display = 'block';
+        })
+        .catch(() => alert('텍스트 파일을 불러올 수 없습니다.'));
+    }
+  }
+</script>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar select {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 0.66rem;       /* 2/3 글씨 크기 */
+    min-width: 100px;         /* 2/3 크기 */
+    transition: all 0.3s ease;
+  }
+
+  .filter-bar select:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 4px rgba(102, 175, 233, 0.5);
+  }
+
+  .filter-bar button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    font-size: 0.66rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .filter-bar button:hover {
+    background-color: #0056b3;
+  }
+
+  .selected-info {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 20px 0;
+    padding: 3px;
+    background-color: #e6ffea;
+    border-top: 2px solid #99ffbb;
+    border-bottom: 2px solid #99ffbb;
+  }
+
+  .music-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .music-table th, .music-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+  }
+
+  th.file-col, td.file-col {
+    width: 250px;
+  }
+
+  th.date-col, td.date-col {
+    width: 200px;
+  }
+
+  th.keyword-col, td.keyword-col {
+    width: 200px;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+

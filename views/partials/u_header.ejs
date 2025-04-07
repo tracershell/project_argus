@@ -119,8 +119,8 @@
     <% if (isAuthenticated) { %>
     <div class="menu">
       <a href="/photo_gallery">photo gallery</a> <!-- /photo_gallery (url)  (server.js 의 라우터의 /photo 지정에 따라 ==> photo_gallery.js 로 라우트로  -->
-      <a href="#">c</a>
-      <a href="#">d</a>
+      <a href="/music_gallery">music gallery</a>
+      <a href="/movie_gallery">movie gallery</a>
       <a href="#">e</a>
       <a href="#">f</a>
       <a href="#">g</a>
@@ -139,7 +139,7 @@
           Welcome,👤 <span class="username-blue"><%= typeof user !== 'undefined' ? user.username : 'User' %></span>! (<%= user.role %>)
         </span>
         <a href="/logout" class="btn-signin">Log out</a>
-        <a href="#" class="btn-signin" onclick="alert('일반 user 는 사용할 수 없습니다.'); return false;">Register</a>        
+        <a href="#" class="btn-signin" onclick="alert('Only admins can access this feature.'); return false;">Register</a>        
       <% } else { %>
         <a href="/login" class="btn-signin">Log in</a>
         <a href="/register" class="btn-signin">Register</a>

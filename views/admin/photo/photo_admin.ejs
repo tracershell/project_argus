@@ -5,7 +5,7 @@
     border-collapse: collapse;
   }
   th, td {
-    padding: 6px;
+    padding: 3px;
     text-align: center;
     border: 1px solid #ccc;
   }
@@ -15,8 +15,13 @@
   th.date-col, td.date-col {
     width: 100px;
   }
+
+  th.place-col, td.place-col {
+    width: 200px;
+  }
+
   th.actions-col, td.actions-col {
-    width: 300px;
+    width: 250px;
   }
   img {
     border-radius: 6px;
@@ -81,7 +86,7 @@
         </td>
         <td class="date-col"><%= formattedDate %></td>
         <td><%= p.comment %></td>
-        <td><%= p.place %></td>
+        <td class="place-col"><%= p.place %></td>
         <td class="actions-col">
           <a href="/photo_admin/download/<%= p.original %>">
             <button class="action-btn">Download</button>

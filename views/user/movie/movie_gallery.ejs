@@ -1,0 +1,199 @@
+<h2>🎬 Movie Gallery</h2>
+
+<div class="filter-bar">
+  <form method="GET" action="/movie_gallery">
+    <select name="year">
+      <option value="">--- Year ---</option>
+      <% years.forEach(y => { %>
+        <option value="<%= y %>" <%= selectedYear === y ? 'selected' : '' %>><%= y %></option>
+      <% }) %>
+    </select>
+
+    <select name="keyword">
+      <option value="">-- Key word --</option>
+      <% keywords.forEach(k => { %>
+        <option value="<%= k %>" <%= selectedKeyword === k ? 'selected' : '' %>><%= k %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit">🔍 검색</button>
+  </form>
+</div>
+
+<% if (selectedYear || selectedKeyword) { %>
+  <div class="selected-info">
+    <% if (selectedYear && selectedKeyword) { %>
+      <%= selectedYear %> - <%= selectedKeyword %>
+    <% } else if (selectedYear) { %>
+      <%= selectedYear %>
+    <% } else if (selectedKeyword) { %>
+      <%= selectedKeyword %>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (movies.length === 0) { %>
+  <p style="text-align: center; color: gray;">해당 조건에 맞는 동영상이 없습니다.</p>
+<% } else { %>
+  <div class="thumbnail-grid">
+    <% movies.forEach(movie => { %>
+      <img src="/v_thumbnails/<%= movie.thumbnail %>" alt="thumbnail"
+           onclick="openVideoModal('/v_uploads/<%= movie.video_filename %>')">
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Video Modal -->
+<div class="video-modal" id="videoModal">
+  <button class="close-btn" onclick="closeVideoModal()">✖</button>
+  <video id="modalVideo" controls></video>
+  <div class="modal-hint">Press [ESC] or click outside to exit</div>
+</div>
+
+<script>
+  function openVideoModal(src) {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+    video.src = src;
+    modal.style.display = 'flex';
+    video.play();
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+    video.pause();
+    video.src = '';
+    modal.style.display = 'none';
+  }
+
+  // ESC 키로 닫기
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeVideoModal();
+    }
+  });
+
+  // 바깥 배경 클릭 시 닫기
+  window.addEventListener('click', function (e) {
+    const modal = document.getElementById('videoModal');
+    if (e.target === modal) {
+      closeVideoModal();
+    }
+  });
+</script>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar select {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 0.66rem;
+    min-width: 100px;
+    transition: all 0.3s ease;
+  }
+
+  .filter-bar select:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 4px rgba(102, 175, 233, 0.5);
+  }
+
+  .filter-bar button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    font-size: 0.66rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .filter-bar button:hover {
+    background-color: #0056b3;
+  }
+
+  .selected-info {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 20px 0;
+    padding: 3px;
+    background-color: #fff6e6;
+    border-top: 2px solid #ffd699;
+    border-bottom: 2px solid #ffd699;
+    color: #333;
+  }
+
+  .thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .thumbnail-grid img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: transform 0.2s ease;
+  }
+
+  .thumbnail-grid img:hover {
+    transform: scale(1.05);
+  }
+
+  .video-modal {
+    position: fixed;
+    top: 5%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+
+  .video-modal video {
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-modal .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .modal-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ccc;
+  font-size: 0.85rem;
+  font-style: italic;
+  pointer-events: none;
+}
+</style>

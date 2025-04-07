@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     const [placeRows] = await db.query('SELECT DISTINCT place FROM photos ORDER BY place');
     const places = placeRows.map(row => row.place);
 
-    res.render('user/photo_gallery', {
+    res.render('user/photo/photo_gallery', {
       photos,
       years,
       places,

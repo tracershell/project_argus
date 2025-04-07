@@ -89,6 +89,15 @@ app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모�
 const photo_galleryRoutes = require('./server/routes/user/photo_gallery');
 app.use('/photo_gallery', photo_galleryRoutes);   // url 이 /photo_gallery 으로 시작하는 모든 요청은 photo.js 에서 처리됨
 
+// ===== movie_gallery Routes 설정 ===== \\
+const movie_galleryRoutes = require('./server/routes/user/movie_gallery');
+app.use('/movie_gallery', movie_galleryRoutes);
+
+// ===== music_gallery Routes 설정 ===== \\
+const music_galleryRoutes = require('./server/routes/user/music_gallery');
+app.use('/music_gallery', music_galleryRoutes);
+
+
 // ===== Express 웹서버에서 라우터를 연결하는 핵심역할 : 라우터 연결 ===== \\
 const startRoutes = require('./server/routes/start');  // start.js 라우터 파일 연결 (시작화면 start.ejs 와 연결위해)
 app.use('/', startRoutes);   // 라우터 등록 : router.get(), router.post() 를 처리 가능
