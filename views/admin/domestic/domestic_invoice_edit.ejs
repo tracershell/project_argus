@@ -1,0 +1,99 @@
+<!-- ✅ File: /views/admin/domestic/domestic_invoice_edit.ejs -->
+
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+  
+    .top-section {
+      flex: 0 0 auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+      font-size: 12px;
+    }
+  
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 20px;
+      color: #333;
+    }
+  
+    .form {
+      width: 100%;
+    }
+  
+    .form-row {
+      display: flex;
+      width: 100%;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+  
+    .form input,
+    .form select,
+    .form textarea {
+      padding: 3px;
+      font-size: 11px;
+      box-sizing: border-box;
+      height: 24px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+  
+    .form-row.second {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  
+    button {
+      padding: 3px 16px;
+      font-size: 11px;
+      cursor: pointer;
+      border: 1px solid #066da5;
+      border-radius: 4px;
+      background-color: #f5f7fa;
+    }
+  </style>
+  
+  <body>
+    <div class="top-section compact-form">
+      <h2>Invoice 수정</h2>
+      <form method="POST" action="/admin/domestic_invoice/edit/<%= invoice.id %>" class="form">
+  
+        <!-- ✅ 입력폼: 동일한 구조 -->
+        <div class="form-row first">
+          <input type="date" name="iv_date" value="<%= invoice.iv_date.toISOString().split('T')[0] %>" required style="flex: 1 1 10%;">
+  
+          <select name="dv_name" required style="flex: 1 1 20%;">
+            <% vendors.forEach(v => { %>
+              <option value="<%= v.v_name %>" <%= invoice.dv_name === v.v_name ? 'selected' : '' %>><%= v.v_name %></option>
+            <% }) %>
+          </select>
+  
+          <input type="text" name="di_no" value="<%= invoice.di_no %>" placeholder="Invoice No" required style="flex: 1 1 15%;">
+  
+          <input type="number" name="di_amount" value="<%= Number(invoice.di_amount).toFixed(2) %>" placeholder="Invoice Amount" step="0.01" required style="flex: 1 1 10%;">
+  
+          <textarea name="note" placeholder="Note" rows="2" style="flex: 1 1 30%; resize: vertical;"><%= invoice.note %></textarea>
+        </div>
+  
+        <!-- ✅ 버튼 영역 -->
+        <div class="form-row second">
+          <a href="/admin/domestic_invoice">
+            <button type="button">🔙 돌아가기</button>
+          </a>
+          <button type="submit">✏️ 저장</button>
+        </div>
+  
+      </form>
+    </div>
+  </body>
+  

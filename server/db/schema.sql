@@ -46,6 +46,18 @@ CREATE TABLE domestic_vendor (
   v_note TEXT
 );
 
+CREATE TABLE domestic_invoice (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  iv_date DATE NOT NULL,            -- Invoice Date
+  dv_name VARCHAR(100) NOT NULL,    -- Domestic Vendor Name (from domestic_vendor.v_name)
+  di_no VARCHAR(50) NOT NULL,       -- Domestic Invoice Number
+  di_amount DECIMAL(12, 2) NOT NULL,-- Invoice Total Amount
+  ip_date DATE DEFAULT NULL,        -- Invoice Pay Date
+  ip_amount DECIMAL(12, 2) DEFAULT 0.00, -- Paid Amount
+  ib_amount DECIMAL(12, 2) DEFAULT 0.00, -- Balance = di_amount - ip_amount
+  note TEXT                         -- Note or remarks (ex: full paid)
+);
+
 CREATE TABLE photos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   original VARCHAR(255),

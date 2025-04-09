@@ -90,6 +90,9 @@ app.use('/admin/import', require('./server/routes/admin/import/import_vendor_lis
 app.use('/admin/domestic', require('./server/routes/admin/domestic/domestic_vendor'));
 
 app.use('/admin/domestic', require('./server/routes/admin/domestic/domestic_vendor_list_pdf'));
+
+app.use('/admin/domestic_invoice', require('./server/routes/admin/domestic/domestic_invoice'));
+
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
