@@ -35,6 +35,17 @@ CREATE TABLE import_vendor (
   v_note TEXT
 );
 
+CREATE TABLE domestic_vendor (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  date DATE,
+  v_name VARCHAR(100),
+  v_address1 VARCHAR(200),
+  v_address2 VARCHAR(200),
+  v_phone VARCHAR(50),
+  v_email VARCHAR(100),
+  v_note TEXT
+);
+
 CREATE TABLE photos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   original VARCHAR(255),
