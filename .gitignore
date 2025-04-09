@@ -6,6 +6,9 @@ yarn-error.log
 # 환경 설정 파일
 .env
 
+# admin seed 파일
+/server/db/admin-seed.js
+
 # 운영체제 관련
 .DS_Store
 Thumbs.db

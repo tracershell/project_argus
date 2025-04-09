@@ -81,6 +81,13 @@ app.use('/music_admin', music_adminRoutes);   // url 이 /music_admin 으로 시
 const movie_adminRoutes = require('./server/routes/admin/movie_admin');
 app.use('/movie_admin', movie_adminRoutes);   // url 이 /video_admin 으로 시작하는 모든 요청은 video_admin.js 에서 처리됨
 
+//====================================================================================================================
+const importVendorRoutes = require('./server/routes/admin/import/import_vendor');
+app.use('/admin/import', importVendorRoutes);
+
+app.use('/admin/import', require('./server/routes/admin/import/import_vendor_list_pdf'));
+
+//====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨

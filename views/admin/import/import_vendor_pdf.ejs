@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vendor List</title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #333;
+      font-size: 12px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+    }
+
+    th {
+      background-color: #f0f8ff;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Vendor List</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="nowrap">등록일</th>
+        <th>Vendor Name</th>
+        <th class="nowrap">Deposit Rate</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vendors.forEach(v => { %>
+        <tr>
+          <td><%= v.date.toISOString().split('T')[0] %></td>
+          <td><%= v.v_name %></td>
+          <td><%= v.vd_rate %> %</td>
+          <td><%= v.v_address1 %> <%= v.v_address2 %></td>
+          <td><%= v.v_phone %></td>
+          <td><%= v.v_email %></td>
+          <td><%= v.v_note %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

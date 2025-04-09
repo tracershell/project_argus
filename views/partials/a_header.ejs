@@ -156,16 +156,17 @@
     <% if (isAuthenticated) { %>
     <div class="menu">
       <a href="/">General</a>
+      <div class="dropdown">
+        <a href="#">Import</a>
+          <div class="dropdown-content">
+            <a href="/admin/import">Vendor</a>
+            <a href="/import_po">PO</a>
+            <a href="/import_pay">Pay</a>
+          </div>
+      </div>
       <a href="/employees">employees</a>
       <a href="/payroll">paylist</a>
       <div class="dropdown">
-        <a href="#">import</a>
-          <div class="dropdown-content">
-            <a href="/import/vendor">vendor list</a>
-            <a href="/import/po">import po</a>
-            <a href="/import/payment">import payment</a>
-          </div>
-      </div>  
       <a href="/import_an">Anmiwha</a>
       <a href="/import_vendor">Vendor</a>
       <a href="#">Blog</a>

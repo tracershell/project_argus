@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    body { font-family: Arial; font-size: 12px; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: center; }
+    th { background-color: #f0f8ff; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .btn-wrap { text-align: center; margin: 20px; }
+    .btn-wrap button { padding: 5px 15px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Import Vendor List</h2>
+  
+
+  <table>
+    <thead>
+      <tr>
+        <th>등록일</th>
+        <th>Vendor Name</th>
+        <th>Deposit Rate</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vendors.forEach(v => { %>
+        <tr>
+          <td><%= v.date.toISOString().split('T')[0] %></td>
+          <td><%= v.v_name %></td>
+          <td><%= v.vd_rate %> %</td>
+          <td><%= v.v_address1 %> <%= v.v_address2 %></td>
+          <td><%= v.v_phone %></td>
+          <td><%= v.v_email %></td>
+          <td><%= v.v_note %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <div class="btn-wrap">
+    <form method="GET" action="/admin/import/pdfdownload" style="display:inline;">
+      <% if (filter_name) { %>
+        <input type="hidden" name="filter_name" value="<%= filter_name %>">
+      <% } %>
+      <button type="submit">📥 PDF 다운로드</button>
+    </form>
+
+    <!-- 🔙 돌아가기 버튼 -->
+    <!-- 직접 경로로 이동하는 방식 -->
+<a href="/admin/import">
+    <button type="button">🔙 돌아가기</button>
+  </a>
+  </div>
+</body>
+</html>

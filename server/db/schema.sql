@@ -1,6 +1,6 @@
-CREATE DATABASE project_layout_test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE project_201_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE project_layout_test_db;
+USE project_201_db;
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,                     -- 고유 ID (자동 증가)
@@ -16,6 +16,24 @@ CREATE TABLE users (
               ON UPDATE CURRENT_TIMESTAMP                -- 수정 시간 자동 업데이트
 );
 
+INSERT INTO users (username, password, role)
+VALUES 
+('tshell', 'ts3300', 'user'),
+('tracershell', 'ts330069', 'admin');
+
+
+
+CREATE TABLE import_vendor (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  date DATE,
+  v_name VARCHAR(100),
+  vd_rate DECIMAL(5,2),
+  v_address1 VARCHAR(200),
+  v_address2 VARCHAR(200),
+  v_phone VARCHAR(50),
+  v_email VARCHAR(100),
+  v_note TEXT
+);
 
 CREATE TABLE photos (
   id INT AUTO_INCREMENT PRIMARY KEY,
