@@ -136,6 +136,58 @@ router.get('/pdfview', async (req, res) => {
   }
 });
 
+// ✅ Domestic invoice result 페이지 라우터
+// ✅ Domestic invoice result 페이지 - 다중 필터 검색 라우터
+router.get('/result', async (req, res) => {
+  try {
+    const { dv_name, ip_date, note } = req.query;
+
+    let where = [];
+    let params = [];
+
+    if (dv_name) {
+      where.push('dv_name = ?');
+      params.push(dv_name);
+    }
+
+    if (ip_date) {
+      where.push('DATE(ip_date) = ?');
+      params.push(ip_date);
+    }
+
+    if (note) {
+      where.push('note = ?');
+      params.push(note);
+    }
+
+    let query = 'SELECT * FROM domestic_invoice';
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+    query += ' ORDER BY iv_date DESC';
+
+    const [results] = await db.query(query, params);
+
+    // 콤보박스용 데이터
+    const [vendors] = await db.query('SELECT DISTINCT dv_name FROM domestic_invoice');
+    const [dates] = await db.query('SELECT DISTINCT ip_date FROM domestic_invoice WHERE ip_date IS NOT NULL ORDER BY ip_date DESC');
+    const [notes] = await db.query('SELECT DISTINCT note FROM domestic_invoice WHERE note IS NOT NULL');
+
+    res.render('admin/domestic/domestic_invoice_result', {
+      results,
+      vendors,
+      dates,
+      notes,
+      dv_name,
+      ip_date,
+      note
+    });
+  } catch (err) {
+    console.error('💥 /result 라우터 오류:', err);
+    res.status(500).send('Result 조회 실패: ' + err.message);
+  }
+});
+
 
 
 // // ✅ HTML 화면에서 리스트 출력용 라우트 (PDFVIEW)

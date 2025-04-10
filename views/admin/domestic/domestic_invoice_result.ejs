@@ -1,0 +1,134 @@
+<!-- ✅ File: /views/admin/domestic/domestic_result.ejs -->
+
+<style>
+  body {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  select, input[type="text"] {
+    padding: 4px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid #066da5;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f0f8ff;
+  }
+
+  .button-row {
+    text-align: right;
+    margin: 20px 0;
+  }
+</style>
+
+<h2>Domestic Invoice List</h2>
+
+<form method="GET" action="/admin/domestic_invoice/result">
+  <div class="filter-section">
+    <select name="dv_name">
+      <option value="">:: Vendor Name ::</option>
+      <% vendors.forEach(v => { %>
+        <option value="<%= v.dv_name %>" <%= dv_name === v.dv_name ? 'selected' : '' %>><%= v.dv_name %></option>
+      <% }) %>
+    </select>
+
+    <select name="ip_date">
+      <option value="">:: Pay Date ::</option>
+      <% dates.forEach(d => { %>
+        <option value="<%= d.ip_date.toISOString().split('T')[0] %>" <%= ip_date === d.ip_date.toISOString().split('T')[0] ? 'selected' : '' %>>
+          <%= d.ip_date.toISOString().split('T')[0] %>
+        </option>
+      <% }) %>
+    </select>
+
+    <select name="note">
+      <option value="">:: Note ::</option>
+      <% notes.forEach(n => { %>
+        <option value="<%= n.note %>" <%= note === n.note ? 'selected' : '' %>><%= n.note %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit">🔍 검색</button>
+  </div>
+</form>
+
+<div class="button-row">
+  <form action="#" method="GET" style="display: inline;">
+    <button type="submit">📄 PDF 출력</button>
+  </form>
+  <form action="#" method="GET" style="display: inline;">
+    <button type="submit">👁️ PDF 보기</button>
+  </form>
+  <form action="#" method="POST" style="display: inline;">
+    <button type="submit">📝 기록</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Invoice Date</th>
+      <th>Vendor Name</th>
+      <th>Invoice No</th>
+      <th>Amount</th>
+      <th>Pay Date</th>
+      <th>Paid Amount</th>
+      <th>Remain</th>
+      <th>Note</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% results.forEach(row => { %>
+      <tr>
+        <td><%= row.iv_date.toISOString().split('T')[0] %></td>
+        <td><%= row.dv_name %></td>
+        <td><%= row.di_no %></td>
+        <td><%= Number(row.di_amount).toFixed(2) %></td>
+        <td><%= row.ip_date ? row.ip_date.toISOString().split('T')[0] : '' %></td>
+        <td><%= Number(row.ip_amount).toFixed(2) %></td>
+        <td><%= Number(row.ib_amount).toFixed(2) %></td>
+        <td><%= row.note %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
