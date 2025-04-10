@@ -68,7 +68,7 @@ async function generateInvoicePDF(res, invoices, isDownload) {
     ];
 
     // ✅ 여기에 로그 추가!
-    console.log(`▶ ${i + 1}번 인보이스 출력:`, rowData);
+    // console.log(`▶ ${i + 1}번 인보이스 출력:`, rowData);
 
     drawRow(rowData, y);
   });
@@ -87,8 +87,8 @@ router.get(['/pdf', '/pdfdownload'], async (req, res) => {
       filter_name ? [filter_name] : []
     );
 
-    console.log('✅ /pdf 라우트 진입');
-    console.log('✅ invoice 수:', invoices.length);
+    // console.log('✅ /pdf 라우트 진입');
+    //console.log('✅ invoice 수:', invoices.length);
 
     const isDownload = req.path.includes('download');
     await generateInvoicePDF(res, invoices, isDownload); // ✅ 정상

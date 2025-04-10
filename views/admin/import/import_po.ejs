@@ -1,0 +1,235 @@
+d<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Import PO Input</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 12px;
+    }
+
+    .top-section {
+      flex: 0 0 auto;
+      padding: 10px;
+    }
+
+    .bottom-section {
+      flex: 1 1 auto;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .form {
+      width: 100%;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    input, select, textarea {
+      padding: 4px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      height: 24px;
+    }
+
+    button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #066da5;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+    th {
+      background-color: #f0f8ff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .table-wrapper {
+      max-height: 550px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+    }
+
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+      justify-content: space-between;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const vendorSelect = document.querySelector('select[name="v_name"]');
+      const vRateInput = document.querySelector('input[name="v_rate"]');
+
+      if (vendorSelect && vRateInput) {
+        vendorSelect.addEventListener('change', () => {
+          const selectedOption = vendorSelect.options[vendorSelect.selectedIndex];
+          const rate = selectedOption.getAttribute('data-rate');
+          vRateInput.value = rate || '';
+        });
+
+        const initialRate = vendorSelect.options[vendorSelect.selectedIndex]?.getAttribute('data-rate');
+        vRateInput.value = initialRate || '';
+      }
+
+      // ✅ Enter 키로 다음 입력 필드로 이동
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach((el, index) => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const next = inputs[index + 1];
+            if (next) next.focus();
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="top-section">
+    <h2>Import PO Input</h2>
+
+    <!-- ✅ 1차 방식 입력 (PCS * COST) -->
+    <form method="POST" action="/admin/import_po/add/po" class="form">
+      <div class="form-row">
+        <input type="date" name="po_date" value="<%= today %>">
+        <select name="v_name" required>
+          <% vendors.forEach(v => { %>
+            <option value="<%= v.v_name %>" data-rate="<%= v.v_rate %>"><%= v.v_name %></option>
+          <% }) %>
+        </select>
+        <input type="text" name="v_rate" placeholder="Deposit Rate" readonly>
+      </div>
+      <div class="form-row">
+        <input type="text" name="style" placeholder="Style">
+        <input type="text" name="po_no" placeholder="PO No.">
+        <input type="number" name="pcs" placeholder="PCS" step="1">
+        <input type="number" name="cost" placeholder="Cost" step="0.01">
+        <button type="submit">➕ 입력</button>
+      </div>
+    </form>
+
+    <!-- ✅ 2차 방식 입력 (단일 금액) -->
+    <form method="POST" action="/admin/import_po/add/direct" class="form">
+      <div class="form-row">
+        <input type="text" name="style" placeholder="입력종류">
+        <input type="number" name="cost" placeholder="Amount" step="0.01">
+        <button type="submit">➕ 입력</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="bottom-section">
+    <div class="filter-section">
+      <div>
+        <select name="v_name">
+          <option>:: Vendor Name ::</option>
+        </select>
+        <select name="po_no">
+          <option>:: PO No. ::</option>
+        </select>
+        <select name="style">
+          <option>:: Style ::</option>
+        </select>
+      </div>
+      <div>
+        <input type="date" name="pay_date" value="<%= today %>">
+        <input type="number" step="0.0001" name="exchange_rate" placeholder="Exchange Rate">
+        <button type="submit">💰 Paid</button>
+        <a href="/admin/import_po/result"><button type="button">📊 Result</button></a>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Vendor</th>
+            <th>PO Date</th>
+            <th>Style</th>
+            <th>PO No.</th>
+            <th>PCS</th>
+            <th>Cost</th>
+            <th>PO A. (RMB)</th>
+            <th>Deposit Rate</th>
+            <th>Deposit A. (RMB)</th>
+            <th>Balance (RMB)</th>
+            <th>Note</th>
+            <th>Deposit Select</th>
+            <th>Deposit</th>
+            <th>Balance Select</th>
+            <th>Balance</th>
+            <th>✏️</th>
+            <th>🗑️</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% importPOs.forEach(po => { if (po.balance !== 0) { %>
+            <tr>
+              <td><%= po.v_name %></td>
+              <td><%= po.po_date %></td>
+              <td><%= po.style %></td>
+              <td><%= po.po_no %></td>
+              <td><%= po.pcs %></td>
+              <td><%= po.cost.toLocaleString() %></td>
+              <td><%= po.po_amount.toLocaleString() %></td>
+              <td><%= po.v_rate %></td>
+              <td><%= po.dp_amount.toLocaleString() %></td>
+              <td><%= po.balance.toLocaleString() %></td>
+              <td><%= po.note %></td>
+              <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
+              <td><button type="button">💲</button></td>
+              <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
+              <td><button type="button">💲</button></td>
+              <td><a href="/admin/import_po/edit/<%= po.id %>"><button>✏️</button></a></td>
+              <td>
+                <form method="POST" action="/admin/import_po/delete/<%= po.id %>" onsubmit="return confirm('삭제하시겠습니까?');">
+                  <button type="submit">🗑️</button>
+                </form>
+              </td>
+            </tr>
+          <% }}) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

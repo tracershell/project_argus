@@ -35,6 +35,30 @@ CREATE TABLE import_vendor (
   v_note TEXT
 );
 
+CREATE TABLE import_po (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  po_date DATE NOT NULL,
+  v_name VARCHAR(100) NOT NULL,
+  style VARCHAR(100),
+  po_no VARCHAR(100),
+  pcs INT DEFAULT 1,
+  cost DECIMAL(10,2) DEFAULT 0.00,
+  po_amount DECIMAL(12,2) DEFAULT 0.00,
+  v_rate DECIMAL(5,2) DEFAULT 0.00,
+  dp_amount DECIMAL(12,2) DEFAULT 0.00,
+  balance DECIMAL(12,2) DEFAULT 0.00,
+  note TEXT,
+
+  dex_date DATE,
+  dex_rate DECIMAL(10,4),
+  dex_amount DECIMAL(12,2),
+
+  bex_date DATE,
+  bex_rate DECIMAL(10,4),
+  bex_amount DECIMAL(12,2)
+);
+
+
 CREATE TABLE domestic_vendor (
   id INT AUTO_INCREMENT PRIMARY KEY,
   date DATE,
