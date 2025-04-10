@@ -1,0 +1,79 @@
+<!-- ✅ File: /views/admin/domestic/domestic_invoice_pdf.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Domestic Invoice PDF</title>
+  <style>
+    body {
+      font-family: Arial;
+      font-size: 12px;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f8ff;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .btn-wrap {
+      text-align: center;
+      margin: 20px;
+    }
+    .btn-wrap button {
+      padding: 5px 15px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Domestic Invoice List</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice Date</th>
+        <th>Vendor Name</th>
+        <th>Invoice No</th>
+        <th>Amount</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% invoices.forEach(v => { %>
+        <tr>
+          <td><%= v.iv_date.toISOString().split('T')[0] %></td>
+          <td><%= v.dv_name %></td>
+          <td><%= v.di_no %></td>
+          <td><%= Number(v.di_amount).toFixed(2) %></td>
+          <td><%= v.note %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <div class="btn-wrap">
+    <form method="GET" action="/admin/domestic_invoice/pdfdownload" style="display:inline;">
+      <% if (filter_name) { %>
+        <input type="hidden" name="filter_name" value="<%= filter_name %>">
+      <% } %>
+      <button type="submit">📥 PDF 다운로드</button>
+    </form>
+    <a href="/admin/domestic_invoice">
+      <button type="button">🔙 돌아가기</button>
+    </a>
+  </div>
+</body>
+</html>

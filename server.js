@@ -93,6 +93,8 @@ app.use('/admin/domestic', require('./server/routes/admin/domestic/domestic_vend
 
 app.use('/admin/domestic_invoice', require('./server/routes/admin/domestic/domestic_invoice'));
 
+app.use('/admin/domestic_invoice_pdf', require('./server/routes/admin/domestic/domestic_invoice_list_pdf'));
+
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');

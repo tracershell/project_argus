@@ -91,7 +91,7 @@ router.post('/pay', async (req, res) => {
 
     for (const id of ids) {
       const [[invoice]] = await db.query(
-        'SELECT di_amount FROM domestic_invoice WHERE id = ?', 
+        'SELECT di_amount FROM domestic_invoice WHERE id = ?',
         [id]
       );
 
@@ -109,6 +109,77 @@ router.post('/pay', async (req, res) => {
   } catch (err) {
     console.error('💥 Paid 처리 중 오류:', err);
     res.status(500).send('Paid 처리 실패: ' + err.message);
+  }
+});
+router.get('/pdfview', async (req, res) => {
+  try {
+    const { filter_name } = req.query;
+
+    const [invoices] = await db.query(
+      filter_name && filter_name !== ''
+        ? 'SELECT * FROM domestic_invoice WHERE dv_name = ? ORDER BY iv_date DESC'
+        : 'SELECT * FROM domestic_invoice ORDER BY iv_date DESC',
+      filter_name ? [filter_name] : []
+    );
+
+    const [names] = await db.query('SELECT DISTINCT dv_name FROM domestic_invoice');
+
+    res.render('admin/domestic/domestic_invoice_pdfview', {
+      title: 'Domestic Invoice List View',
+      invoices,
+      names,
+      filter_name
+    });
+  } catch (err) {
+    console.error('💥 /pdfview 라우터 오류:', err);
+    res.status(500).send('PDF HTML 보기 실패: ' + err.message);
+  }
+});
+
+
+
+// // ✅ HTML 화면에서 리스트 출력용 라우트 (PDFVIEW)
+// router.get('/pdfview', async (req, res) => {
+//   const { filter_name } = req.query;
+//   const [vendors] = await db.query(
+//     filter_name && filter_name !== ''
+//       ? 'SELECT * FROM domestic_invoice WHERE v_name = ? ORDER BY date DESC'
+//       : 'SELECT * FROM domestic_invoice ORDER BY date DESC',
+//     filter_name ? [filter_name] : []
+//   );
+//   const [names] = await db.query('SELECT DISTINCT v_name FROM import_vendor');
+
+//   res.render('admin/domestic/domestic_invoice_pdfview', {
+//     title: 'Vendor List View',
+//     vendors,
+//     names,
+//     filter_name
+//   });
+// });
+
+// ✅ HTML 화면에서 리스트 출력용 라우트 (PDFVIEW)
+router.get('/pdfview', async (req, res) => {
+  try {
+    const { filter_name } = req.query;
+
+    const [invoices] = await db.query(
+      filter_name && filter_name !== ''
+        ? 'SELECT * FROM domestic_invoice WHERE dv_name = ? ORDER BY iv_date DESC'
+        : 'SELECT * FROM domestic_invoice ORDER BY iv_date DESC',
+      filter_name ? [filter_name] : []
+    );
+
+    const [names] = await db.query('SELECT DISTINCT dv_name FROM domestic_vendor');
+
+    res.render('admin/domestic/domestic_invoice_pdfview', {
+      title: 'Domestic Invoice List View',
+      invoices,
+      names,
+      filter_name
+    });
+  } catch (err) {
+    console.error('💥 PDF View 라우트 오류:', err);
+    res.status(500).send('PDF View 출력 실패: ' + err.message);
   }
 });
 
