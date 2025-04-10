@@ -93,16 +93,31 @@
 </form>
 
 <div class="button-row">
-  <form action="#" method="GET" style="display: inline;">
-    <button type="submit">📄 PDF 출력</button>
+  <!-- 🔙 돌아가기 버튼 -->
+  <form action="/admin/domestic_invoice" method="GET" style="display: inline;">
+    <button type="submit">🔙 돌아가기</button>
   </form>
-  <form action="#" method="GET" style="display: inline;">
-    <button type="submit">👁️ PDF 보기</button>
+
+  <!-- 💬 코멘트 + PDF 보기 -->
+  <form action="/admin/domestic_invoice_result_pdf/pdf" method="GET" target="_blank" style="display: inline; margin-left: 10px;">
+    <input type="hidden" name="dv_name" value="<%= dv_name %>">
+    <input type="hidden" name="ip_date" value="<%= ip_date %>">
+    <input type="hidden" name="note" value="<%= note %>">
+    <input type="text" name="comment" placeholder="💬 코멘트 입력" style="width: 200px; height: 22px; font-size: 11px; margin-right: 5px;">
+    <button type="submit">📄 PDF 보기</button>
   </form>
+
+  <!-- 👁️ HTML 보기 버튼 -->
+  <form action="#" method="GET" style="display: inline;">
+    <button type="submit">👁️ HTML 보기</button>
+  </form>
+
+  <!-- 📝 기록 버튼 -->
   <form action="#" method="POST" style="display: inline;">
     <button type="submit">📝 기록</button>
   </form>
 </div>
+
 
 <table>
   <thead>

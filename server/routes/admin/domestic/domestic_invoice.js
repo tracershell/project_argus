@@ -111,6 +111,8 @@ router.post('/pay', async (req, res) => {
     res.status(500).send('Paid 처리 실패: ' + err.message);
   }
 });
+
+// ✅ HTML 보기 라우터 ==> /views/admin/domestic/domestic_invoice_pdfview.ejs
 router.get('/pdfview', async (req, res) => {
   try {
     const { filter_name } = req.query;
@@ -136,7 +138,7 @@ router.get('/pdfview', async (req, res) => {
   }
 });
 
-// ✅ Domestic invoice result 페이지 라우터
+// ✅ Domestic invoice result 페이지 라우터 /views/admin/domestic/domestic_invoice_result.ejs
 // ✅ Domestic invoice result 페이지 - 다중 필터 검색 라우터
 router.get('/result', async (req, res) => {
   try {

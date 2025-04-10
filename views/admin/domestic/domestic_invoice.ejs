@@ -143,20 +143,20 @@
   <!-- ✅ 리스트 및 처리 버튼 영역 -->
   <div class="bottom-section">
 
-    <!-- ✅ PDF 버튼들: 메인 form 바깥에 위치해야 함 -->
+    <!-- ✅ PDF 버튼들 -->
     <div style="display: flex; gap: 10px; margin: 10px;">
       <form action="/admin/domestic_invoice_pdf/pdf" method="GET" target="_blank">
-        <button type="submit" class="btn-pdf">📄 PDF 출력</button>
+        <button type="submit" class="btn-pdf">📄 PDF 보기</button>
       </form>
       <form action="/admin/domestic_invoice_pdf/pdfdownload" method="GET" target="_blank">
         <button type="submit" class="btn-pdf">⬇️ PDF 다운로드</button>
       </form>
       <form action="/admin/domestic_invoice/pdfview" method="GET">
-        <button type="submit" class="btn-pdf">👁️ PDF 보기 (HTML)</button>
+        <button type="submit" class="btn-pdf">👁️ HTML 보기</button>
       </form>
     </div>
 
-    <!-- ✅ 메인 form 시작 -->
+    <!-- ✅ 메인 form -->
     <form method="POST" action="/admin/domestic_invoice/pay">
       <div class="table-header">
         <h2>Invoice List</h2>
@@ -170,7 +170,7 @@
         </div>
       </div>
 
-      <!-- ✅ 테이블 wrapper 시작 -->
+      <!-- ✅ 테이블 -->
       <div class="table-wrapper">
         <table>
           <thead>
@@ -180,8 +180,8 @@
               <th>Invoice No</th>
               <th>Amount</th>
               <th>Note</th>
-              <th>Pay</th>
-              <th>Select</th>
+              <th>Select</th> <!-- ✅ 변경 -->
+              <th>Pay</th>    <!-- ✅ 변경 -->
               <th>수정</th>
               <th>삭제</th>
             </tr>
@@ -194,14 +194,19 @@
                 <td><%= inv.di_no %></td>
                 <td><%= Number(inv.di_amount).toFixed(2) %></td>
                 <td><%= inv.note %></td>
+
+                <!-- ✅ Select 먼저 -->
+                <td>
+                  <input type="checkbox" name="paid_ids" value="<%= inv.id %>" id="pay-<%= inv.id %>">
+                </td>
+
+                <!-- ✅ Pay 나중 -->
                 <td>
                   <button type="button" onclick="document.getElementById('pay-<%= inv.id %>').checked = !document.getElementById('pay-<%= inv.id %>').checked;">
                     💲
                   </button>
                 </td>
-                <td>
-                  <input type="checkbox" name="paid_ids" value="<%= inv.id %>" id="pay-<%= inv.id %>">
-                </td>
+
                 <td>
                   <a href="/admin/domestic_invoice/edit/<%= inv.id %>">
                     <button type="button">✏️</button>
@@ -217,7 +222,6 @@
           </tbody>
         </table>
       </div>
-      <!-- ✅ 테이블 wrapper 끝 -->
     </form>
   </div>
 
