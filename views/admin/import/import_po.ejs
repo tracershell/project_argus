@@ -137,8 +137,8 @@
       <!-- ✅ 1차 방식 입력 (PCS * COST) -->
       <form method="POST" action="/admin/import_po/add/po" class="form" style="flex: 1;">
         <div class="form-row">
-          <input type="date" name="po_date" value="<%= today %>">
-          <select name="v_name" required>
+          <input type="date" name="po_date" id="shared-date" value="<%= today %>">
+          <select name="v_name" id="shared-vendor" required>
             <% vendors.forEach(v => { %>
               <option value="<%= v.v_name %>" data-rate="<%= v.v_rate %>"><%= v.v_name %></option>
             <% }) %>
@@ -157,13 +157,11 @@
 
       <!-- ✅ 2차 방식 입력 (단일 금액 / deposit 없음) -->
       <form method="POST" action="/admin/import_po/add/direct" class="form" style="flex: 1;">
-        <div class="form-row">
-          <input type="date" name="po_date" value="<%= today %>">
-          <select name="v_name" required>
-            <% vendors.forEach(v => { %>
-              <option value="<%= v.v_name %>"><%= v.v_name %></option>
-            <% }) %>
-          </select>
+        <div class="form-row"> 
+           <!-- ✅ 숨겨서 가져올 필드 -->
+          <input type="hidden" name="po_date" id="hidden-date">
+          <input type="hidden" name="v_name" id="hidden-vendor">        
+
           <label style="white-space: nowrap;">기타 입력</label>
           <input type="text" name="style" placeholder="입력종류">
           <input type="number" name="cost" placeholder="Amount" step="0.01">
@@ -248,5 +246,37 @@
       </table>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sharedDate = document.getElementById('shared-date');
+      const sharedVendor = document.getElementById('shared-vendor');
+    
+      const hiddenDate = document.getElementById('hidden-date');
+      const hiddenVendor = document.getElementById('hidden-vendor');
+      const hiddenRate = document.querySelector('input[name="v_rate"]');
+    
+      function syncHiddenFields() {
+        hiddenDate.value = sharedDate.value;
+        hiddenVendor.value = sharedVendor.value;
+    
+        const selected = sharedVendor.options[sharedVendor.selectedIndex];
+        const rate = selected.getAttribute('data-rate') || '';
+        hiddenRate.value = rate;
+      }
+    
+      // 처음 로드 시, vendor 변경 시, date 변경 시 동기화
+      sharedDate.addEventListener('change', syncHiddenFields);
+      sharedVendor.addEventListener('change', syncHiddenFields);
+      syncHiddenFields(); // 최초 실행
+    
+      // 2차 form 제출 직전에도 동기화
+      const directForm = document.querySelector('form[action="/admin/import_po/add/direct"]');
+      if (directForm) {
+        directForm.addEventListener('submit', syncHiddenFields);
+      }
+    });
+    </script>
+
 </body>
 </html>

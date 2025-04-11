@@ -42,7 +42,7 @@ router.post('/add/po', async (req, res) => {
 // ✅ 두 번째 입력 방식: 고정 금액 입력 (deposit 없는 경우)
 router.post('/add/direct', async (req, res) => {
   try {
-    const { style, cost } = req.body;
+    const { po_date, v_name, style, cost } = req.body;
     const v_rate = null;
     const pcs = 1;
     const n_cost = parseFloat(cost);
@@ -52,8 +52,8 @@ router.post('/add/direct', async (req, res) => {
 
     await db.query(`
       INSERT INTO import_po (po_date, v_name, style, pcs, cost, po_amount, v_rate, dp_amount, balance)
-      VALUES (CURDATE(), 'DIRECT', ?, ?, ?, ?, ?, ?, ?)`,
-      [style, pcs, n_cost, po_amount, v_rate, dp_amount, balance]
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [po_date, v_name, style, pcs, n_cost, po_amount, v_rate, dp_amount, balance]
     );
     res.redirect('/admin/import_po');
   } catch (err) {
