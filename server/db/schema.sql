@@ -44,6 +44,10 @@ CREATE TABLE import_po (
   pcs INT DEFAULT 1,
   cost DECIMAL(10,2) DEFAULT 0.00,
   po_amount DECIMAL(12,2) DEFAULT 0.00,
+
+  -- Paid 된 deposit Amount 저장칸
+  pdp_amount DECIMAL(12,2) DEFAULT 0.00,
+
   v_rate DECIMAL(5,2) DEFAULT 0.00,
   dp_amount DECIMAL(12,2) DEFAULT 0.00,
   balance DECIMAL(12,2) DEFAULT 0.00,

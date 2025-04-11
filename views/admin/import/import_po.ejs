@@ -177,8 +177,8 @@
     <form method="POST" action="/admin/import_po/paid">
       <div class="form-row" style="justify-content: flex-end; margin-bottom: 10px;">
         <input type="date" name="pay_date" value="<%= today %>" required>
-        <input type="number" name="exchange_rate" step="0.0001" placeholder="Exchange Rate" required>
-        <button type="submit">💰 Paid</button>
+        <input type="number" name="exchange_rate" step="0.0001" placeholder="Exchange Rate">
+        <button id="paid-button" type="submit">💰 Paid</button>
       </div>
 
       <div class="table-wrapper">
@@ -192,6 +192,7 @@
               <th>PCS</th>
               <th>Cost</th>
               <th>PO A. (RMB)</th>
+              <th>Paid D. (RMB)</th>
               <th>Deposit Rate</th>
               <th>Deposit A. (RMB)</th>
               <th>Deposit Select</th>
@@ -205,7 +206,10 @@
             </tr>
           </thead>
           <tbody>
-            <% importPOs.forEach(po => { if (po.balance !== 0) { %>
+            <% importPOs.forEach(po => {
+              const balanceValue = parseFloat(po.balance);
+              if (!isNaN(balanceValue) && Math.abs(balanceValue) > 0.00001) {
+         %>
               <tr>
                 <td><%= po.v_name %></td>
                 <td><%= new Date(po.po_date).toLocaleDateString('en-US') %></td>
@@ -217,6 +221,9 @@
                 </td>
                 <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
                   <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                </td>
+                <td class="<%= po.pdp_amount < 0 ? 'negative' : '' %>">
+                  <%= Number(po.pdp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
                 </td>
                 <td><%= po.v_rate %></td>
                 <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
@@ -241,12 +248,12 @@
                   <td colspan="2">✔ Paid</td>
                 <% } %>
                 <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
-                <td><a href="/admin/import_po/edit/<%= po.id %>"><button>✏️</button></a></td>
                 <td>
-                  <form method="POST" action="/admin/import_po/delete/<%= po.id %>" onsubmit="return confirm('삭제하시겠습니까?');">
-                    <button type="submit">🗑️</button>
-                  </form>
+                  <a href="/admin/import_po/edit/<%= po.id %>" style="padding: 4px 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff; font-size: 12px; text-decoration: none; display: inline-block;">✏️</a>
                 </td>
+            <td>
+  <button type="button" onclick="confirmDelete(<%= po.id %>)">🗑️</button>
+</td>
               </tr>
             <% }}) %>
           </tbody>
@@ -359,17 +366,34 @@
       });
 
       // ✅ paid form 제출 시 환율 체크
-    const paidForm = document.querySelector('form[action="/admin/import_po/paid"]');
-    if (paidForm) {
-      paidForm.addEventListener('submit', (e) => {
-        const rate = paidForm.querySelector('input[name="exchange_rate"]');
-        if (!rate.value || parseFloat(rate.value) <= 0) {
-          e.preventDefault(); // 전송 막기
-          alert('⚠️ 환율을 입력해주세요.');
-        }
-      });
+      if (paidForm) {
+  paidForm.addEventListener('submit', (e) => {
+    const submitter = e.submitter || document.activeElement;
+
+    if (submitter && submitter.id === 'paid-button') {
+      const rate = paidForm.querySelector('input[name="exchange_rate"]');
+      if (!rate.value || parseFloat(rate.value) <= 0) {
+        e.preventDefault();
+        alert('⚠️ 환율을 입력해주세요.');
+      }
     }
+  });
+}
+
     });
+
+
+
+
+    function confirmDelete(id) {              // ✅ 삭제 확인
+  if (confirm('삭제하시겠습니까?')) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/admin/import_po/delete/${id}`;
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
     </script>
     
     
