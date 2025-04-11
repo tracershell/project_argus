@@ -276,6 +276,43 @@
         directForm.addEventListener('submit', syncHiddenFields);
       }
     });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const poDateInput = document.getElementById('shared-date');
+
+  // 1. 페이지 로드 시 저장된 값 있으면 넣기
+  const savedDate = localStorage.getItem('po_date');
+  if (savedDate) {
+    poDateInput.value = savedDate;
+  }
+
+  // 2. 사용자가 날짜 바꾸면 저장
+  poDateInput.addEventListener('change', () => {
+    localStorage.setItem('po_date', poDateInput.value);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sharedVendor = document.getElementById('shared-vendor');
+
+  // 1. 저장된 vendor name 복원
+  const savedVendor = localStorage.getItem('v_name');
+  if (savedVendor) {
+    for (let i = 0; i < sharedVendor.options.length; i++) {
+      if (sharedVendor.options[i].value === savedVendor) {
+        sharedVendor.selectedIndex = i;
+        break;
+      }
+    }
+  }
+
+  // 2. 사용자가 변경할 때 저장
+  sharedVendor.addEventListener('change', () => {
+    localStorage.setItem('v_name', sharedVendor.value);
+  });
+});
+
+
     </script>
 
 </body>
