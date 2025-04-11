@@ -251,13 +251,21 @@
               <td><%= po.style %></td>
               <td><%= po.po_no %></td>
               <td><%= po.pcs %></td>
-              <td class="<%= po.cost < 0 ? 'negative' : '' %>"><%= Number(po.cost).toLocaleString() %></td>
-              <td class="<%= po.po_amount < 0 ? 'negative' : '' %>"><%= Number(po.po_amount).toLocaleString() %></td>
+              <td class="<%= po.cost < 0 ? 'negative' : '' %>">
+                <%= Number(po.cost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+              </td>
+              <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
+                <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+              </td>
               <td><%= po.v_rate %></td>
-              <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>"><%= Number(po.dp_amount).toLocaleString() %></td>
+              <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
+                <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+              </td>
               <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
               <td><button type="button">💲</button></td>
-              <td class="<%= po.balance < 0 ? 'negative' : '' %>"><%= Number(po.balance).toLocaleString() %></td>
+              <td class="<%= po.balance < 0 ? 'negative' : '' %>">
+                <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+              </td>
               <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
               <td><button type="button">💲</button></td>
               <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
