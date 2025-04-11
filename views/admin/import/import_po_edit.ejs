@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Import PO 수정</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 12px;
+    }
+
+    .top-section {
+      padding: 15px;
+      font-size: 12px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    input, select, textarea {
+      padding: 4px;
+      font-size: 12px;
+      height: 24px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      padding: 4px 14px;
+      font-size: 12px;
+      border: 1px solid #066da5;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-section">
+    <h2>Import PO 수정</h2>
+    <form method="POST" action="/admin/import_po/edit/<%= po.id %>">
+
+<!-- 💡 레이블 테이블 -->
+<table style="width: 100%; table-layout: fixed; font-size: 12px; margin-bottom: 4px;">
+  <tr>
+    <th>PO Date</th>
+    <th>Vendor Name</th>
+    <th>Style No.</th>
+    <th>PO No.</th>
+    <th>PCS</th>
+    <th>Cost</th>
+    <th>Deposit Rate</th>
+    <th>Note</th>
+  </tr>
+</table>
+
+<!-- 💡 입력 필드 -->
+<div class="form-row" style="display: flex; gap: 6px;">
+  <input type="date" name="po_date" value="<%= po.po_date.toISOString().split('T')[0] %>" required style="flex: 1; text-align: center;">
+  <input type="text" name="v_name" value="<%= po.v_name %>" required style="flex: 1; text-align: center;">
+  <input type="text" name="style" value="<%= po.style %>" style="flex: 1; text-align: center;">
+  <input type="text" name="po_no" value="<%= po.po_no %>" style="flex: 1; text-align: center;">
+  <input type="number" name="pcs" value="<%= po.pcs %>" step="1" style="flex: 1; text-align: center;">
+  <input type="number" name="cost" value="<%= po.cost %>" step="0.01" style="flex: 1; text-align: center;">
+  <input type="number" name="v_rate" value="<%= po.v_rate %>" step="0.01" style="flex: 1; text-align: center;">
+  <textarea name="note" rows="1" style="flex: 1; resize: vertical;"><%= po.note %></textarea>
+</div>
+
+      <!-- ✅ 버튼 영역 -->
+      <div class="form-row" style="justify-content: flex-end; margin-top: 10px;">
+        <a href="/admin/import_po"><button type="button">🔙 돌아가기</button></a>
+        <button type="submit">✏️ 저장</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputs = document.querySelectorAll('input, textarea');
+  
+      inputs.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const next = inputs[index + 1];
+            if (next) next.focus();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

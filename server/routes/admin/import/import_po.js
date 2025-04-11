@@ -143,4 +143,56 @@ router.get('/result', async (req, res) => {
   }
 });
 
+// ✅ 수정 페이지 렌더링
+router.get('/edit/:id', async (req, res) => {
+  const [[po]] = await db.query('SELECT * FROM import_po WHERE id = ?', [req.params.id]);
+  if (!po) return res.status(404).send('PO not found');
+  res.render('admin/import/import_po_edit', { po });
+});
+
+//  ✅ 수정 페이지 값을 받아 db 에 저장처리
+router.post('/edit/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { po_date, v_name, style, po_no, pcs, cost, v_rate, note } = req.body;
+
+    // 안전한 숫자 변환
+    const n_pcs = !isNaN(parseInt(pcs)) ? parseInt(pcs) : 1;
+    const n_cost = !isNaN(parseFloat(cost)) ? parseFloat(cost) : 0.00;
+    const n_rate = v_rate === null || v_rate === '' || isNaN(parseFloat(v_rate)) ? null : parseFloat(v_rate);
+
+    const po_amount = n_pcs * n_cost;
+    const dp_amount = n_rate !== null ? po_amount * n_rate / 100 : 0;
+    const balance = po_amount - dp_amount;
+
+    await db.query(`
+      UPDATE import_po
+      SET po_date = ?, v_name = ?, style = ?, po_no = ?, pcs = ?, cost = ?,
+          po_amount = ?, v_rate = ?, dp_amount = ?, balance = ?, note = ?
+      WHERE id = ?`,
+      [
+        po_date,
+        v_name,
+        style || '',
+        po_no || '',
+        n_pcs,
+        n_cost,
+        po_amount,
+        n_rate,
+        dp_amount,
+        balance,
+        note || '',
+        id
+      ]
+    );
+
+    res.redirect('/admin/import_po');
+  } catch (err) {
+    console.error('💥 edit 처리 오류:', err);
+    res.status(500).send('수정 실패: ' + err.message);
+  }
+});
+
+
+
 module.exports = router;
