@@ -26,10 +26,13 @@ router.get('/', async (req, res) => {
     if (where.length > 0) {
       query += ' WHERE ' + where.join(' AND ');
     }
-    query += ' ORDER BY po_date DESC';
 
+    // ✅ [🔧 수정] 날짜 + ID 기준 복합 정렬로 변경 (최근 입력이 항상 맨 위로)
+    query += ' ORDER BY po_date DESC, id DESC';
+
+    // ✅ [✔ 유지] vendor 목록을 import_vendor 에서 가져오도록 수정되어 있음
     const [importPOs] = await db.query(query, params);
-    const [vendors] = await db.query('SELECT DISTINCT v_name FROM import_po');
+    const [vendors] = await db.query('SELECT v_name, vd_rate AS v_rate FROM import_vendor');
     const [styles] = await db.query('SELECT DISTINCT style FROM import_po');
     const [po_nos] = await db.query('SELECT DISTINCT po_no FROM import_po');
     const today = new Date().toISOString().split('T')[0];
@@ -60,7 +63,7 @@ router.post('/add/po', async (req, res) => {
     const n_cost = parseFloat(cost);
     const po_amount = n_pcs * n_cost;
     const dp_amount = po_amount * v_rate / 100;
-    const balance = po_amount - dp_amount;
+    const balance = po_amount;
 
     await db.query(`
       INSERT INTO import_po (po_date, v_name, style, po_no, pcs, cost, po_amount, v_rate, dp_amount, balance)
@@ -78,19 +81,30 @@ router.post('/add/po', async (req, res) => {
 router.post('/add/direct', async (req, res) => {
   try {
     const { po_date, v_name, style, cost } = req.body;
+
+    // ✅ 안전한 값 변환 처리
+    const safe_date = po_date && po_date.trim() !== '' ? po_date : null;
+    const safe_style = style || '';
+    const safe_cost = !isNaN(parseFloat(cost)) ? parseFloat(cost) : 0.00;
+
     const v_rate = null;
     const pcs = 1;
-    const n_cost = parseFloat(cost);
-    const po_amount = pcs * n_cost;
+    const po_amount = pcs * safe_cost;
     const dp_amount = 0;
     const balance = po_amount;
     const note = '환율 적용 불필요';
 
+    // ✅ MySQL DATE 필드에는 반드시 유효한 날짜값 또는 null만 전달해야 함
+    if (!safe_date) {
+      return res.status(400).send('📛 날짜 값이 유효하지 않습니다.');
+    }
+
     await db.query(`
       INSERT INTO import_po (po_date, v_name, style, pcs, cost, po_amount, v_rate, dp_amount, balance, note)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [po_date, v_name, style, pcs, n_cost, po_amount, v_rate, dp_amount, balance, note]
+      [safe_date, v_name, safe_style, pcs, safe_cost, po_amount, v_rate, dp_amount, balance, note]
     );
+
     res.redirect('/admin/import_po');
   } catch (err) {
     console.error('💥 add/direct 등록 오류:', err);
@@ -163,7 +177,7 @@ router.post('/edit/:id', async (req, res) => {
 
     const po_amount = n_pcs * n_cost;
     const dp_amount = n_rate !== null ? po_amount * n_rate / 100 : 0;
-    const balance = po_amount - dp_amount;
+    const balance = po_amount;
 
     await db.query(`
       UPDATE import_po

@@ -107,36 +107,7 @@
 
 
   </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const vendorSelects = document.querySelectorAll('select[name="v_name"]');
-      const vRateInput = document.querySelector('input[name="v_rate"]');
-
-      vendorSelects.forEach(vendorSelect => {
-        if (vendorSelect && vRateInput) {
-          vendorSelect.addEventListener('change', () => {
-            const selectedOption = vendorSelect.options[vendorSelect.selectedIndex];
-            const rate = selectedOption.getAttribute('data-rate');
-            vRateInput.value = rate || '';
-          });
-
-          const initialRate = vendorSelect.options[vendorSelect.selectedIndex]?.getAttribute('data-rate');
-          vRateInput.value = initialRate || '';
-        }
-      });
-
-      const inputs = document.querySelectorAll('input, select, textarea');
-      inputs.forEach((el, index) => {
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            const next = inputs[index + 1];
-            if (next) next.focus();
-          }
-        });
-      });
-    });
-  </script>
+ 
 </head>
 <body>
   <div class="top-section">
@@ -283,73 +254,92 @@
     </div>
   </div>
 
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // ✅ 공유된 date, vendor
       const sharedDate = document.getElementById('shared-date');
       const sharedVendor = document.getElementById('shared-vendor');
     
+      // ✅ 2차 폼에 넘길 hidden 필드
       const hiddenDate = document.getElementById('hidden-date');
       const hiddenVendor = document.getElementById('hidden-vendor');
-      const hiddenRate = document.querySelector('input[name="v_rate"]');
+      const hiddenRate = document.querySelector('form[action="/admin/import_po/add/direct"] input[name="v_rate"]');
     
+      // ✅ vendor 변경 시 v_rate 자동 반영 (모든 form에 적용)
+      const vendorSelects = document.querySelectorAll('select[name="v_name"]');
+      vendorSelects.forEach(select => {
+        const form = select.closest('form');
+        const vRateInput = form.querySelector('input[name="v_rate"]');
+    
+        if (select && vRateInput) {
+          // ⬇️ 초기 로딩 시 rate 세팅
+          const initialRate = select.options[select.selectedIndex]?.getAttribute('data-rate');
+          vRateInput.value = initialRate || '';
+    
+          // ⬇️ vendor 선택 변경 시 rate 업데이트
+          select.addEventListener('change', () => {
+            const selected = select.options[select.selectedIndex];
+            const rate = selected.getAttribute('data-rate');
+            vRateInput.value = rate || '';
+          });
+        }
+      });
+    
+      // ✅ Enter 키로 다음 입력칸 이동 기능
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach((el, index) => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const next = inputs[index + 1];
+            if (next) next.focus();
+          }
+        });
+      });
+    
+      // ✅ shared-date 값 localStorage에 저장 및 복원
+      const savedDate = localStorage.getItem('po_date');
+      if (savedDate) sharedDate.value = savedDate;
+      sharedDate.addEventListener('change', () => {
+        localStorage.setItem('po_date', sharedDate.value);
+      });
+    
+      // ✅ shared-vendor 값 localStorage에 저장 및 복원
+      const savedVendor = localStorage.getItem('v_name');
+      if (savedVendor) {
+        for (let i = 0; i < sharedVendor.options.length; i++) {
+          if (sharedVendor.options[i].value === savedVendor) {
+            sharedVendor.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      sharedVendor.addEventListener('change', () => {
+        localStorage.setItem('v_name', sharedVendor.value);
+      });
+    
+      // ✅ 2차 폼 제출 시 hidden 필드 값 동기화
       function syncHiddenFields() {
-        hiddenDate.value = sharedDate.value;
-        hiddenVendor.value = sharedVendor.value;
+        if (hiddenDate && hiddenVendor && hiddenRate) {
+          hiddenDate.value = sharedDate.value;
+          hiddenVendor.value = sharedVendor.value;
     
-        const selected = sharedVendor.options[sharedVendor.selectedIndex];
-        const rate = selected.getAttribute('data-rate') || '';
-        hiddenRate.value = rate;
+          const selectedOption = sharedVendor.options[sharedVendor.selectedIndex];
+          const rate = selectedOption.getAttribute('data-rate');
+          hiddenRate.value = rate || '';
+        }
       }
     
-      // 처음 로드 시, vendor 변경 시, date 변경 시 동기화
-      sharedDate.addEventListener('change', syncHiddenFields);
-      sharedVendor.addEventListener('change', syncHiddenFields);
-      syncHiddenFields(); // 최초 실행
-    
-      // 2차 form 제출 직전에도 동기화
       const directForm = document.querySelector('form[action="/admin/import_po/add/direct"]');
       if (directForm) {
         directForm.addEventListener('submit', syncHiddenFields);
       }
+    
+      // ⬇️ 초기 로딩 시에도 복사 (선택사항)
+      syncHiddenFields();
     });
-
-document.addEventListener('DOMContentLoaded', () => {
-  const poDateInput = document.getElementById('shared-date');
-
-  // 1. 페이지 로드 시 저장된 값 있으면 넣기
-  const savedDate = localStorage.getItem('po_date');
-  if (savedDate) {
-    poDateInput.value = savedDate;
-  }
-
-  // 2. 사용자가 날짜 바꾸면 저장
-  poDateInput.addEventListener('change', () => {
-    localStorage.setItem('po_date', poDateInput.value);
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const sharedVendor = document.getElementById('shared-vendor');
-
-  // 1. 저장된 vendor name 복원
-  const savedVendor = localStorage.getItem('v_name');
-  if (savedVendor) {
-    for (let i = 0; i < sharedVendor.options.length; i++) {
-      if (sharedVendor.options[i].value === savedVendor) {
-        sharedVendor.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  // 2. 사용자가 변경할 때 저장
-  sharedVendor.addEventListener('change', () => {
-    localStorage.setItem('v_name', sharedVendor.value);
-  });
-});
-
-
     </script>
-
+    
 </body>
 </html>
