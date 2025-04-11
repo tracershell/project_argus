@@ -222,12 +222,15 @@
                 <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
                   <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
                 </td>
-                <% if (!po.dex_date) { %>
+                <% if (!po.dex_date && Number(po.dp_amount) > 0) { %>
                   <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
                   <td><button type="button" data-deposit-id="<%= po.id %>">💲</button></td>
-                <% } else { %>
+                <% } else if (po.dex_date) { %>
                   <td colspan="2">✔ Paid</td>
+                <% } else { %>
+                  <td colspan="2"></td>
                 <% } %>
+                
                 <td class="<%= po.balance < 0 ? 'negative' : '' %>">
                   <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
                 </td>
@@ -354,6 +357,18 @@
           if (checkbox) checkbox.checked = true;
         });
       });
+
+      // ✅ paid form 제출 시 환율 체크
+    const paidForm = document.querySelector('form[action="/admin/import_po/paid"]');
+    if (paidForm) {
+      paidForm.addEventListener('submit', (e) => {
+        const rate = paidForm.querySelector('input[name="exchange_rate"]');
+        if (!rate.value || parseFloat(rate.value) <= 0) {
+          e.preventDefault(); // 전송 막기
+          alert('⚠️ 환율을 입력해주세요.');
+        }
+      });
+    }
     });
     </script>
     
