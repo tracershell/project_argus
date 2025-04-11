@@ -97,6 +97,15 @@
       margin-bottom: 10px;
       justify-content: space-between;
     }
+
+    /* note 에 '환율적용 불필요' 가 있을시 색변화 */
+    td.note-red {
+  color: red;
+  font-weight: bold;
+  background-color: #ffeaea;
+}
+
+
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -233,7 +242,8 @@
               <td class="<%= po.balance < 0 ? 'negative' : '' %>"><%= Number(po.balance).toLocaleString() %></td>
               <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
               <td><button type="button">💲</button></td>
-              <td><%= po.note %></td>
+              <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
+
               <td><a href="/admin/import_po/edit/<%= po.id %>"><button>✏️</button></a></td>
               <td>
                 <form method="POST" action="/admin/import_po/delete/<%= po.id %>" onsubmit="return confirm('삭제하시겠습니까?');">

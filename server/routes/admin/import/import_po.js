@@ -49,11 +49,12 @@ router.post('/add/direct', async (req, res) => {
     const po_amount = pcs * n_cost;
     const dp_amount = 0;
     const balance = po_amount;
+    const note = '환율 적용 불필요';
 
     await db.query(`
-      INSERT INTO import_po (po_date, v_name, style, pcs, cost, po_amount, v_rate, dp_amount, balance)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [po_date, v_name, style, pcs, n_cost, po_amount, v_rate, dp_amount, balance]
+      INSERT INTO import_po (po_date, v_name, style, pcs, cost, po_amount, v_rate, dp_amount, balance, note)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [po_date, v_name, style, pcs, n_cost, po_amount, v_rate, dp_amount, balance, note]
     );
     res.redirect('/admin/import_po');
   } catch (err) {
