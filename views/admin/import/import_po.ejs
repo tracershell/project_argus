@@ -112,9 +112,8 @@
 <body>
   <div class="top-section">
     <h2>Import PO Input</h2>
-
     <div style="display: flex; gap: 40px; align-items: flex-start;">
-      <!-- ✅ 1차 방식 입력 (PCS * COST) -->
+      <!-- 1차 입력 -->
       <form method="POST" action="/admin/import_po/add/po" class="form" style="flex: 1;">
         <div class="form-row">
           <input type="date" name="po_date" id="shared-date" value="<%= today %>">
@@ -134,14 +133,11 @@
           <button type="submit">➕ 입력</button>
         </div>
       </form>
-
-      <!-- ✅ 2차 방식 입력 (단일 금액 / deposit 없음) -->
+      <!-- 2차 입력 -->
       <form method="POST" action="/admin/import_po/add/direct" class="form" style="flex: 1;">
-        <div class="form-row"> 
-           <!-- ✅ 숨겨서 가져올 필드 -->
+        <div class="form-row">
           <input type="hidden" name="po_date" id="hidden-date">
-          <input type="hidden" name="v_name" id="hidden-vendor">        
-
+          <input type="hidden" name="v_name" id="hidden-vendor">
           <label style="white-space: nowrap;">기타 입력</label>
           <input type="text" name="style" placeholder="입력종류">
           <input type="number" name="cost" placeholder="Amount" step="0.01">
@@ -151,108 +147,111 @@
       </form>
     </div>
   </div>
-
   <div class="bottom-section">
     <div class="filter-section">
-      <div>
-      
-        <form method="GET" action="/admin/import_po" class="form-row">
-          <select name="v_name">
-            <option value="">:: Vendor Name ::</option>
-            <% vendors.forEach(v => { %>
-              <option value="<%= v.v_name %>" <%= v.v_name === v_name ? 'selected' : '' %>><%= v.v_name %></option>
-            <% }) %>
-          </select>
-        
-          <select name="po_no">
-            <option value="">:: PO No. ::</option>
-            <% po_nos.forEach(po => { %>
-              <option value="<%= po.po_no %>" <%= po.po_no === po_no ? 'selected' : '' %>><%= po.po_no %></option>
-            <% }) %>
-          </select>
-        
-          <select name="style">
-            <option value="">:: Style ::</option>
-            <% styles.forEach(s => { %>
-              <option value="<%= s.style %>" <%= s.style === style ? 'selected' : '' %>><%= s.style %></option>
-            <% }) %>
-          </select>
-        
-          <button type="submit">🔍 검색</button>
-        </form>
+      <form method="GET" action="/admin/import_po" class="form-row">
+        <select name="v_name">
+          <option value="">:: Vendor Name ::</option>
+          <% vendors.forEach(v => { %>
+            <option value="<%= v.v_name %>" <%= v.v_name === v_name ? 'selected' : '' %>><%= v.v_name %></option>
+          <% }) %>
+        </select>
+        <select name="po_no">
+          <option value="">:: PO No. ::</option>
+          <% po_nos.forEach(po => { %>
+            <option value="<%= po.po_no %>" <%= po.po_no === po_no ? 'selected' : '' %>><%= po.po_no %></option>
+          <% }) %>
+        </select>
+        <select name="style">
+          <option value="">:: Style ::</option>
+          <% styles.forEach(s => { %>
+            <option value="<%= s.style %>" <%= s.style === style ? 'selected' : '' %>><%= s.style %></option>
+          <% }) %>
+        </select>
+        <button type="submit">🔍 검색</button>
+      </form>
+      <a href="/admin/import_po/result"><button type="button">📊 Result</button></a>
+    </div>
 
-      </div>
-      
-      <div>
-        <input type="date" name="pay_date" value="<%= today %>">
-        <input type="number" step="0.0001" name="exchange_rate" placeholder="Exchange Rate">
+    <!-- ✅ paid form 수정: form 이 테이블을 감싸도록 구조 변경 -->
+    <form method="POST" action="/admin/import_po/paid">
+      <div class="form-row" style="justify-content: flex-end; margin-bottom: 10px;">
+        <input type="date" name="pay_date" value="<%= today %>" required>
+        <input type="number" name="exchange_rate" step="0.0001" placeholder="Exchange Rate" required>
         <button type="submit">💰 Paid</button>
-        <a href="/admin/import_po/result"><button type="button">📊 Result</button></a>
       </div>
-    </div>
 
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Vendor</th>
-            <th>PO Date</th>
-            <th>Style</th>
-            <th>PO No.</th>
-            <th>PCS</th>
-            <th>Cost</th>
-            <th>PO A. (RMB)</th>
-            <th>Deposit Rate</th>
-            <th>Deposit A. (RMB)</th>
-            <th>Deposit Select</th>
-            <th>Deposit</th>
-            <th>Balance (RMB)</th>
-            <th>Balance Select</th>
-            <th>Balance</th>
-            <th>Note</th>
-            <th>✏️</th>
-            <th>🗑️</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% importPOs.forEach(po => { if (po.balance !== 0) { %>
+      <div class="table-wrapper">
+        <table>
+          <thead>
             <tr>
-              <td><%= po.v_name %></td>
-              <td><%= new Date(po.po_date).toLocaleDateString('en-US') %></td>
-              <td><%= po.style %></td>
-              <td><%= po.po_no %></td>
-              <td><%= po.pcs %></td>
-              <td class="<%= po.cost < 0 ? 'negative' : '' %>">
-                <%= Number(po.cost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-              </td>
-              <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
-                <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-              </td>
-              <td><%= po.v_rate %></td>
-              <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
-                <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-              </td>
-              <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
-              <td><button type="button">💲</button></td>
-              <td class="<%= po.balance < 0 ? 'negative' : '' %>">
-                <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-              </td>
-              <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
-              <td><button type="button">💲</button></td>
-              <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
-
-              <td><a href="/admin/import_po/edit/<%= po.id %>"><button>✏️</button></a></td>
-              <td>
-                <form method="POST" action="/admin/import_po/delete/<%= po.id %>" onsubmit="return confirm('삭제하시겠습니까?');">
-                  <button type="submit">🗑️</button>
-                </form>
-              </td>
+              <th>Vendor</th>
+              <th>PO Date</th>
+              <th>Style</th>
+              <th>PO No.</th>
+              <th>PCS</th>
+              <th>Cost</th>
+              <th>PO A. (RMB)</th>
+              <th>Deposit Rate</th>
+              <th>Deposit A. (RMB)</th>
+              <th>Deposit Select</th>
+              <th>Deposit</th>
+              <th>Balance (RMB)</th>
+              <th>Balance Select</th>
+              <th>Balance</th>
+              <th>Note</th>
+              <th>✏️</th>
+              <th>🗑️</th>
             </tr>
-          <% }}) %>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            <% importPOs.forEach(po => { if (po.balance !== 0) { %>
+              <tr>
+                <td><%= po.v_name %></td>
+                <td><%= new Date(po.po_date).toLocaleDateString('en-US') %></td>
+                <td><%= po.style %></td>
+                <td><%= po.po_no %></td>
+                <td><%= po.pcs %></td>
+                <td class="<%= po.cost < 0 ? 'negative' : '' %>">
+                  <%= Number(po.cost).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                </td>
+                <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
+                  <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                </td>
+                <td><%= po.v_rate %></td>
+                <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
+                  <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                </td>
+                <% if (!po.dex_date) { %>
+                  <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
+                  <td><button type="button" data-deposit-id="<%= po.id %>">💲</button></td>
+                <% } else { %>
+                  <td colspan="2">✔ Paid</td>
+                <% } %>
+                <td class="<%= po.balance < 0 ? 'negative' : '' %>">
+                  <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                </td>
+                <% if (!po.bex_date) { %>
+                  <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
+                  <td><button type="button" data-balance-id="<%= po.id %>">💲</button></td>
+                <% } else { %>
+                  <td colspan="2">✔ Paid</td>
+                <% } %>
+                <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
+                <td><a href="/admin/import_po/edit/<%= po.id %>"><button>✏️</button></a></td>
+                <td>
+                  <form method="POST" action="/admin/import_po/delete/<%= po.id %>" onsubmit="return confirm('삭제하시겠습니까?');">
+                    <button type="submit">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+            <% }}) %>
+          </tbody>
+        </table>
+      </div>
+    </form>
   </div>
+
 
 
   <script>
@@ -338,8 +337,26 @@
     
       // ⬇️ 초기 로딩 시에도 복사 (선택사항)
       syncHiddenFields();
+    
+      // ✅ 💲 버튼 클릭 시 해당 checkbox 자동 선택 (Deposit/Balance)
+      document.querySelectorAll('button[data-deposit-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-deposit-id');
+          const checkbox = document.querySelector(`input[name="deposit_ids"][value="${id}"]`);
+          if (checkbox) checkbox.checked = true;
+        });
+      });
+    
+      document.querySelectorAll('button[data-balance-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-balance-id');
+          const checkbox = document.querySelector(`input[name="balance_ids"][value="${id}"]`);
+          if (checkbox) checkbox.checked = true;
+        });
+      });
     });
     </script>
+    
     
 </body>
 </html>

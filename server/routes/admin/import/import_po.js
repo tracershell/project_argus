@@ -208,5 +208,59 @@ router.post('/edit/:id', async (req, res) => {
 });
 
 
+// ✅ import_po.js에 추가할 라우터: /paid
+router.post('/paid', async (req, res) => {
+  try {
+    const { pay_date, exchange_rate, deposit_ids = [], balance_ids = [] } = req.body;
+    const rate = parseFloat(exchange_rate);
+    const date = pay_date;
+
+    // ✅ Deposit 처리
+    if (Array.isArray(deposit_ids)) {
+      for (let id of deposit_ids) {
+        // 💬 dp_amount와 po_amount를 모두 조회
+        const [[po]] = await db.query('SELECT dp_amount, po_amount FROM import_po WHERE id = ?', [id]);
+
+        const dex_amount = po.dp_amount / rate; // 💬 지급 금액 (환율 적용)
+        const new_balance = po.po_amount - po.dp_amount; // 💬 남은 잔액 계산
+        const zero_dp = 0; // 💬 지급 완료 → dp_amount = 0
+
+        await db.query(
+          `UPDATE import_po 
+           SET dex_date = ?, dex_rate = ?, dex_amount = ?, 
+               dp_amount = ?, balance = ?
+           WHERE id = ?`,
+          [date, rate, dex_amount, zero_dp, new_balance, id]
+        );
+      }
+    }
+
+    // ✅ Balance 처리
+    if (Array.isArray(balance_ids)) {
+      for (let id of balance_ids) {
+        // 💬 balance 값 조회
+        const [[po]] = await db.query('SELECT balance FROM import_po WHERE id = ?', [id]);
+
+        const bex_amount = po.balance / rate; // 💬 지급 금액 (환율 적용)
+        const zero = 0; // 💬 지급 완료 → balance = 0, dp_amount = 0
+
+        await db.query(
+          `UPDATE import_po 
+           SET bex_date = ?, bex_rate = ?, bex_amount = ?, 
+               dp_amount = ?, balance = ?
+           WHERE id = ?`,
+          [date, rate, bex_amount, zero, zero, id]
+        );
+      }
+    }
+
+    res.redirect('/admin/import_po');
+  } catch (err) {
+    console.error('💥 paid 처리 오류:', err);
+    res.status(500).send('지급 처리 실패: ' + err.message);
+  }
+});
+
+
 
 module.exports = router;
