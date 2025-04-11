@@ -5,10 +5,45 @@ const db = require('../../../db/mysql');
 // ✅ 기본 import_po 페이지 렌더링
 router.get('/', async (req, res) => {
   try {
-    const [vendors] = await db.query('SELECT v_name, vd_rate AS v_rate FROM import_vendor');
-    const [importPOs] = await db.query('SELECT * FROM import_po WHERE ROUND(balance, 2) != 0 ORDER BY po_date DESC');
+    const { v_name, po_no, style } = req.query;
+    const where = [];
+    const params = [];
+
+    if (v_name) {
+      where.push('v_name = ?');
+      params.push(v_name);
+    }
+    if (po_no) {
+      where.push('po_no = ?');
+      params.push(po_no);
+    }
+    if (style) {
+      where.push('style = ?');
+      params.push(style);
+    }
+
+    let query = 'SELECT * FROM import_po';
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+    query += ' ORDER BY po_date DESC';
+
+    const [importPOs] = await db.query(query, params);
+    const [vendors] = await db.query('SELECT DISTINCT v_name FROM import_po');
+    const [styles] = await db.query('SELECT DISTINCT style FROM import_po');
+    const [po_nos] = await db.query('SELECT DISTINCT po_no FROM import_po');
     const today = new Date().toISOString().split('T')[0];
-    res.render('admin/import/import_po', { vendors, importPOs, today });
+
+    res.render('admin/import/import_po', {
+      vendors,
+      styles,
+      po_nos,
+      importPOs,
+      today,
+      v_name,
+      po_no,
+      style
+    });
   } catch (err) {
     console.error('💥 import_po 조회 오류:', err);
     res.status(500).send('Import PO 조회 실패: ' + err.message);
