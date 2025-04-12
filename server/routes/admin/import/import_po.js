@@ -69,13 +69,13 @@ router.post('/add/po', async (req, res) => {
       INSERT INTO import_po (
         po_date, v_name, style, po_no, pcs, cost,
         po_amount, pdp_amount, v_rate, dp_amount, balance,
-        dex_rmdamount, bex_rmdamount
+        dex_rmbamount, bex_rmbamount
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         po_date, v_name, style, po_no, n_pcs, n_cost,
         po_amount, 0, v_rate, dp_amount, balance,
-        0.00, 0.00 // ✅ 신규 필드: dex_rmdamount, bex_rmdamount 초기값 설정
+        0.00, 0.00 // ✅ 신규 필드: dex_rmbamount, bex_rmbamount 초기값 설정
       ]
     );
 
@@ -112,13 +112,13 @@ router.post('/add/direct', async (req, res) => {
       INSERT INTO import_po (
         po_date, v_name, style, pcs, cost,
         po_amount, pdp_amount, v_rate, dp_amount, balance, note,
-        dex_rmdamount, bex_rmdamount
+        dex_rmbamount, bex_rmbamount
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         safe_date, v_name, safe_style, pcs, safe_cost,
         po_amount, 0, v_rate, dp_amount, balance, note,
-        0.00, 0.00 // ✅ 신규 필드: dex_rmdamount, bex_rmdamount 초기값 설정
+        0.00, 0.00 // ✅ 신규 필드: dex_rmbamount, bex_rmbamount 초기값 설정
       ]
     );
 
@@ -195,15 +195,15 @@ router.post('/edit/:id', async (req, res) => {
 
     // 🔹 기존 dp_amount, pdp_amount 조회 (지급 여부 판단용)
     const [[oldPO]] = await db.query(`
-      SELECT dp_amount, pdp_amount, dex_rmdamount, bex_rmdamount 
+      SELECT dp_amount, pdp_amount, dex_rmbamount, bex_rmbamount 
       FROM import_po WHERE id = ?`, [id]);
 
     const prevDpAmount = Number(oldPO.dp_amount || 0);      // 현재 미지급 deposit
     const paidDpAmount = Number(oldPO.pdp_amount || 0);     // 과거 지급된 deposit 금액 (없으면 0)
 
     // ✅ 신규 필드: 유지할 이전 값
-    const dexRmd = Number(oldPO.dex_rmdamount || 0);
-    const bexRmd = Number(oldPO.bex_rmdamount || 0);
+    const dexRmd = Number(oldPO.dex_rmbamount || 0);
+    const bexRmd = Number(oldPO.bex_rmbamount || 0);
 
     // 🔹 po_amount 재계산
     const po_amount = n_pcs * n_cost;
@@ -227,7 +227,7 @@ router.post('/edit/:id', async (req, res) => {
       UPDATE import_po
       SET po_date = ?, v_name = ?, style = ?, po_no = ?, pcs = ?, cost = ?,
           po_amount = ?, v_rate = ?, dp_amount = ?, balance = ?, pdp_amount = ?, note = ?,
-          dex_rmdamount = ?, bex_rmdamount = ? -- ✅ 새 필드 유지
+          dex_rmbamount = ?, bex_rmbamount = ? -- ✅ 새 필드 유지
       WHERE id = ?`,
       [
         po_date,
@@ -283,7 +283,7 @@ router.post('/paid', async (req, res) => {
           SET dex_date = ?, 
               dex_rate = ?, 
               dex_amount = ?, 
-              dex_rmdamount = ?,       -- ✅ 환산 전 금액 저장
+              dex_rmbamount = ?,       -- ✅ 환산 전 금액 저장
               pdp_amount = ?, 
               dp_amount = ?, 
               balance = ?
@@ -292,7 +292,7 @@ router.post('/paid', async (req, res) => {
             date,         // dex_date
             rate,         // dex_rate
             dexAmount,    // dex_amount
-            dpAmount,     // dex_rmdamount
+            dpAmount,     // dex_rmbamount
             dpAmount,     // pdp_amount
             zero,         // dp_amount → 지급 완료되었으므로 0
             newBalance,   // balance
@@ -327,7 +327,7 @@ router.post('/paid', async (req, res) => {
           SET bex_date = ?, 
               bex_rate = ?, 
               bex_amount = ?, 
-              bex_rmdamount = ?,       -- ✅ 환산 전 금액 저장
+              bex_rmbamount = ?,       -- ✅ 환산 전 금액 저장
               pdp_amount = ?, 
               dp_amount = ?, 
               balance = ?
@@ -336,7 +336,7 @@ router.post('/paid', async (req, res) => {
             date,           // bex_date
             exchangeRate,   // bex_rate
             bexAmount,      // bex_amount
-            balanceVal,     // bex_rmdamount
+            balanceVal,     // bex_rmbamount
             balanceVal,     // pdp_amount (잔액 전액 지급)
             zero,           // dp_amount
             zero,           // balance
@@ -353,6 +353,82 @@ router.post('/paid', async (req, res) => {
     res.status(500).send('지급 처리 실패: ' + err.message);
   }
 });
+
+
+
+// ✅ Import PO Result 페이지 라우터 (EJS에서 병합 처리하도록 데이터 정리만)
+router.get('/result', async (req, res) => {
+  try {
+    const { v_name, po_no, style } = req.query;
+
+    let where = [];
+    let params = [];
+
+    if (v_name) {
+      where.push('v_name = ?');
+      params.push(v_name);
+    }
+
+    if (po_no) {
+      where.push('po_no = ?');
+      params.push(po_no);
+    }
+
+    if (style) {
+      where.push('style = ?');
+      params.push(style);
+    }
+
+    let query = `
+      SELECT
+        id, po_date, v_name, style, po_no, pcs, cost, po_amount,
+        pdp_amount, v_rate, dp_amount, balance, note,
+        dex_date, bex_date,
+        dex_rmbamount, bex_rmbamount,
+        dex_rate, bex_rate,
+        dex_amount, bex_amount
+      FROM import_po
+    `;
+
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+
+    query += ' ORDER BY po_date DESC, id DESC';
+
+    const [results] = await db.query(query, params);
+
+    // ✅ 데이터 가공: 문자열이 아닌 항목은 파싱 또는 처리 (EJS에서 오류 방지)
+    results.forEach(row => {
+      row.dex_rate = row.dex_rate ? parseFloat(row.dex_rate) : null;
+      row.bex_rate = row.bex_rate ? parseFloat(row.bex_rate) : null;
+      row.dex_amount = row.dex_amount ? parseFloat(row.dex_amount) : null;
+      row.bex_amount = row.bex_amount ? parseFloat(row.bex_amount) : null;
+      row.dex_rmbamount = row.dex_rmbamount ? parseFloat(row.dex_rmbamount) : null;
+      row.bex_rmbamount = row.bex_rmbamount ? parseFloat(row.bex_rmbamount) : null;
+    });
+
+    // ✅ 콤보박스용 필터 데이터
+    const [vendors] = await db.query('SELECT DISTINCT v_name FROM import_po');
+    const [styles] = await db.query('SELECT DISTINCT style FROM import_po WHERE style IS NOT NULL');
+    const [po_nos] = await db.query('SELECT DISTINCT po_no FROM import_po WHERE po_no IS NOT NULL');
+
+    res.render('admin/import/import_po_result', {
+      results,
+      vendors,
+      styles,
+      po_nos,
+      v_name,
+      style,
+      po_no
+    });
+  } catch (err) {
+    console.error('💥 /import_po/result 라우터 오류:', err);
+    res.status(500).send('Import PO Result 조회 실패: ' + err.message);
+  }
+});
+
+
 
 
 module.exports = router;

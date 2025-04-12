@@ -225,7 +225,7 @@ router.get('/pdfview', async (req, res) => {
 
     const [names] = await db.query('SELECT DISTINCT dv_name FROM domestic_vendor');
 
-    res.render('admin/domestic/domestic_invoice_pdfview', {
+    res.render('admin/domestic/domestic_invoice_htmlview', {
       title: 'Domestic Invoice List View',
       invoices,
       names,
