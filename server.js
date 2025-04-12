@@ -89,6 +89,9 @@ app.use('/admin/import', require('./server/routes/admin/import/import_vendor_lis
 
 app.use('/admin/import_po', require('./server/routes/admin/import/import_po'));
 
+app.use('/admin/import_po_result_pdf', require('./server/routes/admin/import/import_po_paylist_pdf'));
+
+//====================================================================================================================
 app.use('/admin/domestic', require('./server/routes/admin/domestic/domestic_vendor'));
 
 app.use('/admin/domestic', require('./server/routes/admin/domestic/domestic_vendor_list_pdf'));

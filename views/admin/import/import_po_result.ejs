@@ -32,6 +32,12 @@
     text-align: left;
     padding-left: 6px;
   }
+  .number-cell {
+    text-align: right;
+    padding-right: 30px;
+    white-space: nowrap;        /* 줄 바꿈 방지 */
+    font-variant-numeric: tabular-nums; /* 균등 너비 숫자 폰트 */
+  }
 </style>
 
 <h2>Import PO List</h2>
@@ -100,13 +106,13 @@
         <td><%= row.v_name %></td>
         <td><%= row.style %></td>
         <td><%= row.po_no %></td>
-        <td><%= row.pcs ? row.pcs.toLocaleString() : '' %></td>
-        <td><%= row.cost %></td>
-        <td><%= !isNaN(row.po_amount) ? Number(row.po_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
-        <td><%= !isNaN(row.pdp_amount) ? Number(row.pdp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
-        <td><%= !isNaN(row.dp_amount) ? Number(row.dp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
-        <td><%= !isNaN(row.balance) ? Number(row.balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
-        
+        <td class="number-cell"><%= row.pcs ? row.pcs.toLocaleString() : '' %></td>
+<td class="number-cell"><%= !isNaN(row.cost) ? Number(row.cost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+<td class="number-cell"><%= !isNaN(row.po_amount) ? Number(row.po_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+<td class="number-cell"><%= !isNaN(row.pdp_amount) ? Number(row.pdp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+<td class="number-cell"><%= !isNaN(row.dp_amount) ? Number(row.dp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+<td class="number-cell"><%= !isNaN(row.balance) ? Number(row.balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+
         <td><%= row.note %></td>
     
         <!-- 병합 P.Date -->
