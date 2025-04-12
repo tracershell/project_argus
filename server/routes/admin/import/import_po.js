@@ -45,7 +45,8 @@ router.get('/', async (req, res) => {
       today,
       v_name,
       po_no,
-      style
+      style,
+      pay_date: ''
     });
   } catch (err) {
     console.error('💥 import_po 조회 오류:', err);
@@ -138,7 +139,7 @@ router.post('/delete/:id', async (req, res) => {
 // ✅ 결과 페이지 라우터 (/result용)
 router.get('/result', async (req, res) => {
   try {
-    const { v_name, style, po_no, dex_date, bex_date } = req.query;
+    const { v_name, style, po_no, dex_date, bex_date, pay_date = '' } = req.query;
     let where = [];
     let params = [];
 
@@ -165,6 +166,7 @@ router.get('/result', async (req, res) => {
       v_name,
       style,
       po_no,
+      pay_date,
       dex_date,
       bex_date
     });
@@ -355,52 +357,45 @@ router.post('/paid', async (req, res) => {
 });
 
 
-// ✅ Import PO Result 페이지 라우터 (EJS에서 병합 처리하도록 데이터 정리만)
+// ✅ Router: /admin/import_po/result
 router.get('/result', async (req, res) => {
   try {
-    // ✅ [추가] 쿼리 파라미터에서 v_name, po_no, style 가져오기
-    const { v_name, po_no, style } = req.query;
+    const { v_name, style, po_no, dex_date, bex_date, pay_date = '' } = req.query;
+    // ✅ pay_date 기본값
 
     let where = [];
     let params = [];
 
-    // ✅ [유지] v_name 조건 검색
     if (v_name) {
       where.push('v_name = ?');
       params.push(v_name);
     }
-
     if (po_no) {
       where.push('po_no = ?');
       params.push(po_no);
     }
-
     if (style) {
       where.push('style = ?');
       params.push(style);
     }
 
-    // ✅ [유지] 기본 SELECT 문
     let query = `
-      SELECT
-        id, po_date, v_name, style, po_no, pcs, cost, po_amount,
-        pdp_amount, v_rate, dp_amount, balance, note,
-        dex_date, bex_date,
-        dex_rmbamount, bex_rmbamount,
-        dex_rate, bex_rate,
-        dex_amount, bex_amount
+      SELECT id, po_date, v_name, style, po_no, pcs, cost, po_amount,
+             pdp_amount, v_rate, dp_amount, balance, note,
+             dex_date, bex_date,
+             dex_rmbamount, bex_rmbamount,
+             dex_rate, bex_rate,
+             dex_amount, bex_amount
       FROM import_po
     `;
-
     if (where.length > 0) {
       query += ' WHERE ' + where.join(' AND ');
     }
-
     query += ' ORDER BY po_date DESC, id DESC';
 
     const [results] = await db.query(query, params);
 
-    // ✅ [중요] EJS에서 오류 없이 숫자/날짜 처리되도록 초기화
+    // ✅ 날짜/숫자 데이터 가공
     results.forEach(row => {
       row.po_date = row.po_date ? new Date(row.po_date) : null;
       row.dex_date = row.dex_date ? new Date(row.dex_date) : null;
@@ -408,31 +403,28 @@ router.get('/result', async (req, res) => {
 
       row.dex_rate = row.dex_rate ? parseFloat(row.dex_rate) : 0;
       row.bex_rate = row.bex_rate ? parseFloat(row.bex_rate) : 0;
-
       row.dex_amount = parseFloat(row.dex_amount) || 0;
       row.bex_amount = parseFloat(row.bex_amount) || 0;
-
       row.dex_rmbamount = parseFloat(row.dex_rmbamount) || 0;
       row.bex_rmbamount = parseFloat(row.bex_rmbamount) || 0;
     });
 
-    // ✅ [중요] 콤보박스용 Vendor 목록도 함께 전달해야 EJS에서 출력 가능
     const [vendors] = await db.query('SELECT DISTINCT v_name FROM import_po');
     const [styles] = await db.query('SELECT DISTINCT style FROM import_po WHERE style IS NOT NULL');
     const [po_nos] = await db.query('SELECT DISTINCT po_no FROM import_po WHERE po_no IS NOT NULL');
 
-    // ✅ [중요] v_name, vendors 등을 EJS에 전달
     res.render('admin/import/import_po_result', {
       results,
-      vendors,   // ✅ Vendor 콤보박스를 위한 목록
+      vendors,
       styles,
       po_nos,
-      v_name,    // ✅ 선택된 값 유지용
+      v_name,
       style,
-      po_no
+      po_no,
+      pay_date // ✅ 전달
     });
   } catch (err) {
-    console.error('💥 /import_po/result 라우터 오류:', err);
+    console.error('💥 /result 라우터 오류:', err);
     res.status(500).send('Import PO Result 조회 실패: ' + err.message);
   }
 });

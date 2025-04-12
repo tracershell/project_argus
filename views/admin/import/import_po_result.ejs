@@ -30,21 +30,25 @@
   }
   .left-pad {
     text-align: left;
-    padding-left: 4px;
+    padding-left: 6px;
   }
 </style>
 
 <h2>Import PO List</h2>
-<form action="/admin/import_po/result" method="GET" style="margin-bottom: 10px;">
-  <label for="v_name">🔍 Vendor Name: </label>
-  <select name="v_name" id="v_name" style="font-size: 12px; height: 22px;">
+<!-- 검색 필터 -->
+<form method="GET" action="/admin/import_po/result">
+  <select name="v_name">
     <option value="">:: Vendor 선택 ::</option>
     <% vendors.forEach(v => { %>
       <option value="<%= v.v_name %>" <%= v.v_name === v_name ? 'selected' : '' %>><%= v.v_name %></option>
     <% }) %>
   </select>
-  <button type="submit" style="font-size: 12px;">검색</button>
+  <% const safePayDate = typeof pay_date !== 'undefined' ? pay_date : ''; %>
+<input type="date" name="pay_date" value="<%= safePayDate %>">
+
+  <button type="submit">🔍 검색</button>
 </form>
+ 
 <div class="button-row">
   <form action="/admin/import_po" method="GET" style="display:inline;">
     <button type="submit">🔙 돌아가기</button>
@@ -82,7 +86,13 @@
     </tr>
   </thead>
   <tbody>
-    <% results.forEach(row => { %>
+    <% results.forEach(row => {
+      const dexDateStr = row.dex_date ? row.dex_date.toISOString().split('T')[0] : '';
+      const bexDateStr = row.bex_date ? row.bex_date.toISOString().split('T')[0] : '';
+      const showRow = !pay_date || dexDateStr === pay_date || bexDateStr === pay_date;
+    
+      if (showRow) {
+    %>
       <tr>
         <td><%= row.po_date ? row.po_date.toLocaleDateString('en-US') : '' %></td>
         <td><%= row.v_name %></td>
@@ -95,46 +105,48 @@
         <td><%= row.dp_amount %></td>
         <td><%= row.balance %></td>
         <td><%= row.note %></td>
-<!-- 병합 날짜 표시 -->
-<td>
-  <% if (row.dex_date) { %>
-    <div class="left-pad">D: <%= new Date(row.dex_date).toLocaleDateString('en-US') %></div>
-  <% } %>
-  <% if (row.bex_date) { %>
-    <div class="left-pad"></div>B: <%= new Date(row.bex_date).toLocaleDateString('en-US') %></div>
-  <% } %>
-</td>
-
-<!-- 병합 RMB 표시 -->
-<td>
-  <% if (parseFloat(row.dex_rmbamount) > 0) { %>
-    <div class="left-pad">D: <%= parseFloat(row.dex_rmbamount).toFixed(2) %></div>
-  <% } %>
-  <% if (parseFloat(row.bex_rmbamount) > 0) { %>
-    <div class="left-pad">B: <%= parseFloat(row.bex_rmbamount).toFixed(2) %></div>
-  <% } %>
-</td>
-
-<!-- 병합 환율 표시 -->
-<td>
-  <% if (parseFloat(row.dex_rate) > 0) { %>
-    <div class="left-pad">D: <%= parseFloat(row.dex_rate).toFixed(3) %></div>
-  <% } %>
-  <% if (parseFloat(row.bex_rate) > 0) { %>
-    <div class="left-pad">B: <%= parseFloat(row.bex_rate).toFixed(3) %></div>
-  <% } %>
-</td>
-<!-- 병합 USD 표시 -->
-<td>
-  <% if (parseFloat(row.dex_amount) > 0) { %>
-    <div class="left-pad">D: <%= parseFloat(row.dex_amount).toFixed(2) %></div>
-  <% } %>
-  <% if (parseFloat(row.bex_amount) > 0) { %>
-    <div class="left-pad">B: <%= parseFloat(row.bex_amount).toFixed(2) %></div>
-  <% } %>
-</td>
-        
+    
+        <!-- 병합 P.Date -->
+        <td>
+          <% if (row.dex_date) { %>
+            <div class="left-pad">D: <%= new Date(row.dex_date).toLocaleDateString('en-US') %></div>
+          <% } %>
+          <% if (row.bex_date) { %>
+            <div class="left-pad">B: <%= new Date(row.bex_date).toLocaleDateString('en-US') %></div>
+          <% } %>
+        </td>
+    
+        <!-- 병합 RMB -->
+        <td>
+          <% if (parseFloat(row.dex_rmbamount) > 0) { %>
+            <div class="left-pad">D: <%= parseFloat(row.dex_rmbamount).toFixed(2) %></div>
+          <% } %>
+          <% if (parseFloat(row.bex_rmbamount) > 0) { %>
+            <div class="left-pad">B: <%= parseFloat(row.bex_rmbamount).toFixed(2) %></div>
+          <% } %>
+        </td>
+    
+        <!-- 병합 Rate -->
+        <td>
+          <% if (parseFloat(row.dex_rate) > 0) { %>
+            <div class="left-pad">D: <%= parseFloat(row.dex_rate).toFixed(3) %></div>
+          <% } %>
+          <% if (parseFloat(row.bex_rate) > 0) { %>
+            <div class="left-pad">B: <%= parseFloat(row.bex_rate).toFixed(3) %></div>
+          <% } %>
+        </td>
+    
+        <!-- 병합 USD -->
+        <td>
+          <% if (parseFloat(row.dex_amount) > 0) { %>
+            <div class="left-pad">D: <%= parseFloat(row.dex_amount).toFixed(2) %></div>
+          <% } %>
+          <% if (parseFloat(row.bex_amount) > 0) { %>
+            <div class="left-pad">B: <%= parseFloat(row.bex_amount).toFixed(2) %></div>
+          <% } %>
+        </td>
       </tr>
-    <% }) %>
-  </tbody>
+    <% } }) %>
+    </tbody>
+    
 </table>
