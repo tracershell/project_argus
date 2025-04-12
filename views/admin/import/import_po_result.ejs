@@ -37,24 +37,26 @@
 <h2>Import PO List</h2>
 <!-- 검색 필터 -->
 <form method="GET" action="/admin/import_po/result">
-  <select name="v_name">
+  <select name="v_name" style="height:22px;">
     <option value="">:: Vendor 선택 ::</option>
     <% vendors.forEach(v => { %>
       <option value="<%= v.v_name %>" <%= v.v_name === v_name ? 'selected' : '' %>><%= v.v_name %></option>
     <% }) %>
   </select>
-  <% const safePayDate = typeof pay_date !== 'undefined' ? pay_date : ''; %>
-<input type="date" name="pay_date" value="<%= safePayDate %>">
 
-  <button type="submit">🔍 검색</button>
+  <input type="date" name="pay_date" value="<%= typeof pay_date !== 'undefined' ? pay_date : '' %>" style="height:22px; font-size:12px;">
+
+  <button type="submit" style="height:22px;">🔍 검색</button>
 </form>
+
  
 <div class="button-row">
   <form action="/admin/import_po" method="GET" style="display:inline;">
     <button type="submit">🔙 돌아가기</button>
   </form>
   <form action="/admin/import_po_result_pdf/pdf" method="GET" target="_blank" style="display:inline; margin-left:10px;">
-    <input type="text" name="comment" placeholder="💬 코멘트 입력" style="width:200px; height:22px; font-size:11px; margin-right:5px;">
+    <input type="text" name="comment" placeholder="💬 코멘트 입력" 
+  style="width:200px; height:23px; font-size:12px; margin-right:5px;">
     <button type="submit">📄 PDF 보기</button>
   </form>
   <form action="#" method="GET" style="display:inline;">
@@ -100,10 +102,11 @@
         <td><%= row.po_no %></td>
         <td><%= row.pcs ? row.pcs.toLocaleString() : '' %></td>
         <td><%= row.cost %></td>
-        <td><%= row.po_amount %></td>
-        <td><%= row.pdp_amount %></td>
-        <td><%= row.dp_amount %></td>
-        <td><%= row.balance %></td>
+        <td><%= !isNaN(row.po_amount) ? Number(row.po_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+        <td><%= !isNaN(row.pdp_amount) ? Number(row.pdp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+        <td><%= !isNaN(row.dp_amount) ? Number(row.dp_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+        <td><%= !isNaN(row.balance) ? Number(row.balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %></td>
+        
         <td><%= row.note %></td>
     
         <!-- 병합 P.Date -->
@@ -119,10 +122,10 @@
         <!-- 병합 RMB -->
         <td>
           <% if (parseFloat(row.dex_rmbamount) > 0) { %>
-            <div class="left-pad">D: <%= parseFloat(row.dex_rmbamount).toFixed(2) %></div>
+            <div class="left-pad">D: <%= parseFloat(row.dex_rmbamount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></div>
           <% } %>
           <% if (parseFloat(row.bex_rmbamount) > 0) { %>
-            <div class="left-pad">B: <%= parseFloat(row.bex_rmbamount).toFixed(2) %></div>
+            <div class="left-pad">B: <%= parseFloat(row.bex_rmbamount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></div>
           <% } %>
         </td>
     
@@ -139,10 +142,10 @@
         <!-- 병합 USD -->
         <td>
           <% if (parseFloat(row.dex_amount) > 0) { %>
-            <div class="left-pad">D: <%= parseFloat(row.dex_amount).toFixed(2) %></div>
+            <div class="left-pad">D: <%= parseFloat(row.dex_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></div>
           <% } %>
           <% if (parseFloat(row.bex_amount) > 0) { %>
-            <div class="left-pad">B: <%= parseFloat(row.bex_amount).toFixed(2) %></div>
+            <div class="left-pad">B: <%= parseFloat(row.bex_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></div>
           <% } %>
         </td>
       </tr>
