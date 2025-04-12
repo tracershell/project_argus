@@ -35,16 +35,7 @@
 </style>
 
 <h2>Import PO List</h2>
-<form action="/admin/import_po/result" method="GET" style="margin-bottom: 10px;">
-  <label for="v_name">🔍 Vendor Name: </label>
-  <select name="v_name" id="v_name" style="font-size: 12px; height: 22px;">
-    <option value="">:: Vendor 선택 ::</option>
-    <% vendors.forEach(v => { %>
-      <option value="<%= v.v_name %>" <%= v.v_name === v_name ? 'selected' : '' %>><%= v.v_name %></option>
-    <% }) %>
-  </select>
-  <button type="submit" style="font-size: 12px;">검색</button>
-</form>
+
 <div class="button-row">
   <form action="/admin/import_po" method="GET" style="display:inline;">
     <button type="submit">🔙 돌아가기</button>

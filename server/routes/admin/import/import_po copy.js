@@ -358,13 +358,11 @@ router.post('/paid', async (req, res) => {
 // ✅ Import PO Result 페이지 라우터 (EJS에서 병합 처리하도록 데이터 정리만)
 router.get('/result', async (req, res) => {
   try {
-    // ✅ [추가] 쿼리 파라미터에서 v_name, po_no, style 가져오기
     const { v_name, po_no, style } = req.query;
 
     let where = [];
     let params = [];
 
-    // ✅ [유지] v_name 조건 검색
     if (v_name) {
       where.push('v_name = ?');
       params.push(v_name);
@@ -380,7 +378,6 @@ router.get('/result', async (req, res) => {
       params.push(style);
     }
 
-    // ✅ [유지] 기본 SELECT 문
     let query = `
       SELECT
         id, po_date, v_name, style, po_no, pcs, cost, po_amount,
@@ -400,34 +397,27 @@ router.get('/result', async (req, res) => {
 
     const [results] = await db.query(query, params);
 
-    // ✅ [중요] EJS에서 오류 없이 숫자/날짜 처리되도록 초기화
+    // ✅ 데이터 가공: 문자열이 아닌 항목은 파싱 또는 처리 (EJS에서 오류 방지)
     results.forEach(row => {
-      row.po_date = row.po_date ? new Date(row.po_date) : null;
-      row.dex_date = row.dex_date ? new Date(row.dex_date) : null;
-      row.bex_date = row.bex_date ? new Date(row.bex_date) : null;
-
       row.dex_rate = row.dex_rate ? parseFloat(row.dex_rate) : 0;
       row.bex_rate = row.bex_rate ? parseFloat(row.bex_rate) : 0;
-
       row.dex_amount = parseFloat(row.dex_amount) || 0;
       row.bex_amount = parseFloat(row.bex_amount) || 0;
-
-      row.dex_rmbamount = parseFloat(row.dex_rmbamount) || 0;
-      row.bex_rmbamount = parseFloat(row.bex_rmbamount) || 0;
+      row.dex_rmbamount = row.dex_rmbamount ? parseFloat(row.dex_rmbamount) : 0;
+      row.bex_rmbamount = row.bex_rmbamount ? parseFloat(row.bex_rmbamount) : 0;
     });
 
-    // ✅ [중요] 콤보박스용 Vendor 목록도 함께 전달해야 EJS에서 출력 가능
+    // ✅ 콤보박스용 필터 데이터
     const [vendors] = await db.query('SELECT DISTINCT v_name FROM import_po');
     const [styles] = await db.query('SELECT DISTINCT style FROM import_po WHERE style IS NOT NULL');
     const [po_nos] = await db.query('SELECT DISTINCT po_no FROM import_po WHERE po_no IS NOT NULL');
 
-    // ✅ [중요] v_name, vendors 등을 EJS에 전달
     res.render('admin/import/import_po_result', {
       results,
-      vendors,   // ✅ Vendor 콤보박스를 위한 목록
+      vendors,
       styles,
       po_nos,
-      v_name,    // ✅ 선택된 값 유지용
+      v_name,
       style,
       po_no
     });
@@ -436,5 +426,6 @@ router.get('/result', async (req, res) => {
     res.status(500).send('Import PO Result 조회 실패: ' + err.message);
   }
 });
+
 
 module.exports = router;
