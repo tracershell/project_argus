@@ -54,10 +54,12 @@ CREATE TABLE import_po (
   note TEXT,
 
   dex_date DATE,
+  dex_rmdamount DECIMAL(12,2) DEFAULT 0.00,
   dex_rate DECIMAL(10,4),
   dex_amount DECIMAL(12,2),
 
   bex_date DATE,
+  bex_rmdamount DECIMAL(12,2) DEFAULT 0.00,
   bex_rate DECIMAL(10,4),
   bex_amount DECIMAL(12,2)
 );

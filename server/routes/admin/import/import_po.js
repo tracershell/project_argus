@@ -66,11 +66,19 @@ router.post('/add/po', async (req, res) => {
     const balance = po_amount;
 
     await db.query(`
-      INSERT INTO import_po (po_date, v_name, style, po_no, pcs, cost, po_amount, pdp_amount, v_rate, dp_amount, balance)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [po_date, v_name, style, po_no, n_pcs, n_cost, po_amount, 0, v_rate, dp_amount, balance]
-      //                 ⬆️ pdp_amount = 0 으로 초기화
+      INSERT INTO import_po (
+        po_date, v_name, style, po_no, pcs, cost,
+        po_amount, pdp_amount, v_rate, dp_amount, balance,
+        dex_rmdamount, bex_rmdamount
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        po_date, v_name, style, po_no, n_pcs, n_cost,
+        po_amount, 0, v_rate, dp_amount, balance,
+        0.00, 0.00 // ✅ 신규 필드: dex_rmdamount, bex_rmdamount 초기값 설정
+      ]
     );
+
     res.redirect('/admin/import_po');
   } catch (err) {
     console.error('💥 add/po 등록 오류:', err);
@@ -101,11 +109,19 @@ router.post('/add/direct', async (req, res) => {
     }
 
     await db.query(`
-      INSERT INTO import_po (po_date, v_name, style, pcs, cost, po_amount, pdp_amount, v_rate, dp_amount, balance, note)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [safe_date, v_name, safe_style, pcs, safe_cost, po_amount, 0, v_rate, dp_amount, balance, note]
-      //                            ⬆️ pdp_amount = 0 추가
+      INSERT INTO import_po (
+        po_date, v_name, style, pcs, cost,
+        po_amount, pdp_amount, v_rate, dp_amount, balance, note,
+        dex_rmdamount, bex_rmdamount
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        safe_date, v_name, safe_style, pcs, safe_cost,
+        po_amount, 0, v_rate, dp_amount, balance, note,
+        0.00, 0.00 // ✅ 신규 필드: dex_rmdamount, bex_rmdamount 초기값 설정
+      ]
     );
+
     res.redirect('/admin/import_po');
   } catch (err) {
     console.error('💥 add/direct 등록 오류:', err);
@@ -178,10 +194,16 @@ router.post('/edit/:id', async (req, res) => {
     const n_rate = v_rate === null || v_rate === '' || isNaN(parseFloat(v_rate)) ? null : parseFloat(v_rate);
 
     // 🔹 기존 dp_amount, pdp_amount 조회 (지급 여부 판단용)
-    const [[oldPO]] = await db.query('SELECT dp_amount, pdp_amount FROM import_po WHERE id = ?', [id]);
+    const [[oldPO]] = await db.query(`
+      SELECT dp_amount, pdp_amount, dex_rmdamount, bex_rmdamount 
+      FROM import_po WHERE id = ?`, [id]);
 
     const prevDpAmount = Number(oldPO.dp_amount || 0);      // 현재 미지급 deposit
     const paidDpAmount = Number(oldPO.pdp_amount || 0);     // 과거 지급된 deposit 금액 (없으면 0)
+
+    // ✅ 신규 필드: 유지할 이전 값
+    const dexRmd = Number(oldPO.dex_rmdamount || 0);
+    const bexRmd = Number(oldPO.bex_rmdamount || 0);
 
     // 🔹 po_amount 재계산
     const po_amount = n_pcs * n_cost;
@@ -200,10 +222,12 @@ router.post('/edit/:id', async (req, res) => {
     }
 
     // ✅ DB 업데이트 시 pdp_amount도 유지
+    // ✅ DB 업데이트 (신규 필드 유지 포함)
     await db.query(`
       UPDATE import_po
       SET po_date = ?, v_name = ?, style = ?, po_no = ?, pcs = ?, cost = ?,
-          po_amount = ?, v_rate = ?, dp_amount = ?, balance = ?, pdp_amount = ?, note = ?
+          po_amount = ?, v_rate = ?, dp_amount = ?, balance = ?, pdp_amount = ?, note = ?,
+          dex_rmdamount = ?, bex_rmdamount = ? -- ✅ 새 필드 유지
       WHERE id = ?`,
       [
         po_date,
@@ -216,8 +240,10 @@ router.post('/edit/:id', async (req, res) => {
         n_rate,
         dp_amount,
         balance,
-        paidDpAmount, // ✅ 지급된 pdp_amount는 그대로 유지
+        paidDpAmount,
         note || '',
+        dexRmd,       // ✅ 유지
+        bexRmd,       // ✅ 유지
         id
       ]
     );
@@ -228,9 +254,6 @@ router.post('/edit/:id', async (req, res) => {
     res.status(500).send('수정 실패: ' + err.message);
   }
 });
-
-
-
 
 
 // ✅ import_po.js에 추가할 라우터: /paid
@@ -244,7 +267,10 @@ router.post('/paid', async (req, res) => {
     if (Array.isArray(deposit_ids)) {
       for (let id of deposit_ids) {
         // 🔹 기존 dp_amount, po_amount 조회
-        const [[po]] = await db.query('SELECT dp_amount, po_amount FROM import_po WHERE id = ?', [id]);
+        const [[po]] = await db.query(
+          'SELECT dp_amount, po_amount FROM import_po WHERE id = ?',
+          [id]
+        );
 
         const dpAmount = Number(po.dp_amount);        // 현재 미지급 deposit 금액
         const poAmount = Number(po.po_amount);        // 전체 금액
@@ -252,12 +278,26 @@ router.post('/paid', async (req, res) => {
         const newBalance = poAmount - dpAmount;       // 잔액 갱신
         const zero = 0;
 
-        await db.query(
-          `UPDATE import_po 
-           SET dex_date = ?, dex_rate = ?, dex_amount = ?, 
-               pdp_amount = ?, dp_amount = ?, balance = ?
-           WHERE id = ?`,
-          [date, rate, dexAmount, dpAmount, zero, newBalance, id]
+        await db.query(`
+          UPDATE import_po 
+          SET dex_date = ?, 
+              dex_rate = ?, 
+              dex_amount = ?, 
+              dex_rmdamount = ?,       -- ✅ 환산 전 금액 저장
+              pdp_amount = ?, 
+              dp_amount = ?, 
+              balance = ?
+          WHERE id = ?`,
+          [
+            date,         // dex_date
+            rate,         // dex_rate
+            dexAmount,    // dex_amount
+            dpAmount,     // dex_rmdamount
+            dpAmount,     // pdp_amount
+            zero,         // dp_amount → 지급 완료되었으므로 0
+            newBalance,   // balance
+            id
+          ]
         );
       }
     }
@@ -265,7 +305,10 @@ router.post('/paid', async (req, res) => {
     // ✅ Balance 처리 (💲 버튼 클릭 후 제출 시)
     if (Array.isArray(balance_ids)) {
       for (let id of balance_ids) {
-        const [[po]] = await db.query('SELECT balance FROM import_po WHERE id = ?', [id]);
+        const [[po]] = await db.query(
+          'SELECT balance FROM import_po WHERE id = ?',
+          [id]
+        );
 
         const balanceVal = parseFloat(po.balance);
         const exchangeRate = parseFloat(rate);
@@ -281,10 +324,24 @@ router.post('/paid', async (req, res) => {
 
         await db.query(`
           UPDATE import_po 
-          SET bex_date = ?, bex_rate = ?, bex_amount = ?, 
-              pdp_amount = ?, dp_amount = ?, balance = ?
+          SET bex_date = ?, 
+              bex_rate = ?, 
+              bex_amount = ?, 
+              bex_rmdamount = ?,       -- ✅ 환산 전 금액 저장
+              pdp_amount = ?, 
+              dp_amount = ?, 
+              balance = ?
           WHERE id = ?`,
-          [date, exchangeRate, bexAmount, balanceVal, zero, zero, id]
+          [
+            date,           // bex_date
+            exchangeRate,   // bex_rate
+            bexAmount,      // bex_amount
+            balanceVal,     // bex_rmdamount
+            balanceVal,     // pdp_amount (잔액 전액 지급)
+            zero,           // dp_amount
+            zero,           // balance
+            id
+          ]
         );
       }
     }

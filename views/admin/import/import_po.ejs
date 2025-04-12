@@ -177,7 +177,7 @@
     <form method="POST" action="/admin/import_po/paid">
       <div class="form-row" style="justify-content: flex-end; margin-bottom: 10px;">
         <input type="date" name="pay_date" value="<%= today %>" required>
-        <input type="number" name="exchange_rate" step="0.0001" placeholder="Exchange Rate">
+        <input type="number" id="exchange-rate" name="exchange_rate" step="0.0001" placeholder="Exchange Rate">
         <button id="paid-button" type="submit">💰 Paid</button>
       </div>
 
@@ -206,57 +206,58 @@
             </tr>
           </thead>
           <tbody>
-            <% importPOs.forEach(po => {
-              const balanceValue = parseFloat(po.balance);
-              if (!isNaN(balanceValue) && Math.abs(balanceValue) > 0.00001) {
-         %>
-              <tr>
-                <td><%= po.v_name %></td>
-                <td><%= new Date(po.po_date).toLocaleDateString('en-US') %></td>
-                <td><%= po.style %></td>
-                <td><%= po.po_no %></td>
-                <td><%= po.pcs %></td>
-                <td class="<%= po.cost < 0 ? 'negative' : '' %>">
-                  <%= Number(po.cost).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
-                </td>
-                <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
-                  <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
-                </td>
-                <td class="<%= po.pdp_amount < 0 ? 'negative' : '' %>">
-                  <%= Number(po.pdp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
-                </td>
-                <td><%= po.v_rate %></td>
-                <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
-                  <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
-                </td>
-                <% if (!po.dex_date && Number(po.dp_amount) > 0) { %>
-                  <td><input type="checkbox" name="deposit_ids" value="<%= po.id %>"></td>
-                  <td><button type="button" data-deposit-id="<%= po.id %>">💲</button></td>
-                <% } else if (po.dex_date) { %>
-                  <td colspan="2">✔ Paid</td>
-                <% } else { %>
-                  <td colspan="2"></td>
-                <% } %>
-                
-                <td class="<%= po.balance < 0 ? 'negative' : '' %>">
-                  <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
-                </td>
-                <% if (!po.bex_date) { %>
-                  <td><input type="checkbox" name="balance_ids" value="<%= po.id %>"></td>
-                  <td><button type="button" data-balance-id="<%= po.id %>">💲</button></td>
-                <% } else { %>
-                  <td colspan="2">✔ Paid</td>
-                <% } %>
-                <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
-                <td>
-                  <a href="/admin/import_po/edit/<%= po.id %>" style="padding: 4px 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff; font-size: 12px; text-decoration: none; display: inline-block;">✏️</a>
-                </td>
-            <td>
-  <button type="button" onclick="confirmDelete(<%= po.id %>)">🗑️</button>
-</td>
-              </tr>
-            <% }}) %>
-          </tbody>
+          
+              <% importPOs.forEach(po => {
+                const balanceValue = parseFloat(po.balance);
+                if (!isNaN(balanceValue) && Math.abs(balanceValue) > 0.00001) {
+           %>
+                <tr>
+                  <td><%= po.v_name %></td>
+                  <td><%= new Date(po.po_date).toLocaleDateString('en-US') %></td>
+                  <td><%= po.style %></td>
+                  <td><%= po.po_no %></td>
+                  <td><%= po.pcs %></td>
+                  <td class="<%= po.cost < 0 ? 'negative' : '' %>">
+                    <%= Number(po.cost).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                  </td>
+                  <td class="<%= po.po_amount < 0 ? 'negative' : '' %>">
+                    <%= Number(po.po_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                  </td>
+                  <td class="<%= po.pdp_amount < 0 ? 'negative' : '' %>">
+                    <%= Number(po.pdp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                  </td>
+                  <td><%= po.v_rate %></td>
+                  <td class="<%= po.dp_amount < 0 ? 'negative' : '' %>">
+                    <%= Number(po.dp_amount).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                  </td>
+                  <% if (!po.dex_date && Number(po.dp_amount) > 0) { %>
+                    <td><input type="checkbox" name="deposit_ids[]" value="<%= po.id %>"></td>
+                    <td><button type="button" data-deposit-id="<%= po.id %>">💲</button></td>
+                  <% } else if (po.dex_date) { %>
+                    <td colspan="2">✔ Paid</td>
+                  <% } else { %>
+                    <td colspan="2"></td>
+                  <% } %>
+                  
+                  <td class="<%= po.balance < 0 ? 'negative' : '' %>">
+                    <%= Number(po.balance).toLocaleString('en-US', { minimumFractionDigits: 2 }) %>
+                  </td>
+                  <% if (!po.bex_date) { %>
+                    <td><input type="checkbox" name="balance_ids[]" value="<%= po.id %>"></td>
+                    <td><button type="button" data-balance-id="<%= po.id %>">💲</button></td>
+                  <% } else { %>
+                    <td colspan="2">✔ Paid</td>
+                  <% } %>
+                  <td class="<%= po.note === '환율 적용 불필요' ? 'note-red' : '' %>"><%= po.note %></td>
+                  <td>
+                    <a href="/admin/import_po/edit/<%= po.id %>" style="padding: 4px 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff; font-size: 12px; text-decoration: none; display: inline-block;">✏️</a>
+                  </td>
+              <td>
+    <button type="button" onclick="confirmDelete(<%= po.id %>)">🗑️</button>
+  </td>
+                </tr>
+              <% }}) %>
+            </tbody>
         </table>
       </div>
     </form>
@@ -350,20 +351,34 @@
     
       // ✅ 💲 버튼 클릭 시 해당 checkbox 자동 선택 (Deposit/Balance)
       document.querySelectorAll('button[data-deposit-id]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-deposit-id');
-          const checkbox = document.querySelector(`input[name="deposit_ids"][value="${id}"]`);
-          if (checkbox) checkbox.checked = true;
-        });
-      });
-    
-      document.querySelectorAll('button[data-balance-id]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-balance-id');
-          const checkbox = document.querySelector(`input[name="balance_ids"][value="${id}"]`);
-          if (checkbox) checkbox.checked = true;
-        });
-      });
+  btn.addEventListener('click', () => {
+    const id = btn.getAttribute('data-deposit-id');
+    const checkbox = document.querySelector(`input[name="deposit_ids[]"][value="${id}"]`);
+    if (checkbox) checkbox.checked = true;
+  });
+});
+
+document.querySelectorAll('button[data-balance-id]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.getAttribute('data-balance-id');
+
+    // ✅ 체크박스 자동 체크
+    const checkbox = document.querySelector(`input[name="balance_ids[]"][value="${id}"]`);
+    if (checkbox) checkbox.checked = true;
+
+    // ✅ note 셀에 '환율 적용 불필요' 있는지 확인
+    const row = btn.closest('tr');
+    if (row) {
+      const noteCell = row.querySelector('td.note-red');  // 클래스 기반으로 찾음
+      if (noteCell && noteCell.textContent.trim() === '환율 적용 불필요') {
+        const exchangeInput = document.getElementById('exchange-rate');
+        if (exchangeInput) {
+          exchangeInput.value = '1'; // 문자열로도 OK
+        }
+      }
+    }
+  });
+});
 
       // ✅ paid form 제출 시 환율 체크
       if (paidForm) {
