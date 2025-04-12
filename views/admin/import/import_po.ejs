@@ -118,11 +118,16 @@
         <div class="form-row">
           <input type="date" name="po_date" id="shared-date" value="<%= today %>">
           <select name="v_name" id="shared-vendor" required>
+            <option value="" selected>:: Vendor Name ::</option> <!-- ✅ 기본값 명시 -->
             <% vendors.forEach(v => { %>
-              <option value="<%= v.v_name %>" data-rate="<%= v.v_rate %>"><%= v.v_name %></option>
+              <option value="<%= v.v_name %>" data-rate="<%= v.v_rate %>"
+                <%= v.v_name === v_name ? 'selected' : '' %>>
+                <%= v.v_name %>
+              </option>
             <% }) %>
           </select>
-          <input type="text" name="v_rate" placeholder="Deposit Rate" readonly>
+          
+          <input type="text" name="v_rate" id="v-rate-main" placeholder="Deposit Rate" readonly>
         </div>
         <div class="form-row">
           <label style="white-space: nowrap;">PO 입력</label>
@@ -326,8 +331,10 @@
         }
       }
       sharedVendor.addEventListener('change', () => {
-        localStorage.setItem('v_name', sharedVendor.value);
-      });
+  const selected = sharedVendor.options[sharedVendor.selectedIndex];
+  const rate = selected.getAttribute('data-rate');
+  document.getElementById('v-rate-main').value = rate || '';
+});
     
       // ✅ 2차 폼 제출 시 hidden 필드 값 동기화
       function syncHiddenFields() {
