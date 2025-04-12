@@ -240,56 +240,62 @@ router.post('/paid', async (req, res) => {
     const rate = parseFloat(exchange_rate);
     const date = pay_date;
 
-    // ✅ Deposit 처리
-// ✅ Deposit 처리 (💲 버튼 클릭 후 제출 시)
-if (Array.isArray(deposit_ids)) {
-  for (let id of deposit_ids) {
-    // 🔹 기존 dp_amount, po_amount 조회
-    const [[po]] = await db.query('SELECT dp_amount, po_amount FROM import_po WHERE id = ?', [id]);
+    // ✅ Deposit 처리 (💲 버튼 클릭 후 제출 시)
+    if (Array.isArray(deposit_ids)) {
+      for (let id of deposit_ids) {
+        // 🔹 기존 dp_amount, po_amount 조회
+        const [[po]] = await db.query('SELECT dp_amount, po_amount FROM import_po WHERE id = ?', [id]);
 
-    const dpAmount = Number(po.dp_amount);        // 현재 미지급 deposit 금액
-    const poAmount = Number(po.po_amount);        // 전체 금액
-    const dexAmount = dpAmount / rate;            // 지급 환산 금액
-    const newBalance = poAmount - dpAmount;       // 잔액 갱신
-    const zero = 0;
+        const dpAmount = Number(po.dp_amount);        // 현재 미지급 deposit 금액
+        const poAmount = Number(po.po_amount);        // 전체 금액
+        const dexAmount = parseFloat((dpAmount / rate).toFixed(2));  // 지급 환산 금액
+        const newBalance = poAmount - dpAmount;       // 잔액 갱신
+        const zero = 0;
 
-    await db.query(
-      `UPDATE import_po 
-       SET dex_date = ?, dex_rate = ?, dex_amount = ?, 
-           pdp_amount = ?, dp_amount = ?, balance = ?
-       WHERE id = ?`,
-      [date, rate, dexAmount, dpAmount, zero, newBalance, id]
-    );
-  }
-}
+        await db.query(
+          `UPDATE import_po 
+           SET dex_date = ?, dex_rate = ?, dex_amount = ?, 
+               pdp_amount = ?, dp_amount = ?, balance = ?
+           WHERE id = ?`,
+          [date, rate, dexAmount, dpAmount, zero, newBalance, id]
+        );
+      }
+    }
 
-// ✅ Balance 처리 (💲 버튼 클릭 후 제출 시)
-if (Array.isArray(balance_ids)) {
-  for (let id of balance_ids) {
-    // 🔹 기존 balance 조회
-    const [[po]] = await db.query('SELECT balance FROM import_po WHERE id = ?', [id]);
+    // ✅ Balance 처리 (💲 버튼 클릭 후 제출 시)
+    if (Array.isArray(balance_ids)) {
+      for (let id of balance_ids) {
+        const [[po]] = await db.query('SELECT balance FROM import_po WHERE id = ?', [id]);
 
-    const balanceVal = Number(po.balance);         // 현재 미지급 잔금
-    const bexAmount = balanceVal / rate;           // 지급 환산 금액
-    const zero = 0;
+        const balanceVal = parseFloat(po.balance);
+        const exchangeRate = parseFloat(rate);
 
-    await db.query(
-      `UPDATE import_po 
-       SET bex_date = ?, bex_rate = ?, bex_amount = ?, 
-           pdp_amount = ?, dp_amount = ?, balance = ?
-       WHERE id = ?`,
-      [date, rate, bexAmount, balanceVal, zero, zero, id]
-    );
-  }
-}
+        // ⚠️ 유효성 확인
+        if (isNaN(balanceVal) || isNaN(exchangeRate) || exchangeRate <= 0) {
+          console.warn(`❗ 유효하지 않은 balance 또는 환율: balance=${balanceVal}, rate=${exchangeRate}`);
+          continue;
+        }
 
-    res.redirect('/admin/import_po');
+        const bexAmount = parseFloat((balanceVal / exchangeRate).toFixed(2));
+        const zero = 0;
+
+        await db.query(`
+          UPDATE import_po 
+          SET bex_date = ?, bex_rate = ?, bex_amount = ?, 
+              pdp_amount = ?, dp_amount = ?, balance = ?
+          WHERE id = ?`,
+          [date, exchangeRate, bexAmount, balanceVal, zero, zero, id]
+        );
+      }
+    }
+
+    res.redirect('/admin/import_po');  // ✅ 정상 처리 후 페이지 이동
+
   } catch (err) {
     console.error('💥 paid 처리 오류:', err);
     res.status(500).send('지급 처리 실패: ' + err.message);
   }
 });
-
 
 
 module.exports = router;
