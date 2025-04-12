@@ -399,12 +399,12 @@ router.get('/result', async (req, res) => {
 
     // ✅ 데이터 가공: 문자열이 아닌 항목은 파싱 또는 처리 (EJS에서 오류 방지)
     results.forEach(row => {
-      row.dex_rate = row.dex_rate ? parseFloat(row.dex_rate) : null;
-      row.bex_rate = row.bex_rate ? parseFloat(row.bex_rate) : null;
-      row.dex_amount = row.dex_amount ? parseFloat(row.dex_amount) : null;
-      row.bex_amount = row.bex_amount ? parseFloat(row.bex_amount) : null;
-      row.dex_rmbamount = row.dex_rmbamount ? parseFloat(row.dex_rmbamount) : null;
-      row.bex_rmbamount = row.bex_rmbamount ? parseFloat(row.bex_rmbamount) : null;
+      row.dex_rate = row.dex_rate ? parseFloat(row.dex_rate) : 0;
+      row.bex_rate = row.bex_rate ? parseFloat(row.bex_rate) : 0;
+      row.dex_amount = parseFloat(row.dex_amount) || 0;
+      row.bex_amount = parseFloat(row.bex_amount) || 0;
+      row.dex_rmbamount = row.dex_rmbamount ? parseFloat(row.dex_rmbamount) : 0;
+      row.bex_rmbamount = row.bex_rmbamount ? parseFloat(row.bex_rmbamount) : 0;
     });
 
     // ✅ 콤보박스용 필터 데이터

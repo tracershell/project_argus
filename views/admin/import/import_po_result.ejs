@@ -28,6 +28,10 @@
   th {
     background-color: #f0f8ff;
   }
+  .left-pad {
+    text-align: left;
+    padding-left: 4px;
+  }
 </style>
 
 <h2>Import PO List</h2>
@@ -75,7 +79,7 @@
         <td><%= row.v_name %></td>
         <td><%= row.style %></td>
         <td><%= row.po_no %></td>
-        <td><%= row.pcs %></td>
+        <td><%= row.pcs ? row.pcs.toLocaleString() : '' %></td>
         <td><%= row.cost %></td>
         <td><%= row.po_amount %></td>
         <td><%= row.pdp_amount %></td>
@@ -84,37 +88,40 @@
         <td><%= row.note %></td>
 <!-- 병합 날짜 표시 -->
 <td>
-  <% if (row.dex_date || row.bex_date) { %>
-    <% if (row.dex_date) { %>D: <%= row.dex_date.toISOString().slice(0, 10) %><br><% } %>
-    <% if (row.bex_date) { %>B: <%= row.bex_date.toISOString().slice(0, 10) %><% } %>
+  <% if (row.dex_date) { %>
+    <div class="left-pad">D: <%= new Date(row.dex_date).toLocaleDateString('en-US') %></div>
+  <% } %>
+  <% if (row.bex_date) { %>
+    <div class="left-pad"></div>B: <%= new Date(row.bex_date).toLocaleDateString('en-US') %></div>
   <% } %>
 </td>
 
 <!-- 병합 RMB 표시 -->
 <td>
-  <% if (row.dex_rmbamount || row.bex_rmbamount) { %>
-    <% if (row.dex_rmbamount) { %>D: <%= row.dex_rmbamount.toLocaleString(undefined, { minimumFractionDigits: 2 }) %><br><% } %>
-    <% if (row.bex_rmbamount) { %>B: <%= row.bex_rmbamount.toLocaleString(undefined, { minimumFractionDigits: 2 }) %><% } %>
+  <% if (parseFloat(row.dex_rmbamount) > 0) { %>
+    <div class="left-pad">D: <%= parseFloat(row.dex_rmbamount).toFixed(2) %></div>
+  <% } %>
+  <% if (parseFloat(row.bex_rmbamount) > 0) { %>
+    <div class="left-pad">B: <%= parseFloat(row.bex_rmbamount).toFixed(2) %></div>
   <% } %>
 </td>
 
 <!-- 병합 환율 표시 -->
 <td>
-  <% if (row.dex_rate || row.bex_rate) { %>
-    <% if (!isNaN(parseFloat(row.dex_rate))) { %>
-      <div>D: <%= parseFloat(row.dex_rate).toFixed(4) %></div>
-    <% } %>
-    <% if (!isNaN(parseFloat(row.bex_rate))) { %>
-      <div>B: <%= parseFloat(row.bex_rate).toFixed(4) %></div>
-    <% } %>
+  <% if (parseFloat(row.dex_rate) > 0) { %>
+    <div class="left-pad">D: <%= parseFloat(row.dex_rate).toFixed(3) %></div>
+  <% } %>
+  <% if (parseFloat(row.bex_rate) > 0) { %>
+    <div class="left-pad">B: <%= parseFloat(row.bex_rate).toFixed(3) %></div>
   <% } %>
 </td>
-
 <!-- 병합 USD 표시 -->
 <td>
-  <% if (row.dex_amount || row.bex_amount) { %>
-    <% if (row.dex_amount) { %>D: <%= row.dex_amount.toLocaleString(undefined, { minimumFractionDigits: 2 }) %><br><% } %>
-    <% if (row.bex_amount) { %>B: <%= row.bex_amount.toLocaleString(undefined, { minimumFractionDigits: 2 }) %><% } %>
+  <% if (parseFloat(row.dex_amount) > 0) { %>
+    <div class="left-pad">D: <%= parseFloat(row.dex_amount).toFixed(2) %></div>
+  <% } %>
+  <% if (parseFloat(row.bex_amount) > 0) { %>
+    <div class="left-pad">B: <%= parseFloat(row.bex_amount).toFixed(2) %></div>
   <% } %>
 </td>
         
