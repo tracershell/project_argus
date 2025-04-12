@@ -5,7 +5,7 @@ const db = require('../../../db/mysql');
 // ✅ 기본 import_po 페이지 렌더링
 router.get('/', async (req, res) => {
   try {
-    const { v_name, po_no, style } = req.query;
+    const { v_name, po_no, style, pay_date } = req.query;  // ✅ pay_date 추가
     const where = [];
     const params = [];
 
@@ -355,7 +355,6 @@ router.post('/paid', async (req, res) => {
 });
 
 
-
 // ✅ Import PO Result 페이지 라우터 (EJS에서 병합 처리하도록 데이터 정리만)
 router.get('/result', async (req, res) => {
   try {
@@ -427,8 +426,6 @@ router.get('/result', async (req, res) => {
     res.status(500).send('Import PO Result 조회 실패: ' + err.message);
   }
 });
-
-
 
 
 module.exports = router;

@@ -29,9 +29,7 @@
     background-color: #f0f8ff;
   }
 </style>
-<pre>
-  <%= JSON.stringify(results[0], null, 2) %>
-  </pre>
+
 <h2>Import PO List</h2>
 
 <div class="button-row">
@@ -73,7 +71,7 @@
   <tbody>
     <% results.forEach(row => { %>
       <tr>
-        <td><%= row.po_date.toISOString().split('T')[0] %></td>
+        <td><%= row.po_date ? row.po_date.toLocaleDateString('en-US') : '' %></td>
         <td><%= row.v_name %></td>
         <td><%= row.style %></td>
         <td><%= row.po_no %></td>
