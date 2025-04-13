@@ -1,4 +1,12 @@
 <style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    font-size: 12px;
+  }
+
   .player-container {
     display: flex;
     flex-direction: column;
@@ -9,8 +17,9 @@
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 20px;
     margin-bottom: 20px;
+    color: #333;
   }
 
   video {
@@ -22,38 +31,38 @@
 
   p {
     margin: 8px 0;
-    font-size: 1rem;
+    font-size: 12px;
     color: #333;
   }
 
   .btn-back {
     margin-top: 24px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #066da5;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
 
   .btn-back:hover {
-    background-color: #2980b9;
+    background-color: #e6f0fb;
   }
 
   @media (max-width: 480px) {
     h2 {
-      font-size: 1.25rem;
+      font-size: 16px;
     }
 
     p {
-      font-size: 0.95rem;
+      font-size: 12px;
     }
 
     .btn-back {
-      font-size: 0.95rem;
-      padding: 10px 20px;
+      font-size: 12px;
+      padding: 4px 12px;
     }
   }
 </style>

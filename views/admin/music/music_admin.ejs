@@ -1,20 +1,34 @@
 <style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    font-size: 12px;
+  }
+
+  h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
   table {
-    font-size: 0.9rem;
+    font-size: 12px;
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
   }
 
   th, td {
-    padding: 3px 3px;
+    padding: 4px;
     text-align: center;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
   }
 
   th {
-    background-color: #f9f9f9;
-    font-weight: 600;
+    background-color: #f0f8ff;
+    font-weight: normal;
   }
 
   th.file-col, td.file-col {
@@ -24,7 +38,7 @@
   th.date-col, td.date-col {
     width: 200px;
   }
-  
+
   th.keyword-col, td.keyword-col {
     width: 200px;
   }
@@ -34,21 +48,25 @@
   }
 
   button.action-btn {
-    padding: 4px 10px;
-    margin: 2px;
-    border: none;
-    background-color: #007bff;
-    color: white;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid #066da5;
     border-radius: 4px;
+    background-color: #fff;
+    color: #333;
     cursor: pointer;
   }
 
   button.action-btn.delete {
+    color: white;
     background-color: #dc3545;
+    border: none;
   }
 
   button.action-btn.edit {
+    color: white;
     background-color: #28a745;
+    border: none;
   }
 
   form.upload-form {
@@ -58,12 +76,35 @@
   form.upload-form input,
   form.upload-form button {
     margin: 4px;
-    padding: 6px;
+    padding: 4px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 24px;
   }
 
   audio {
     margin: 10px 0;
     width: 100%;
+  }
+
+  #textPopup {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    overflow: auto;
+    z-index: 9999;
+  }
+
+  #textContent {
+    white-space: pre-wrap;
+    font-size: 12px;
   }
 </style>
 
@@ -82,10 +123,10 @@
 <table class="table table-bordered">
   <thead>
     <tr>
-      <th>File</th>
-      <th>Date</th>
+      <th class="file-col">File</th>
+      <th class="date-col">Date</th>
       <th>Comment</th>
-      <th>Keyword</th>
+      <th class="keyword-col">Keyword</th>
       <th class="actions-col">Actions</th>
     </tr>
   </thead>
@@ -119,15 +160,11 @@
   </tbody>
 </table>
 
-<!-- 오디오 재생 및 텍스트 팝업 -->
 <audio id="audioPlayer" controls style="display:none; margin-top:10px;"></audio>
-
-<div id="textPopup" style="display:none; position:fixed; top:10%; left:20%; width:60%; height:60%; background:#fff; border:1px solid #ccc; padding:20px; overflow:auto; z-index:9999;">
+<div id="textPopup">
   <button onclick="document.getElementById('textPopup').style.display='none'" style="float:right;">Close</button>
-  <pre id="textContent" style="white-space: pre-wrap; font-size:0.9rem;"></pre>
+  <pre id="textContent"></pre>
 </div>
-
-
 
 <script>
   function playMusic(filename, textfile) {

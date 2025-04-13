@@ -1,14 +1,14 @@
-<h2>🎬 Movie Admin</h2>
+<h2 style="font-size: 20px; color: #333; margin-bottom: 15px;">🎬 Movie Admin</h2>
 
 <!-- Upload Form -->
-<h3>Upload Movie</h3>
-<form id="upload-form">
-  <input type="file" name="movie" accept="video/*" required>
-  <input type="file" name="thumbnail" accept="image/*" required>
-  <input type="date" name="date" required>
-  <input type="text" name="comment" placeholder="Comment" required>
-  <input type="text" name="keyword" placeholder="Keyword" required>
-  <button type="submit">Upload</button>
+<h3 style="font-size: 16px; color: #333;">Upload Movie</h3>
+<form id="upload-form" style="font-size: 12px;">
+  <input type="file" name="movie" accept="video/*" required style="height: 24px; font-size: 12px;">
+  <input type="file" name="thumbnail" accept="image/*" required style="height: 24px; font-size: 12px;">
+  <input type="date" name="date" required style="height: 24px; font-size: 12px;">
+  <input type="text" name="comment" placeholder="Comment" required style="height: 24px; font-size: 12px;">
+  <input type="text" name="keyword" placeholder="Keyword" required style="height: 24px; font-size: 12px;">
+  <button type="submit" style="padding: 4px 12px; font-size: 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff; cursor: pointer;">Upload</button>
 </form>
 
 <!-- 진행률 표시 -->
@@ -16,13 +16,13 @@
   <div style="width: 100%; background: #eee; border-radius: 4px;">
     <div id="progress-bar" style="width: 0%; height: 20px; background: #3498db; border-radius: 4px;"></div>
   </div>
-  <p id="progress-text" style="font-size: 0.9rem; margin-top: 4px;">0%</p>
+  <p id="progress-text" style="font-size: 12px; margin-top: 4px;">0%</p>
 </div>
 
 <!-- Movie List Table -->
-<table class="table table-bordered" style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+<table class="table table-bordered" style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 12px; background-color: #f5f7fa; color: #333;">
   <thead>
-    <tr>
+    <tr style="background-color: #f0f8ff;">
       <th style="width: 80px;">Thumbnail</th>
       <th style="width: 100px;">Date</th>
       <th>Comment</th>
@@ -49,13 +49,13 @@
         <td class="keyword-col"><%= m.keyword %></td>
         <td>
           <a href="/movie_admin/download/<%= m.video_filename %>">
-            <button class="action-btn">Download</button>
+            <button class="action-btn" style="padding: 4px 12px; font-size: 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff;">Download</button>
           </a>
           <a href="/movie_admin/edit/<%= m.id %>">
-            <button class="action-btn edit">Edit</button>
+            <button class="action-btn edit" style="padding: 4px 12px; font-size: 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff;">Edit</button>
           </a>
           <a href="/movie_admin/delete/<%= m.id %>" onclick="return confirm('삭제하시겠습니까?')">
-            <button class="action-btn delete">Delete</button>
+            <button class="action-btn delete" style="padding: 4px 12px; font-size: 12px; border: 1px solid #066da5; border-radius: 4px; background-color: #fff;">Delete</button>
           </a>
         </td>
       </tr>
@@ -66,53 +66,24 @@
 
 <style>
   table {
-    font-size: 0.9rem;
+    font-size: 12px;
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #ccc; /* 테두리 보이게 추가 */
+    border: 1px solid #ccc;
+    background-color: #f5f7fa;
+    color: #333;
   }
   th, td {
-    padding: 3px;
+    padding: 4px;
     text-align: center;
-    border: 1px solid #ccc; /* 개별 셀에도 테두리 */
-  }
-  th.thumbnail-col, td.thumbnail-col {
-    width: 80px;
-  }
-  th.date-col, td.date-col {
-    width: 100px;
-  }
-
-  th.keyword-col, td.keyword-col {
-    width: 300px;
-  }
-
-  th.actions-col, td.actions-col {
-    width: 250px;
+    border: 1px solid #ccc;
+    font-size: 12px;
   }
   img {
     border-radius: 6px;
   }
-  button.action-btn {
-    padding: 4px 10px;
-    margin: 2px;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .action-btn.edit {
-    background-color: #28a745;
-  }
-  .action-btn.delete {
-    background-color: #dc3545;
-  }
-  .action-btn:not(.edit):not(.delete) {
-    background-color: #007bff;
-  }
 </style>
 
-<!-- Upload Progress Script -->
 <script>
   const form = document.getElementById('upload-form');
   const progressContainer = document.getElementById('progress-container');
@@ -136,7 +107,7 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
         alert('Upload complete!');
-        window.location.href = '/movie_admin'; // 업로드 후 페이지 새로고침
+        window.location.href = '/movie_admin';
       }
     };
 
