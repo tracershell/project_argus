@@ -1,4 +1,4 @@
-// ✅ Directory: /server/routes/admin/import/import_po_paylist_pdf.js
+// ✅ File: /server/routes/admin/import/import_po_paylist_pdf.js
 
 const express = require('express');
 const router = express.Router();
@@ -7,24 +7,31 @@ const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 
-// 📌 컬럼 제목 및 너비 설정
 const headers = [
   'Vendor', 'Style', 'PO No.', 'PCS', 'Cost', 'PO Amount',
-  'P. Date', 'RMB D', 'RMB B', 'Rate D', 'Rate B', 'USD D', 'USD B'
+  'P. Date', 'RMB', 'Rate', 'USD'
 ];
 
 const colWidths = [
-  80, 70, 70, 40, 50, 70, 80, 60, 60, 50, 50, 60, 60
+  120,   // Vendor
+  40,   // Style
+  40,   // PO No.
+  40,   // PCS
+  30,   // Cost
+  60,   // PO Amount
+  60,   // P. Date
+  60,   // RMB (D/B 병합)
+  60,   // Rate (D/B 병합)
+  60    // USD (D/B 병합)
 ];
 
-// 📄 PDF 생성 함수
 async function generatePaylistPDF(res, records, comment, isDownload) {
   const fontPath = path.resolve('public/fonts/NotoSansKR-Regular.ttf');
   if (!fs.existsSync(fontPath)) {
     return res.status(500).send('폰트 파일이 존재하지 않습니다.');
   }
 
-  const doc = new PDFDocument({ margin: 40, size: 'letter', layout: 'landscape' });
+  const doc = new PDFDocument({ margin: 30, size: 'letter', layout: 'portrait' });
   doc.registerFont('Korean', fontPath).font('Korean');
 
   res.setHeader('Content-Type', 'application/pdf');
@@ -35,10 +42,9 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   doc.pipe(res);
 
   let y = 40;
-  const rowHeight = 20;
+  const rowHeight = 22;
   const startX = 20;
 
-  // 헤더
   doc.fontSize(12).text('ARGUS US INC', { align: 'center' });
   doc.moveDown(0.5);
   doc.fontSize(10).text('PAYMENT LIST', { align: 'center' });
@@ -52,7 +58,7 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
       const colWidth = colWidths[i];
       doc.lineWidth(isHeader ? 1 : 0.5);
       doc.rect(x, y, colWidth, rowHeight).stroke();
-      doc.text(text, x + 2, y + 6, {
+      doc.text(text, x + 2, y + 4, {
         width: colWidth - 4,
         align: isHeader ? 'center' : 'right',
       });
@@ -67,37 +73,43 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   let totalDexUSD = 0, totalBexUSD = 0;
 
   for (const r of records) {
+    const cost = parseFloat(r.cost) || 0;
+    const po_amount = parseFloat(r.po_amount) || 0;
+    const dex_rmb = parseFloat(r.dex_rmbamount) || 0;
+    const bex_rmb = parseFloat(r.bex_rmbamount) || 0;
+    const dex_rate = parseFloat(r.dex_rate) || 0;
+    const bex_rate = parseFloat(r.bex_rate) || 0;
+    const dex_usd = parseFloat(r.dex_amount) || 0;
+    const bex_usd = parseFloat(r.bex_amount) || 0;
+
     const row = [
       r.v_name,
       r.style,
       r.po_no,
-      r.pcs ? r.pcs.toLocaleString() : '',
-      r.cost ? parseFloat(r.cost).toFixed(2) : '',
-      r.po_amount ? parseFloat(r.po_amount).toFixed(2) : '',
+      r.pcs,
+      cost.toFixed(2),
+      po_amount.toFixed(2),
       `${r.dex_date || ''}${r.bex_date ? '\n' + r.bex_date : ''}`,
-      r.dex_rmbamount ? parseFloat(r.dex_rmbamount).toFixed(2) : '',
-      r.bex_rmbamount ? parseFloat(r.bex_rmbamount).toFixed(2) : '',
-      r.dex_rate ? parseFloat(r.dex_rate).toFixed(3) : '',
-      r.bex_rate ? parseFloat(r.bex_rate).toFixed(3) : '',
-      r.dex_amount ? parseFloat(r.dex_amount).toFixed(2) : '',
-      r.bex_amount ? parseFloat(r.bex_amount).toFixed(2) : '',
+      `${dex_rmb ? 'D: ' + dex_rmb.toFixed(2) : ''}${bex_rmb ? '\nB: ' + bex_rmb.toFixed(2) : ''}`,
+      `${dex_rate ? 'D: ' + dex_rate.toFixed(3) : ''}${bex_rate ? '\nB: ' + bex_rate.toFixed(3) : ''}`,
+      `${dex_usd ? 'D: ' + dex_usd.toFixed(2) : ''}${bex_usd ? '\nB: ' + bex_usd.toFixed(2) : ''}`
     ];
 
-    totalDexRMB += parseFloat(r.dex_rmbamount) || 0;
-    totalBexRMB += parseFloat(r.bex_rmbamount) || 0;
-    totalDexUSD += parseFloat(r.dex_amount) || 0;
-    totalBexUSD += parseFloat(r.bex_amount) || 0;
+    totalDexRMB += dex_rmb;
+    totalBexRMB += bex_rmb;
+    totalDexUSD += dex_usd;
+    totalBexUSD += bex_usd;
 
     drawRow(row, y);
     y += rowHeight;
   }
 
-  // 합계 라인
+
   y += 5;
   doc.moveTo(startX, y).lineTo(startX + colWidths.reduce((a, b) => a + b, 0), y).stroke();
   y += 10;
-  doc.fontSize(8).text(`Total RMB D: ${totalDexRMB.toFixed(2)}   B: ${totalBexRMB.toFixed(2)}`, startX);
-  doc.text(`Total USD D: ${totalDexUSD.toFixed(2)}   B: ${totalBexUSD.toFixed(2)}`, startX);
+  doc.fontSize(8).text(`Total RMB  D: ${totalDexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}   B: ${totalBexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
+  doc.text(`Total USD  D: ${totalDexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}   B: ${totalBexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
 
   if (comment) {
     y += 20;
@@ -107,7 +119,6 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   doc.end();
 }
 
-// 📌 라우터: /admin/import_po_result_pdf/pdf
 router.get(['/pdf', '/pdfdownload'], async (req, res) => {
   const { v_name, po_no, style, pay_date, comment } = req.query;
   const where = [];
@@ -117,7 +128,7 @@ router.get(['/pdf', '/pdfdownload'], async (req, res) => {
   if (po_no) { where.push('po_no = ?'); params.push(po_no); }
   if (style) { where.push('style = ?'); params.push(style); }
 
-  let query = `SELECT * FROM import_po`;
+  let query = 'SELECT * FROM import_po';
   if (where.length > 0) query += ' WHERE ' + where.join(' AND ');
   query += ' ORDER BY po_date DESC';
 
