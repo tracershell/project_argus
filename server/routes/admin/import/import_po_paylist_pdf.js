@@ -42,7 +42,7 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   doc.pipe(res);
 
   let y = 40;
-  const rowHeight = 22;
+  const rowHeight = 30; // table row height
   const startX = 20;
 
   doc.fontSize(12).text('ARGUS US INC', { align: 'center' });
@@ -58,10 +58,16 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
       const colWidth = colWidths[i];
       doc.lineWidth(isHeader ? 1 : 0.5);
       doc.rect(x, y, colWidth, rowHeight).stroke();
+
+      // 중앙 정렬할 열: Vendor(0), Style(1), PO No.(2)
+      const centerAligned = [0, 1, 2].includes(i);
+      const alignment = isHeader || centerAligned ? 'center' : 'right';
+
       doc.text(text, x + 2, y + 4, {
         width: colWidth - 4,
-        align: isHeader ? 'center' : 'right',
+        align: alignment,
       });
+
       x += colWidth;
     });
   };
@@ -72,27 +78,35 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   let totalDexRMB = 0, totalBexRMB = 0;
   let totalDexUSD = 0, totalBexUSD = 0;
 
+
+
   for (const r of records) {
-    const cost = parseFloat(r.cost) || 0;
-    const po_amount = parseFloat(r.po_amount) || 0;
-    const dex_rmb = parseFloat(r.dex_rmbamount) || 0;
-    const bex_rmb = parseFloat(r.bex_rmbamount) || 0;
-    const dex_rate = parseFloat(r.dex_rate) || 0;
-    const bex_rate = parseFloat(r.bex_rate) || 0;
-    const dex_usd = parseFloat(r.dex_amount) || 0;
-    const bex_usd = parseFloat(r.bex_amount) || 0;
+    // 안전한 숫자 변환
+    const cost = isNaN(parseFloat(r.cost)) ? 0 : parseFloat(r.cost);
+    const po_amount = isNaN(parseFloat(r.po_amount)) ? 0 : parseFloat(r.po_amount);
+    const pcs = isNaN(parseInt(r.pcs)) ? 0 : parseInt(r.pcs);
+
+    const dex_rmb = isNaN(parseFloat(r.dex_rmbamount)) ? 0 : parseFloat(r.dex_rmbamount);
+    const bex_rmb = isNaN(parseFloat(r.bex_rmbamount)) ? 0 : parseFloat(r.bex_rmbamount);
+    const dex_rate = isNaN(parseFloat(r.dex_rate)) ? 0 : parseFloat(r.dex_rate);
+    const bex_rate = isNaN(parseFloat(r.bex_rate)) ? 0 : parseFloat(r.bex_rate);
+    const dex_usd = isNaN(parseFloat(r.dex_amount)) ? 0 : parseFloat(r.dex_amount);
+    const bex_usd = isNaN(parseFloat(r.bex_amount)) ? 0 : parseFloat(r.bex_amount);
 
     const row = [
-      r.v_name,
-      r.style,
-      r.po_no,
-      r.pcs,
-      cost.toFixed(2),
-      po_amount.toFixed(2),
+      r.v_name || '',
+      r.style || '',
+      r.po_no || '',
+      pcs.toLocaleString(),
+      cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      po_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       `${r.dex_date || ''}${r.bex_date ? '\n' + r.bex_date : ''}`,
-      `${dex_rmb ? 'D: ' + dex_rmb.toFixed(2) : ''}${bex_rmb ? '\nB: ' + bex_rmb.toFixed(2) : ''}`,
-      `${dex_rate ? 'D: ' + dex_rate.toFixed(3) : ''}${bex_rate ? '\nB: ' + bex_rate.toFixed(3) : ''}`,
-      `${dex_usd ? 'D: ' + dex_usd.toFixed(2) : ''}${bex_usd ? '\nB: ' + bex_usd.toFixed(2) : ''}`
+      `${dex_rmb > 0 ? 'D: ' + dex_rmb.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''}` +
+      `${bex_rmb > 0 ? '\nB: ' + bex_rmb.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''}`,
+      `${dex_rate > 0 ? 'D: ' + dex_rate.toFixed(3) : ''}` +
+      `${bex_rate > 0 ? '\nB: ' + bex_rate.toFixed(3) : ''}`,
+      `${dex_usd > 0 ? 'D: ' + dex_usd.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''}` +
+      `${bex_usd > 0 ? '\nB: ' + bex_usd.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''}`
     ];
 
     totalDexRMB += dex_rmb;
@@ -103,7 +117,6 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
     drawRow(row, y);
     y += rowHeight;
   }
-
 
   y += 5;
   doc.moveTo(startX, y).lineTo(startX + colWidths.reduce((a, b) => a + b, 0), y).stroke();
