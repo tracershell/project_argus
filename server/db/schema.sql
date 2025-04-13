@@ -88,6 +88,63 @@ CREATE TABLE domestic_invoice (
   note TEXT                         -- Note or remarks (ex: full paid)
 );
 
+CREATE TABLE employees (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  status VARCHAR(10),
+  eid VARCHAR(10),
+  name VARCHAR(60),
+  ss VARCHAR(20),
+  birth DATE,
+  email VARCHAR(60),
+  phone VARCHAR(60),
+  jcode VARCHAR(10),
+  jtitle VARCHAR(60),
+  sdate DATE,
+  edate DATE,
+  sick INT,
+  work1 VARCHAR(20),
+  address VARCHAR(100),
+  city VARCHAR(50),
+  state VARCHAR(50),
+  zip VARCHAR(20),
+  remark TEXT
+);
+
+
+CREATE TABLE payroll_tax (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  eid VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  jcode VARCHAR(20),
+  jtitle VARCHAR(50),
+  work1 VARCHAR(50),
+
+  pdate DATE NOT NULL,
+  ckno VARCHAR(20),
+  rtime DECIMAL(10,2) DEFAULT 0,
+  otime DECIMAL(10,2) DEFAULT 0,
+  dtime DECIMAL(10,2) DEFAULT 0,
+
+  fw DECIMAL(10,2) DEFAULT 0,
+  sse DECIMAL(10,2) DEFAULT 0,
+  me DECIMAL(10,2) DEFAULT 0,
+  caw DECIMAL(10,2) DEFAULT 0,
+  cade DECIMAL(10,2) DEFAULT 0,
+
+  adv DECIMAL(10,2) DEFAULT 0,
+  csp DECIMAL(10,2) DEFAULT 0,
+  dd DECIMAL(10,2) DEFAULT 0,
+
+  gross DECIMAL(10,2) DEFAULT 0,
+  tax DECIMAL(10,2) DEFAULT 0,
+  net DECIMAL(10,2) DEFAULT 0,
+
+  remark VARCHAR(255),
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 CREATE TABLE photos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   original VARCHAR(255),

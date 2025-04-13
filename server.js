@@ -102,6 +102,12 @@ app.use('/admin/domestic_invoice_pdf', require('./server/routes/admin/domestic/d
 
 app.use('/admin/domestic_invoice_result_pdf', require('./server/routes/admin/domestic/domestic_invoice_result_pdf'));
 //====================================================================================================================
+
+app.use('/admin/payroll_employees', require('./server/routes/admin/payroll/payroll_employees'));
+
+app.use('/admin/payroll_tax', require('./server/routes/admin/payroll/payroll_tax'));
+
+//====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨
