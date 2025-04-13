@@ -41,12 +41,12 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
   );
   doc.pipe(res);
 
-  let y = 40;
+  let y = 20;  // table top margin
   const rowHeight = 30; // table row height
   const startX = 20;
 
-  doc.fontSize(12).text('ARGUS US INC', { align: 'center' });
-  doc.moveDown(0.5);
+  doc.fontSize(8).text('ARGUS US INC', 20, 4, { align: 'left' }); // x =0 , y=5 위로 이동
+  doc.moveDown(0.2);
   doc.fontSize(10).text('PAYMENT LIST', { align: 'center' });
 
   y += 30;
@@ -59,13 +59,14 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
       doc.lineWidth(isHeader ? 1 : 0.5);
       doc.rect(x, y, colWidth, rowHeight).stroke();
 
-      // 중앙 정렬할 열: Vendor(0), Style(1), PO No.(2)
       const centerAligned = [0, 1, 2].includes(i);
+      const rightPadded = [3, 4, 5, 6, 7, 8, 9].includes(i); // 오른쪽 정렬 컬럼
+
       const alignment = isHeader || centerAligned ? 'center' : 'right';
 
       doc.text(text, x + 2, y + 4, {
-        width: colWidth - 4,
-        align: alignment,
+        width: colWidth - 10,           // ✅ 기존 -4 → -8 로 너비 여유 확보 (오른쪽 정렬시 padding 값과 비슷)
+        align: alignment
       });
 
       x += colWidth;
@@ -120,9 +121,9 @@ async function generatePaylistPDF(res, records, comment, isDownload) {
 
   y += 5;
   doc.moveTo(startX, y).lineTo(startX + colWidths.reduce((a, b) => a + b, 0), y).stroke();
-  y += 10;
-  doc.fontSize(8).text(`Total RMB  D: ${totalDexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}   B: ${totalBexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
-  doc.text(`Total USD  D: ${totalDexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}   B: ${totalBexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
+  y += 60; // ✅ 기존 10 → 30 으로 변경: 하단 여백 확보 (테이블 아래 여백)
+  doc.fontSize(8).text(`Total Amount(RMB)  Deposit: ${totalDexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}   Payoff: ${totalBexRMB.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
+  doc.text(`Total Amount(USD)  Deposit: ${totalDexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}   Payoff: ${totalBexUSD.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, startX);
 
   if (comment) {
     y += 20;
