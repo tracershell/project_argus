@@ -177,7 +177,7 @@
       <h2>Input, Search, Edit, Delete</h2>
     </div>
   
-    <form id="employeeForm" action="/add" method="post" class="form" 
+    <form id="employeeForm" action="/admin/payroll/payroll_employees/add" method="post" class="form" 
     style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; justify-content: space-between;">
 
 <!-- 첫 번째 줄: 기본 인적 사항 및 근무 정보 -->
@@ -259,7 +259,7 @@
     }
 
     const form = document.getElementById("employeeForm");
-    form.action = `/edit/${eid}`;
+    form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
     form.submit();  // employeeForm을 /edit/:eid 로 제출
     }
 
@@ -272,7 +272,7 @@
       return;
     }
     const form = document.getElementById('editForm');
-    form.action = `/edit/${eid}`;
+    form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
     }
 
     // employee delete 관련
@@ -287,9 +287,9 @@
     if (!confirmDelete) return;
 
     // form 없이 fetch를 통한 POST 요청
-    fetch(`/delete/${eid}`, {
-      method: 'POST',
-    })
+    fetch(`/admin/payroll/payroll_employees/delete/${eid}`, {
+  method: 'POST',
+})
     .then(response => response.text())
     .then(html => {
       document.open();

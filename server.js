@@ -103,9 +103,9 @@ app.use('/admin/domestic_invoice_pdf', require('./server/routes/admin/domestic/d
 app.use('/admin/domestic_invoice_result_pdf', require('./server/routes/admin/domestic/domestic_invoice_result_pdf'));
 //====================================================================================================================
 
-app.use('/admin/payroll_employees', require('./server/routes/admin/payroll/payroll_employees'));
+app.use('/admin/payroll/payroll_employees', require('./server/routes/admin/payroll/payroll_employees'));
 
-app.use('/admin/payroll_tax', require('./server/routes/admin/payroll/payroll_tax'));
+app.use('/admin/payroll/payroll_tax', require('./server/routes/admin/payroll/payroll_tax'));
 
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\
