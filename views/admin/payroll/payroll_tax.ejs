@@ -303,7 +303,6 @@
     <button type="submit" class="view-btn">보기</button>
   </form>
   <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>
-  <button type="button" onclick="printPaylistPDF()">🖨️ Print PDF</button>
   <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
   <button type="button" onclick=="#">📊 Result</button>
 </div>
@@ -547,16 +546,18 @@ function printPaylistPDF() {
   window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
 } 
 
-// CVS 출력 용
+// CVS 출력 용 (Client 측 download)
 
 function downloadCSV() {
-  const date = document.getElementById('selectedDate').value;
-  if (!date) {
+  const pdate = document.querySelector('select[name="pdate"]').value;
+  if (!pdate) {
     alert("날짜를 선택하세요.");
     return;
   }
-  window.open(`/payroll/csv-export?pdate=${date}`, '_blank');
+  window.open(`/admin/payroll/payroll_tax_csv/csv-export?pdate=${pdate}`, '_blank');
 }
+
+
 
 
 function validateForm() {
