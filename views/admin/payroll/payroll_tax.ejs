@@ -302,8 +302,11 @@
     </select>
     <button type="submit" class="view-btn">보기</button>
   </form>
-  <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>
+  <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>  
   <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
+  Start Check No: <input type="text" id="startCkno" style="width: 80px;">
+  End Check No: <input type="text" id="endCkno" style="width: 80px;">
+  <button type="button" onclick="viewReferencePDF()">📄 Reference PDF</button>
   <button type="button" onclick=="#">📊 Result</button>
 </div>
 
@@ -537,14 +540,15 @@ function viewPaylistPDF() {
 }
 
 
-function printPaylistPDF() {
-  const date = document.getElementById('selectedDate').value;
-  if (!date) {
-    alert("날짜를 선택하세요.");
-    return;
-  }
-  window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
-} 
+
+// function printPaylistPDF() {
+//   const date = document.getElementById('selectedDate').value;
+//   if (!date) {
+//     alert("날짜를 선택하세요.");
+//     return;
+//   }
+//   window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
+// } 
 
 // CVS 출력 용 (Client 측 download)
 
@@ -570,6 +574,18 @@ function validateForm() {
     return false;
   }
   return true;
+}
+
+function viewReferencePDF() {
+  const start = document.getElementById('startCkno').value;
+  const end = document.getElementById('endCkno').value;
+
+  if (!start || !end) {
+    alert("Check No 범위를 모두 입력하세요.");
+    return;
+  }
+
+  window.open(`/admin/payroll/payroll_tax_refpdf/refpdf?startCkno=${start}&endCkno=${end}`, '_blank');
 }
 
 // 선택 수정 삭제 Script 
