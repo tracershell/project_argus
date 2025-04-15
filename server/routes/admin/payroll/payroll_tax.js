@@ -35,6 +35,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// 최신 급여 기록 가져오기 (Reference 버튼)
+router.get('/paylist/latest', async (req, res) => {
+  const { eid } = req.query;
+  if (!eid) return res.json({ success: false, message: 'eid 누락' });
+
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM payroll_tax WHERE eid = ? ORDER BY pdate DESC LIMIT 1',
+      [eid]
+    );
+
+    if (rows.length === 0) {
+      return res.json({ success: false, message: '이전 기록 없음' });
+    }
+
+    const latest = rows[0];
+    return res.json({ success: true, ...latest });
+  } catch (err) {
+    console.error('Reference 조회 오류:', err);
+    return res.json({ success: false, message: 'DB 오류' });
+  }
+});
+
 // 데이터 저장
 router.post('/add', async (req, res) => {
   if (!req.session.user) return res.redirect('/login');

@@ -380,7 +380,7 @@
     return;
   }
 
-  fetch(`/payroll/paylist/latest?eid=${eid}`)
+  fetch(`/admin/payroll/payroll_tax/paylist/latest?eid=${eid}`)
     .then(res => res.json())
     .then(data => {
       if (!data || !data.success) {
@@ -402,7 +402,7 @@
         }
       });
 
-      calculateNet();
+      // calculateNet();   : loadLatestPaylist() 함수는 서버에서 가장 최근 급여 데이터를 불러온 후, 그 데이터를 input에 넣고 자동으로 gross, tax, net 값을 계산해서 채워주는 것
     })
     .catch(err => {
       console.error('Reference 불러오기 오류:', err);
