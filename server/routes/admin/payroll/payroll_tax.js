@@ -16,7 +16,14 @@ router.get('/', async (req, res) => {
     delete req.session.lastPayDate;
     delete req.session.lastEidName;
 
-    const [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate = ?', [selectedPdate]);
+     // ✅ 기존 코드 (선택한 날짜만 가져오는 쿼리)
+    // const [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate = ?', [selectedPdate]);
+
+    // ✅  (선택한 날짜를 제외한 모든 레코드 가져오기)
+    // const [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate != ?', [selectedPdate]);
+
+    // ✅  코드 (모든 레코드 가져오기)
+    const [paylist] = await db.query('SELECT * FROM payroll_tax ORDER BY pdate DESC');
 
     res.render('admin/payroll/payroll_tax', {
       layout: 'layout',
@@ -65,7 +72,7 @@ router.post('/add', async (req, res) => {
   const {
     eid, name, jcode, jtitle, work1,
     pdate, ckno_table, rtime, otime, dtime,
-    fw, sse, me, caw, cade, adv, d1, dd,
+    fw, sse, me, caw, cade, adv, csp, dd,
     gross, tax, net, remark
   } = req.body;
 
@@ -85,7 +92,7 @@ router.post('/add', async (req, res) => {
         pdate, ckno_table,
         toNumber(rtime), toNumber(otime), toNumber(dtime),
         toNumber(fw), toNumber(sse), toNumber(me), toNumber(caw), toNumber(cade),
-        toNumber(adv), toNumber(d1), toNumber(dd),
+        toNumber(adv), toNumber(csp), toNumber(dd),
         toNumber(gross), toNumber(tax), toNumber(net), remark
       ]
     );

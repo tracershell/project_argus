@@ -239,7 +239,7 @@
         </div>
         <div class="payroll-group">
           <div class="payroll-item"><label>ADV.</label><input type="text" name="adv" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>C.S</label><input type="text" name="d1" autocomplete="off" oninput="formatDecimal(this)"></div>
+          <div class="payroll-item"><label>C.S</label><input type="text" name="csp" autocomplete="off" oninput="formatDecimal(this)"></div>
           <div class="payroll-item"><label>D.D</label><input type="text" name="dd" autocomplete="off" ninput="formatDecimal(this)"></div>
         </div>
         <div class="payroll-group" style="align-items: center; justify-content: center;">
@@ -273,15 +273,7 @@
           <button type="button" id="btn-delete">삭제</button>
         </div>
         
-        <div class="footer-center">AC
-          <input type="date" name="selectedDate">
-          <button type="button" class="view-btn">보기</button>
-          <button type="button" class="print-btn">출력</button>
-          <input type="date" name="selectedDate" id="selectedDate">
-          <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>
-          <button type="button" onclick="printPaylistPDF()">🖨️ Print PDF</button>
-          <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
-        </div>
+        
         <div class="footer-right">
           <button type="submit">입력저장</button>
         </div>
@@ -292,16 +284,26 @@
       <input type="hidden" name="jtitle" id="hiddenJtitle">
       <input type="hidden" name="work1" id="hiddenWork1">
     </form>
-    <div class="back-button-row">
-      <button onclick="window.location.href='/payroll'">창 닫기</button>
-    </div>
+  
   </div>
 <!-- ✅ 하단 Pay List Table -->
 <h3 style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">Pay Records (Selected Pay Date)</h3>
 
+<div class="footer-center">AC
+  <input type="date" name="selectedDate">
+  <button type="button" class="view-btn">보기</button>
+  <button type="button" class="print-btn">출력</button>
+  <input type="date" name="selectedDate" id="selectedDate">
+  <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>
+  <button type="button" onclick="printPaylistPDF()">🖨️ Print PDF</button>
+  <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
+  <button type="button" onclick=="#">📊 Result</button>
+</div>
+
 <table class="pay-table">
   <thead>
     <tr>
+      <th>Pay Date</th>
       <th>Name</th>
       <th>Check No</th>
       <th>R.T</th>
@@ -325,6 +327,14 @@
     <% if (paylist && paylist.length > 0) { %>
       <% paylist.forEach(row => { %>
         <tr>
+          <td>
+            <% // ✅ 날짜 형식 변환하여 출력 (MM/DD/YYYY) %>
+            <%= new Date(row.pdate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }) %>
+          </td> 
           <td><%= row.name %></td>
           <td><%= row.ckno %></td>
           <td><%= row.rtime %></td>
@@ -336,7 +346,7 @@
           <td><%= row.caw %></td>
           <td><%= row.cade %></td>
           <td><%= row.adv %></td>
-          <td><%= row.csp || row.d1 %></td>
+          <td><%= row.csp || row.csp %></td>
           <td><%= row.dd %></td>
           <td><%= row.gross %></td>
           <td><%= row.tax %></td>
@@ -380,6 +390,14 @@
     return;
   }
 
+  // ✅ 먼저 모든 필드 초기화
+  const clearFields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'gross', 'tax', 'net', 'remark'];
+  clearFields.forEach(field => {
+    const input = document.querySelector(`[name="${field}"]`);
+    if (input) input.value = '';
+  });
+
+  // ✅ fetch 요청
   fetch(`/admin/payroll/payroll_tax/paylist/latest?eid=${eid}`)
     .then(res => res.json())
     .then(data => {
@@ -388,11 +406,11 @@
         return;
       }
 
-      const fields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'd1', 'dd', 'remark'];
+      const fields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
       fields.forEach(field => {
         if (data[field] !== undefined) {
           if (field === 'remark') {
-            document.querySelector(`[name="${field}"]`).value = data[field];  // 그냥 문자열 처리
+            document.querySelector(`[name="${field}"]`).value = data[field];
           } else {
             document.querySelector(`[name="${field}"]`).value = parseFloat(data[field]).toLocaleString('en-US', {
               minimumFractionDigits: 2,
@@ -402,13 +420,14 @@
         }
       });
 
-      // calculateNet();   : loadLatestPaylist() 함수는 서버에서 가장 최근 급여 데이터를 불러온 후, 그 데이터를 input에 넣고 자동으로 gross, tax, net 값을 계산해서 채워주는 것
+      // calculateNet();  // 필요하면 이 부분도 주석 해제
     })
     .catch(err => {
       console.error('Reference 불러오기 오류:', err);
       alert('데이터를 불러오는 중 오류가 발생했습니다.');
     });
 }
+
 
 function showSaveComment() {
   const selected = document.querySelector('#ep_ref');
@@ -472,7 +491,7 @@ function calculateNet() {
 
 
     document.addEventListener('DOMContentLoaded', () => {
-      const fieldNames = ['ckno_table', 'rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'd1', 'dd', 'remark'];
+      const fieldNames = ['ckno_table', 'rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
       const fields = fieldNames.map(name => document.querySelector(`[name="${name}"]`)).filter(el => el);
 
       fields.forEach((field, index) => {
