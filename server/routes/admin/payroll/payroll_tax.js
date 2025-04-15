@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
     delete req.session.lastPayDate;
     delete req.session.lastEidName;
 
+
      // ✅ 기존 코드 (선택한 날짜만 가져오는 쿼리)
     // const [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate = ?', [selectedPdate]);
 
@@ -23,7 +24,20 @@ router.get('/', async (req, res) => {
     // const [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate != ?', [selectedPdate]);
 
     // ✅  코드 (모든 레코드 가져오기)
-    const [paylist] = await db.query('SELECT * FROM payroll_tax ORDER BY pdate DESC');
+   // const [paylist] = await db.query('SELECT * FROM payroll_tax ORDER BY pdate DESC');
+
+       // ✅ DB에서 등록된 모든 pdate 목록 가져오기 (중복 제거 후 최신순 정렬)
+
+       const [dates] = await db.query('SELECT DISTINCT pdate FROM payroll_tax ORDER BY pdate DESC');
+
+       const selectedDate = req.query.pdate || ''; // 쿼리스트링으로 넘어온 pdate
+       let paylist = [];
+
+    // ✅ pdate가 선택된 경우에만 해당 날짜의 급여 리스트 가져오기
+    if (selectedDate) {
+      [paylist] = await db.query('SELECT * FROM payroll_tax WHERE pdate = ? ORDER BY id DESC', [selectedDate]);
+    }
+
 
     res.render('admin/payroll/payroll_tax', {
       layout: 'layout',
@@ -34,6 +48,8 @@ router.get('/', async (req, res) => {
       selectedPdate,
       selectedEidName,
       paylist,
+      dates,
+      selectedDate,
       now: new Date().toString()
     });
   } catch (err) {

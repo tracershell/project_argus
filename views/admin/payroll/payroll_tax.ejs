@@ -290,10 +290,18 @@
 <h3 style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">Pay Records (Selected Pay Date)</h3>
 
 <div class="footer-center">AC
-  <input type="date" name="selectedDate">
-  <button type="button" class="view-btn">보기</button>
-  <button type="button" class="print-btn">출력</button>
-  <input type="date" name="selectedDate" id="selectedDate">
+  <% // ✅ 콤보박스: 등록된 pay date 목록을 옵션으로 표시 %>
+  <form method="get" style="display: inline;">
+    <select name="pdate" required>
+      <option value="">:: Select Pay Date ::</option>
+      <% dates.forEach(date => { %>
+        <option value="<%= date.pdate.toISOString().split('T')[0] %>" <%= selectedDate === date.pdate.toISOString().split('T')[0] ? 'selected' : '' %>>
+          <%= new Date(date.pdate).toLocaleDateString('en-US') %>
+        </option>
+      <% }) %>
+    </select>
+    <button type="submit" class="view-btn">보기</button>
+  </form>
   <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>
   <button type="button" onclick="printPaylistPDF()">🖨️ Print PDF</button>
   <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
@@ -304,6 +312,7 @@
   <thead>
     <tr>
       <th>Pay Date</th>
+      <th>EID</th>
       <th>Name</th>
       <th>Check No</th>
       <th>R.T</th>
@@ -335,6 +344,7 @@
               day: '2-digit'
             }) %>
           </td> 
+          <td><%= row.eid %></td>
           <td><%= row.name %></td>
           <td><%= row.ckno %></td>
           <td><%= row.rtime %></td>
@@ -515,17 +525,18 @@ function viewPaylistPDF() {
   window.open(`/payroll/pdf-view?pdate=${date}`, '_blank');
 }
 */
-
+// window.open(`/admin/payroll/payroll_tax_result/pdfdownload?pdate=${date}`, '_blank');
 
 
 function viewPaylistPDF() {
-  const date = document.getElementById('selectedDate').value;
+  const date = document.querySelector('select[name="pdate"]').value;
   if (!date) {
     alert("날짜를 선택하세요.");
     return;
   }
-  window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
+  window.open(`/admin/payroll/payroll_tax_pdf/pdf?pdate=${date}`, '_blank');
 }
+
 
 function printPaylistPDF() {
   const date = document.getElementById('selectedDate').value;
