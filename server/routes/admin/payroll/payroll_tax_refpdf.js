@@ -14,8 +14,8 @@ router.get('/refpdf', async (req, res) => {
 
   try {
     const [rows] = await db.query(
-        'SELECT ckno, pdate, name, gross FROM payroll_tax WHERE CAST(ckno AS UNSIGNED) >= ? AND CAST(ckno AS UNSIGNED) <= ? ORDER BY CAST(ckno AS UNSIGNED) ASC',
-        [startCkno, endCkno]
+      'SELECT ckno, pdate, name, gross FROM payroll_tax WHERE CAST(ckno AS UNSIGNED) >= ? AND CAST(ckno AS UNSIGNED) <= ? ORDER BY CAST(ckno AS UNSIGNED) ASC',
+      [startCkno, endCkno]
     );
 
     const fontPath = path.resolve('public/fonts/NotoSansKR-Regular.ttf');
@@ -28,19 +28,38 @@ router.get('/refpdf', async (req, res) => {
     res.setHeader('Content-Disposition', 'inline; filename=payroll_check_summary.pdf');
     doc.pipe(res);
 
-    doc.fontSize(10);
+    if (rows.length === 0) {
+      doc.fontSize(12).text('No records found for selected Check No range.', 100, 100);
+      doc.end();
+      return;
+    }
+
+    doc.fontSize(9);
     for (let i = 0; i < rows.length; i += 2) {
       const pair = rows.slice(i, i + 2);
 
       pair.forEach((item, idx) => {
-        const top = 60 + idx * 250; // 상단 위치 조절
+        // ✅ 첫 번째 box는 위쪽, 두 번째 box는 용지 하단에 배치
+        const top = idx === 0 ? 680 : 720; // 아래 box는 letter 용지 하단 근처로 조정 680 <== 670 
 
-        doc.rect(40, top - 10, 520, 120).stroke(); // 박스
+        doc.lineWidth(0.5); // ✅ 더 얇게 설정
+        doc.rect(40, top - 10, 520, 30).stroke(); // 박스 크기 줄임 (한 줄로) : 30 은 박스 높이
 
-        doc.text(`Check No: ${item.ckno}`, 60, top);
-        doc.text(`Pay Date: ${new Date(item.pdate).toLocaleDateString('en-US')}`, 60, top + 20);
-        doc.text(`Name: ${item.name}`, 60, top + 40);
-        doc.text(`Gross: $${parseFloat(item.gross).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 60, top + 60);
+        // const line = `Check No: ${item.ckno}         Date: ${new Date(item.pdate).toLocaleDateString('en-US')}                          ${item.name}               $${parseFloat(item.gross || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        //doc.text(line, 50, top + 1, { width: 500 });  // 박스 안에 텍스트 추가  y margin 
+
+        const formattedDate = new Date(item.pdate).toLocaleDateString('en-US');
+const gross = parseFloat(item.gross || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+doc.fontSize(9);
+
+// 왼쪽: Check No, Date
+doc.text(`Check No: ${item.ckno}`, 50, top + 1);
+doc.text(`Date: ${formattedDate}`, 160, top + 1);
+
+// 오른쪽: Name, Gross
+doc.text(`${item.name}`, 330, top + 1);  // 🔹 오른쪽으로 이동
+doc.text(`$${gross}`, 460, top + 1);     // 🔹 오른쪽 정렬 위치
       });
 
       if (i + 2 < rows.length) doc.addPage();

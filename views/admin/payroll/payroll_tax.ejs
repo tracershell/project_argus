@@ -185,6 +185,11 @@
   background-color: #eef6ff;
 }
 
+.pay-table-wrapper {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+  }
 </style>
 
 </head>
@@ -255,6 +260,7 @@
       </div>
 
       <div class="remark-inline">
+        <div class="payroll-group"> 
         <label for="remark">Remark :</label>
         <input type="text" name="remark" id="remark">
         <div class="work-info">
@@ -262,15 +268,18 @@
           <span>W.title: <span id="jtitleDisplay" class="blue-text"></span></span>
           <span>W.location: <span id="work1Display" class="blue-text"></span></span>
         </div>
+        </div>
       </div>
 
       <div class="footer-actions">
         <div class="footer-left">
+          <div class="payroll-group">
           <label for="ckno">Check No. :</label>
           <input type="text" name="ckno" id="ckno">
           <button type="button" id="btn-select">선택</button>
           <button type="button" id="btn-update">수정</button>
           <button type="button" id="btn-delete">삭제</button>
+          </div>
         </div>
         
         
@@ -289,27 +298,32 @@
 <!-- ✅ 하단 Pay List Table -->
 <h3 style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">Pay Records (Selected Pay Date)</h3>
 
-<div class="footer-center">AC
+<div class="footer-center">
+  <div class="payroll-group">  [Payroll List 보기]
   <% // ✅ 콤보박스: 등록된 pay date 목록을 옵션으로 표시 %>
   <form method="get" style="display: inline;">
-    <select name="pdate" required>
+    <select name="pdate" required onchange="this.form.submit()">
       <option value="">:: Select Pay Date ::</option>
       <% dates.forEach(date => { %>
-        <option value="<%= date.pdate.toISOString().split('T')[0] %>" <%= selectedDate === date.pdate.toISOString().split('T')[0] ? 'selected' : '' %>>
+        <option value="<%= date.pdate.toISOString().split('T')[0] %>" 
+          <%= selectedDate === date.pdate.toISOString().split('T')[0] ? 'selected' : '' %>>
           <%= new Date(date.pdate).toLocaleDateString('en-US') %>
         </option>
       <% }) %>
     </select>
-    <button type="submit" class="view-btn">보기</button>
   </form>
   <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>  
   <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
+  </div>
+  <div class="payroll-group">
   Start Check No: <input type="text" id="startCkno" style="width: 80px;">
   End Check No: <input type="text" id="endCkno" style="width: 80px;">
   <button type="button" onclick="viewReferencePDF()">📄 Reference PDF</button>
+  </div>
   <button type="button" onclick=="#">📊 Result</button>
 </div>
 
+<div class="pay-table-wrapper"></div>
 <table class="pay-table">
   <thead>
     <tr>
@@ -371,6 +385,7 @@
     <% } %>
   </tbody>
 
+</div>
 
   <script>
     function updateReferenceInfo() {
@@ -602,18 +617,35 @@ function selectRecord() {
   fetch(`/admin/payroll/payroll_tax/select?ckno=${encodeURIComponent(ckno)}`)
     .then(res => res.json())
     .then(data => {
-  if (!data.success) return alert("해당 Check No.를 찾을 수 없습니다.");
-  const record = data.data;  // ← 수정된 부분
-  for (const key in record) {
-    const field = document.querySelector(`[name="${key}"]`);
-    if (field) {
-      field.value = record[key];
-    }
-  }
-      calculateNet();
-    })
-    .catch(err => alert("조회 중 오류 발생"));
+      if (!data.success) return alert("해당 Check No.를 찾을 수 없습니다.");
+      const record = data.data;
+
+      // ✅ 공통 필드 자동 반영
+      for (const key in record) {
+        const field = document.querySelector(`[name="${key}"]`);
+        if (field) field.value = record[key];
+      }
+
+// ✅ 타임존 영향 없이 날짜 반영 (YYYY-MM-DD 문자열 그대로 사용)
+const pdateInput = document.querySelector('[name="pdate"]');
+if (pdateInput && record.pdate) {
+  pdateInput.value = record.pdate.slice(0, 10);
 }
+
+      // ✅ ckno_table 필드 수동 반영
+      const cknoTableInput = document.querySelector('[name="ckno_table"]');
+      if (cknoTableInput && record.ckno) {
+        cknoTableInput.value = record.ckno;
+      }
+
+      calculateNet(); // 금액 다시 계산
+    })
+    .catch(err => {
+      console.error('선택 중 오류:', err);
+      alert("조회 중 오류 발생");
+    });
+}
+
 
 function updateRecord() {
   const ckno = document.getElementById('ckno').value;
@@ -639,13 +671,31 @@ function deleteRecord() {
     .then(result => {
       if (result.success) {
         alert("삭제 완료");
-        location.reload();
+        resetForm();           // ✅ 삭제 후 폼 초기화
+        location.reload();     // 🔁 새로고침이 필요 없다면 이 줄은 제거 가능
       } else {
         alert("삭제 실패 또는 해당 Check No. 없음");
       }
     });
 }
- 
+
+function resetForm() {
+  const form = document.getElementById('payrollForm');
+  form.reset();
+
+  // 숨겨진 필드, 참조 필드들도 초기화
+  document.getElementById('eidDisplay').innerText = '';
+  document.getElementById('jcodeDisplay').innerText = '';
+  document.getElementById('jtitleDisplay').innerText = '';
+  document.getElementById('work1Display').innerText = '';
+
+  document.getElementById('hiddenEid').value = '';
+  document.getElementById('hiddenJcode').value = '';
+  document.getElementById('hiddenJtitle').value = '';
+  document.getElementById('hiddenWork1').value = '';
+
+  document.getElementById('saveComment').innerText = '';
+}
  </script>
 </body>
 </html>
