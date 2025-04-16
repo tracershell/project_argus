@@ -70,7 +70,9 @@
     </form>
 
     <div class="binding-box"> 
-      <form action="#" method="GET" style="display:inline; margin-left:10px;">
+      <form action="/admin/payroll/payroll_tax_result/viewPhtml" method="GET" style="display:inline; margin-left:10px;">
+        <input type="hidden" name="start" value="<%= start %>">
+        <input type="hidden" name="end" value="<%= end %>">
         <button type="submit">👤 개인별 HTML 보기</button>
       </form>
       <form action="#" method="GET" style="display:inline;">

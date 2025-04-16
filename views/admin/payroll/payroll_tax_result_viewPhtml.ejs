@@ -1,0 +1,148 @@
+<!-- ✅ payroll_tax_result_viewPhtml.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>개인별 HTML 보기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      font-size: 12px;
+      margin: 20px;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+        font-size: 9px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      font-size: 9px;
+    }
+    th {
+      background-color: #f0f8ff;
+    }
+    .summary-row {
+      font-weight: bold;
+      background-color: #fcfcfc;
+    }
+    .total-section {
+      margin-top: 40px;
+    }
+    .button-row {
+      text-align: right;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>개인별 급여 요약</h2>
+
+  <div class="button-row">
+    <form action="/admin/payroll/payroll_tax_result" method="GET" style="display:inline;">
+      <button type="submit">🔙 돌아가기</button>
+    </form>
+    <form action="/admin/payroll_tax_result/viewPpdf" method="GET" target="_blank" style="display:inline; margin-left:10px;">
+      <input type="hidden" name="start" value="<%= start %>">
+      <input type="hidden" name="end" value="<%= end %>">
+      <button type="submit">📄 PDF 보기</button>
+    </form>
+    <form action="/admin/payroll_tax_result/viewPcsv" method="GET" target="_blank" style="display:inline; margin-left:10px;">
+      <input type="hidden" name="start" value="<%= start %>">
+      <input type="hidden" name="end" value="<%= end %>">
+      <button type="submit">💾 CSV 저장</button>
+    </form>
+  </div>
+
+  <% for (const name in grouped) { %>
+    <h3>👤 <%= name %></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>P.Date</th><th>CK.No</th><th>R</th><th>O</th><th>D</th>
+          <th>FW</th><th>SSE</th><th>ME</th><th>CAW</th><th>CADE</th>
+          <th>ADV</th><th>CSP</th><th>DD</th><th>GROSS</th><th>TAX</th><th>NET</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let total = {rtime:0, otime:0, dtime:0, fw:0, sse:0, me:0, caw:0, cade:0, adv:0, csp:0, dd:0, gross:0, tax:0, net:0}; %>
+        <% grouped[name].forEach(row => {
+            total.rtime += parseFloat(row.rtime || 0);
+            total.otime += parseFloat(row.otime || 0);
+            total.dtime += parseFloat(row.dtime || 0);
+            total.fw += parseFloat(row.fw || 0);
+            total.sse += parseFloat(row.sse || 0);
+            total.me += parseFloat(row.me || 0);
+            total.caw += parseFloat(row.caw || 0);
+            total.cade += parseFloat(row.cade || 0);
+            total.adv += parseFloat(row.adv || 0);
+            total.csp += parseFloat(row.csp || 0);
+            total.dd += parseFloat(row.dd || 0);
+            total.gross += parseFloat(row.gross || 0);
+            total.tax += parseFloat(row.tax || 0);
+            total.net += parseFloat(row.net || 0);
+        %>
+        <tr>
+          <td><%= row.pdate.toISOString().slice(0,10) %></td>
+          <td><%= row.ckno %></td>
+          <td><%= row.rtime %></td><td><%= row.otime %></td><td><%= row.dtime %></td>
+          <td><%= row.fw %></td><td><%= row.sse %></td><td><%= row.me %></td>
+          <td><%= row.caw %></td><td><%= row.cade %></td><td><%= row.adv %></td>
+          <td><%= row.csp %></td><td><%= row.dd %></td><td><%= row.gross %></td>
+          <td><%= row.tax %></td><td><%= row.net %></td>
+        </tr>
+        <% }) %>
+        <tr class="summary-row">
+          <td colspan="2">합계</td>
+          <td><%= total.rtime.toFixed(2) %></td><td><%= total.otime.toFixed(2) %></td><td><%= total.dtime.toFixed(2) %></td>
+          <td><%= total.fw.toFixed(2) %></td><td><%= total.sse.toFixed(2) %></td><td><%= total.me.toFixed(2) %></td>
+          <td><%= total.caw.toFixed(2) %></td><td><%= total.cade.toFixed(2) %></td><td><%= total.adv.toFixed(2) %></td>
+          <td><%= total.csp.toFixed(2) %></td><td><%= total.dd.toFixed(2) %></td><td><%= total.gross.toFixed(2) %></td>
+          <td><%= total.tax.toFixed(2) %></td><td><%= total.net.toFixed(2) %></td>
+        </tr>
+      </tbody>
+    </table>
+  <% } %>
+
+  <!-- 전체 합계 -->
+  <div class="total-section">
+    <h3>📊 전체 합계</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>R</th><th>O</th><th>D</th><th>FW</th><th>SSE</th><th>ME</th>
+          <th>CAW</th><th>CADE</th><th>ADV</th><th>CSP</th><th>DD</th>
+          <th>GROSS</th><th>TAX</th><th>NET</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="summary-row">
+          <td><%= (totalAll.rtime || 0).toFixed(2) %></td>
+          <td><%= (totalAll.otime || 0).toFixed(2) %></td>
+          <td><%= (totalAll.dtime || 0).toFixed(2) %></td>
+          <td><%= (totalAll.fw || 0).toFixed(2) %></td>
+          <td><%= (totalAll.sse || 0).toFixed(2) %></td>
+          <td><%= (totalAll.me || 0).toFixed(2) %></td>
+          <td><%= (totalAll.caw || 0).toFixed(2) %></td>
+          <td><%= (totalAll.cade || 0).toFixed(2) %></td>
+          <td><%= (totalAll.adv || 0).toFixed(2) %></td>
+          <td><%= (totalAll.csp || 0).toFixed(2) %></td>
+          <td><%= (totalAll.dd || 0).toFixed(2) %></td>
+          <td><%= (totalAll.gross || 0).toFixed(2) %></td>
+          <td><%= (totalAll.tax || 0).toFixed(2) %></td>
+          <td><%= (totalAll.net || 0).toFixed(2) %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
