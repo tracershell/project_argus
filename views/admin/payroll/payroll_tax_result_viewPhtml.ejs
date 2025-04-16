@@ -51,11 +51,12 @@
     <form action="/admin/payroll/payroll_tax_result" method="GET" style="display:inline;">
       <button type="submit">🔙 돌아가기</button>
     </form>
-    <form action="/admin/payroll_tax_result/viewPpdf" method="GET" target="_blank" style="display:inline; margin-left:10px;">
-      <input type="hidden" name="start" value="<%= start %>">
-      <input type="hidden" name="end" value="<%= end %>">
-      <button type="submit">📄 PDF 보기</button>
-    </form>
+    <form action="/admin/payroll/payroll_tax_result_personalviewpdf/pdf" method="get" target="_blank">
+        <input type="hidden" name="start" value="<%= start %>">
+        <input type="hidden" name="end" value="<%= end %>">
+        <input type="text" name="comment" placeholder="코멘트 입력">
+        <button type="submit">📄 PDF 개인 보기</button>
+      </form>      
     <form action="/admin/payroll_tax_result/viewPcsv" method="GET" target="_blank" style="display:inline; margin-left:10px;">
       <input type="hidden" name="start" value="<%= start %>">
       <input type="hidden" name="end" value="<%= end %>">
