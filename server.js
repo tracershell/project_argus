@@ -112,6 +112,8 @@ app.use('/admin/payroll/payroll_tax_pdf', require('./server/routes/admin/payroll
 app.use('/admin/payroll/payroll_tax_csv', require('./server/routes/admin/payroll/payroll_tax_csv'));
 
 app.use('/admin/payroll/payroll_tax_refpdf', require('./server/routes/admin/payroll/payroll_tax_refpdf'));
+
+app.use('/admin/payroll/payroll_tax_result', require('./server/routes/admin/payroll/payroll_tax_result'));
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');

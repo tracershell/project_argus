@@ -1,0 +1,115 @@
+<!-- ✅ 2. payroll_tax_result.ejs 파일 구조 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>payroll tax search</title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      font-size: 12px;
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .button-row {
+      text-align: right;
+      margin: 20px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #f0f8ff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .scrollable-table {
+      max-height: 700px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+    }
+
+    .binding-box {
+    display: inline-flex;              /* ❗️block이 아닌 inline-flex로 크기 최소화 */
+    gap: 1rem;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: #fff;
+  }
+  </style>
+</head>
+<body>
+  <h2>payroll tax search</h2>
+
+  <form method="GET" action="/admin/payroll/payroll_tax_result">
+    Start Date: <input type="date" name="start" value="<%= start %>">
+    End Date: <input type="date" name="end" value="<%= end %>">
+    <button type="submit">🔍 검색</button>
+  </form>
+
+  <div class="button-row">
+    <form action="/admin/payroll/payroll_tax" style="display:inline;">
+      <button type="submit">🔙 돌아가기</button>
+    </form>
+
+    <div class="binding-box"> 
+      <form action="#" method="GET" style="display:inline; margin-left:10px;">
+        <button type="submit">👤 개인별 HTML 보기</button>
+      </form>
+      <form action="#" method="GET" style="display:inline;">
+        <button type="submit">📂 J.code 별 HTML 보기</button>
+      </form>
+      <form action="#" method="GET" style="display:inline;">
+        <button type="submit">📁 J.code+Location HTML 보기</button>
+      </form>
+    </div>  
+
+  </div>
+
+  <div class="scrollable-table">
+    <table>
+      <thead>
+        <tr>
+          <th>P.Date</th><th>EID</th><th>Name</th><th>CK.No</th><th>R.Time</th>
+          <th>O.Time</th><th>D.Time</th><th>FW</th><th>SSE</th><th>ME</th>
+          <th>CAW</th><th>CADE</th><th>Adv.</th><th>Csp.</th><th>D.d</th>
+          <th>GROSS</th><th>TAX</th><th>NET</th><th>remark</th>
+          <th>J.Code</th><th>J.Title</th><th>Loc.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% payrecords.forEach(row => { %>
+          <tr>
+            <td><%= row.pdate.toISOString().slice(0,10) %></td>
+            <td><%= row.eid %></td><td><%= row.name %></td><td><%= row.ckno %></td>
+            <td><%= row.rtime %></td><td><%= row.otime %></td><td><%= row.dtime %></td>
+            <td><%= row.fw %></td><td><%= row.sse %></td><td><%= row.me %></td>
+            <td><%= row.caw %></td><td><%= row.cade %></td><td><%= row.adv %></td>
+            <td><%= row.csp %></td><td><%= row.dd %></td>
+            <td><%= row.gross %></td><td><%= row.tax %></td><td><%= row.net %></td>
+            <td><%= row.remark %></td>
+            <td><%= row.jcode %></td><td><%= row.jtitle %></td><td><%= row.work1 %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
