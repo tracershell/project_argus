@@ -176,7 +176,7 @@ router.post('/update', async (req, res) => {
       WHERE ckno = ?`,
       [
         eid, name, jcode, jtitle, work1,
-        formatDate(pdate), ckno_table, // ✅ ckno_table = 새롭게 입력된 값
+        pdate, ckno_table, // ✅ ckno_table = 새롭게 입력된 값 원상복귀 : formatDate(pdate)
         toNumber(rtime), toNumber(otime), toNumber(dtime),
         toNumber(fw), toNumber(sse), toNumber(me), toNumber(caw), toNumber(cade),
         toNumber(adv), toNumber(csp), toNumber(dd),

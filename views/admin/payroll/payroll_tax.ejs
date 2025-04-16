@@ -245,7 +245,7 @@
         <div class="payroll-group">
           <div class="payroll-item"><label>ADV.</label><input type="text" name="adv" autocomplete="off" oninput="formatDecimal(this)"></div>
           <div class="payroll-item"><label>C.S</label><input type="text" name="csp" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>D.D</label><input type="text" name="dd" autocomplete="off" ninput="formatDecimal(this)"></div>
+          <div class="payroll-item"><label>D.D</label><input type="text" name="dd" autocomplete="off"oninput="formatDecimal(this)"></div>
         </div>
         <div class="payroll-group" style="align-items: center; justify-content: center;">
           <div class="payroll-item" style="margin-top: 22px;">
@@ -254,8 +254,8 @@
         </div>
         <div class="payroll-group">
           <div class="payroll-item"><label>Gross</label><input type="text" name="gross" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>Tax</label><input type="text" name="tax" autocomplete="off" ninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>Net</label><input type="text" name="net" autocomplete="off" ninput="formatDecimal(this)"></div>
+          <div class="payroll-item"><label>Tax</label><input type="text" name="tax" autocomplete="off"oninput="formatDecimal(this)"></div>
+          <div class="payroll-item"><label>Net</label><input type="text" name="net" autocomplete="off"oninput="formatDecimal(this)"></div>
         </div>
       </div>
 
@@ -320,10 +320,10 @@
   End Check No: <input type="text" id="endCkno" style="width: 80px;">
   <button type="button" onclick="viewReferencePDF()">📄 Reference PDF</button>
   </div>
-  <button type="button" onclick=="#">📊 Result</button>
+  <button type="button" onclick="handleResultClick()">📊 Result</button>
 </div>
 
-<div class="pay-table-wrapper"></div>
+<div class="pay-table-wrapper">
 <table class="pay-table">
   <thead>
     <tr>
