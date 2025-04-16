@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audit Summary View</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      font-size: 12px;
+      margin: 20px;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    .button-row {
+      text-align: right;
+      margin: 20px 0;
+    }
+    .binding-box {
+      display: inline-flex;
+      gap: 1rem;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      flex-direction: row;
+      align-items: center;
+      background-color: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 9px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f8ff;
+    }
+    .summary-row {
+      font-weight: bold;
+      background-color: #fcfcfc;
+    }
+  </style>
+</head>
+<body>
+  <h2>📋 Audit Summary</h2>
+
+  <div class="button-row">
+    <div class="binding-box">
+      <span>기간: <%= start %> ~ <%= end %></span>
+      <form action="/admin/payroll/payroll_tax_result" method="GET" style="display:inline;">
+        <button type="submit">🔙 돌아가기</button>
+      </form>
+      <form action="/admin/payroll/payroll_tax_result_auditviewpdf/pdf" method="get" target="_blank">
+        <input type="hidden" name="start" value="<%= start %>">
+        <input type="hidden" name="end" value="<%= end %>">
+        <button type="submit">📄 PDF Audit 보기</button>
+      </form>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>J.Title</th>
+        <th>J.Code</th>
+        <th>R.Time</th>
+        <th>O.Time</th>
+        <th>D.Time</th>
+        <th>Gross</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% records.forEach(row => { %>
+      <tr>
+        <td><%= row.name %></td>
+        <td><%= row.jtitle %></td>
+        <td><%= row.jcode %></td>
+        <td><%= row.rtime.toFixed(2) %></td>
+        <td><%= row.otime.toFixed(2) %></td>
+        <td><%= row.dtime.toFixed(2) %></td>
+        <td><%= row.gross.toFixed(2) %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

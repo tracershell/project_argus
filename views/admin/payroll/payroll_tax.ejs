@@ -1,730 +1,730 @@
 <style>
-  body.payroll-page {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-    font-size: 12px;
-  }
-
-  h2 {
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 15px;
-  }
-
-  input, select, textarea {
-    padding: 4px;
-    font-size: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    height: 24px;
-  }
-
-  button {
-    padding: 4px 12px;
-    font-size: 12px;
-    border: 1px solid #066da5;
-    border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer;
-  }
-
-  .container { margin: 0 20px; }
-  .form-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 20px; }
-  .form-group select { min-width: 200px; }
-  .reference-btn { margin-left: 0.5rem; }
-
-  .payroll-table-wrapper {
-  display: flex;
-  flex-wrap: nowrap; /* 한 줄로 강제 */
-  overflow-x: auto;  /* 너비 초과 시 스크롤 허용 */
-  gap: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
-}
-
-  .payroll-group {
+    body.payroll-page {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      font-size: 12px;
+    }
+  
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+  
+    input, select, textarea {
+      padding: 4px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      height: 24px;
+    }
+  
+    button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #066da5;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+  
+    .container { margin: 0 20px; }
+    .form-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 20px; }
+    .form-group select { min-width: 200px; }
+    .reference-btn { margin-left: 0.5rem; }
+  
+    .payroll-table-wrapper {
     display: flex;
-    gap: 1rem;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    flex-direction: row;
-    align-items: flex-start;
-    background-color: #fff;
-  }
-
-  .payroll-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .payroll-item input {
-  width: 93px;   /* 기존 70px에서 살짝 줄임 */
-}
-  .payroll-item label {
-    font-weight: bold;
-  }
-
-  .payroll-form { width: 100%; box-sizing: border-box; }
-  .row { margin-bottom: 20px; }
-
-  .remark-inline {
-    display: flex;
-    align-items: center;
-    gap: 6rem;
+    flex-wrap: nowrap; /* 한 줄로 강제 */
+    overflow-x: auto;  /* 너비 초과 시 스크롤 허용 */
+    gap: 10px;
     margin-bottom: 20px;
-    flex-wrap: wrap;
+    padding: 10px;
+    background-color: #f5f7fa;
+    border-radius: 8px;
   }
-
-  .remark-inline input {
-    flex: 0 0 200px;
-    min-width: 200px;
+  
+    .payroll-group {
+      display: flex;
+      gap: 1rem;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      flex-direction: row;
+      align-items: flex-start;
+      background-color: #fff;
+    }
+  
+    .payroll-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+  
+    .payroll-item input {
+    width: 93px;   /* 기존 70px에서 살짝 줄임 */
   }
-
-  .work-info {
-    display: flex;
-    gap: 6rem;
-    align-items: center;
-  }
-
-  .footer-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-left, .footer-center, .footer-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .footer-center {
-    justify-content: center;
-    flex: 1;
-  }
-
-  .back-button-row {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-  }
-
-  .back-button-row button {
-    padding: 4px 12px;
+    .payroll-item label {
+      font-weight: bold;
+    }
+  
+    .payroll-form { width: 100%; box-sizing: border-box; }
+    .row { margin-bottom: 20px; }
+  
+    .remark-inline {
+      display: flex;
+      align-items: center;
+      gap: 6rem;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+  
+    .remark-inline input {
+      flex: 0 0 200px;
+      min-width: 200px;
+    }
+  
+    .work-info {
+      display: flex;
+      gap: 6rem;
+      align-items: center;
+    }
+  
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  
+    .footer-left, .footer-center, .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  
+    .footer-center {
+      justify-content: center;
+      flex: 1;
+    }
+  
+    .back-button-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
+  
+    .back-button-row button {
+      padding: 4px 12px;
+      font-size: 12px;
+      background-color: #fff;
+      border: 1px solid #666;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  
+    .back-button-row button:hover {
+      background-color: #eee;
+    }
+  
+    #saveComment {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: green;
+    }
+  
+    .blue-text {
+      color: #007bff;
+      font-weight: bold;
+    }
+  
+    .red-text {
+      color: red;
+      font-weight: bold;
+    }
+  
+    .pay-table {
+    width: 100%;
+    border-collapse: collapse;
     font-size: 12px;
     background-color: #fff;
-    border: 1px solid #666;
-    border-radius: 4px;
-    cursor: pointer;
+    margin-top: 20px;
   }
-
-  .back-button-row button:hover {
-    background-color: #eee;
+  
+  .pay-table thead {
+    background-color: #f0f8ff;
   }
-
-  #saveComment {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 0.95rem;
-    color: green;
-  }
-
-  .blue-text {
-    color: #007bff;
-    font-weight: bold;
-  }
-
-  .red-text {
-    color: red;
-    font-weight: bold;
-  }
-
-  .pay-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  background-color: #fff;
-  margin-top: 20px;
-}
-
-.pay-table thead {
-  background-color: #f0f8ff;
-}
-
-.pay-table th, .pay-table td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.pay-table th {
-  font-weight: bold;
-  color: #333;
-}
-
-.pay-table td {
-  color: #444;
-}
-
-.pay-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.pay-table tr:hover {
-  background-color: #eef6ff;
-}
-
-.pay-table-wrapper {
-    max-height: 500px;
-    overflow-y: auto;
+  
+  .pay-table th, .pay-table td {
     border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+    white-space: nowrap;
   }
-
-  .calculate-btn {
-  background-color: #ffe5e5;  /* 엷은 붉은색 */
-  border: 1px solid #cc6666;
-  color: #b30000;
-  font-weight: bold;
-}
-.calculate-btn:hover {
-  background-color: #ffcccc;  /* hover 시 약간 더 진한 붉은 톤 */
-}
-
-/* 엷은 파란색 버튼 스타일 */
-.light-blue {
-  background-color: #e6f0ff;       /* 아주 연한 파랑 (#f0f8ff 도 가능) */
-  border: 1px solid #99bbff;       /* 파란 계열 테두리 */
-  color: #003366;                  /* 어두운 파란 텍스트 */
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-.light-blue:hover {
-  background-color: #cce0ff;       /* hover 시 약간 더 진한 연파랑 */
-}
-
-</style>
-
-</head>
-<body class="payroll-page">
-  <h2>Pay List</h2>
-  <div class="container">
-    <form id="payrollForm" action="/admin/payroll/payroll_tax/add" method="post" class="payroll-form" onsubmit="return showSaveComment()">
-      <div class="row">
-        <div class="form-group">
-          <label for="name">Name :</label>
-          <select id="ep_ref" name="name" onchange="updateReferenceInfo()">
-            <option value="">-- Select Employee --</option>
-            <% employees.forEach(emp => { %>
-              <option value="<%= emp.name %>" data-eid="<%= emp.eid %>" data-jcode="<%= emp.jcode %>" data-jtitle="<%= emp.jtitle %>" data-work1="<%= emp.work1 %>">
-                <%= emp.name %>
-              </option>
-            <% }) %>
-          </select>
-          <button type="button" class="reference-btn light-blue" onclick="loadLatestPaylist()" class="reference-btn">Reference</button>
-          <span id="eidDisplay" class="blue-text"></span>
-        </div>
-      </div>
-
-      <% if (selectedEidName) { %>
-        <div style="text-align: center; margin-bottom: 1rem;">
-          <span class="red-text">이전 입력 자료 | <%= selectedEidName %></span>
-        </div>
-      <% } %>
-
-      <div class="row">
-        <label for="pdate">Pay Date :</label>
-        <input type="date" name="pdate" id="pdate" value="<%= selectedPdate %>" required>
-      </div>
-
-      <div class="payroll-table-wrapper">
-        <div class="payroll-group">
-          <div class="payroll-item"><label>Check No.</label><input type="text" name="ckno_table" autocomplete="off"></div>
-        </div>
-        <div class="payroll-group">
-          <div class="payroll-item"><label>R.T</label><input type="text" name="rtime" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>O.T</label><input type="text" name="otime" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>D.T</label><input type="text" name="dtime" autocomplete="off" oninput="formatDecimal(this)"></div>
-        </div>
-        <div class="payroll-group">
-          <div class="payroll-item"><label>FW</label><input type="text" name="fw" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>SSE</label><input type="text" name="sse" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>ME</label><input type="text" name="me" autocomplete="off" oninput="formatDecimal(this)"></div>
-        </div>
-        <div class="payroll-group">
-          <div class="payroll-item"><label>CA-W</label><input type="text" name="caw" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>CA-de</label><input type="text" name="cade" autocomplete="off" oninput="formatDecimal(this)"></div>
-        </div>
-        <div class="payroll-group">
-          <div class="payroll-item"><label>ADV.</label><input type="text" name="adv" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>C.S</label><input type="text" name="csp" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>D.D</label><input type="text" name="dd" autocomplete="off"oninput="formatDecimal(this)"></div>
-        </div>
-        <div class="payroll-group" style="align-items: center; justify-content: center;">
-          <div class="payroll-item" style="margin-top: 22px;">
-            <button type="button" class="calculate-btn" onclick="calculateNet()">총액 계산</button>
+  
+  .pay-table th {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .pay-table td {
+    color: #444;
+  }
+  
+  .pay-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .pay-table tr:hover {
+    background-color: #eef6ff;
+  }
+  
+  .pay-table-wrapper {
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+    }
+  
+    .calculate-btn {
+    background-color: #ffe5e5;  /* 엷은 붉은색 */
+    border: 1px solid #cc6666;
+    color: #b30000;
+    font-weight: bold;
+  }
+  .calculate-btn:hover {
+    background-color: #ffcccc;  /* hover 시 약간 더 진한 붉은 톤 */
+  }
+  
+  /* 엷은 파란색 버튼 스타일 */
+  .light-blue {
+    background-color: #e6f0ff;       /* 아주 연한 파랑 (#f0f8ff 도 가능) */
+    border: 1px solid #99bbff;       /* 파란 계열 테두리 */
+    color: #003366;                  /* 어두운 파란 텍스트 */
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  
+  .light-blue:hover {
+    background-color: #cce0ff;       /* hover 시 약간 더 진한 연파랑 */
+  }
+  
+  </style>
+  
+  </head>
+  <body class="payroll-page">
+    <h2>Pay List</h2>
+    <div class="container">
+      <form id="payrollForm" action="/admin/payroll/payroll_tax/add" method="post" class="payroll-form" onsubmit="return showSaveComment()">
+        <div class="row">
+          <div class="form-group">
+            <label for="name">Name :</label>
+            <select id="ep_ref" name="name" onchange="updateReferenceInfo()">
+              <option value="">-- Select Employee --</option>
+              <% employees.forEach(emp => { %>
+                <option value="<%= emp.name %>" data-eid="<%= emp.eid %>" data-jcode="<%= emp.jcode %>" data-jtitle="<%= emp.jtitle %>" data-work1="<%= emp.work1 %>">
+                  <%= emp.name %>
+                </option>
+              <% }) %>
+            </select>
+            <button type="button" class="reference-btn light-blue" onclick="loadLatestPaylist()" class="reference-btn">Reference</button>
+            <span id="eidDisplay" class="blue-text"></span>
           </div>
         </div>
-        <div class="payroll-group">
-          <div class="payroll-item"><label>Gross</label><input type="text" name="gross" autocomplete="off" oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>Tax</label><input type="text" name="tax" autocomplete="off"oninput="formatDecimal(this)"></div>
-          <div class="payroll-item"><label>Net</label><input type="text" name="net" autocomplete="off"oninput="formatDecimal(this)"></div>
+  
+        <% if (selectedEidName) { %>
+          <div style="text-align: center; margin-bottom: 1rem;">
+            <span class="red-text">이전 입력 자료 | <%= selectedEidName %></span>
+          </div>
+        <% } %>
+  
+        <div class="row">
+          <label for="pdate">Pay Date :</label>
+          <input type="date" name="pdate" id="pdate" value="<%= selectedPdate %>" required>
         </div>
-      </div>
-
-      <div class="remark-inline">
-        <div class="payroll-group"> 
-        <label for="remark">Remark :</label>
-        <input type="text" name="remark" id="remark">
-        <div class="work-info">
-          <span>W.code: <span id="jcodeDisplay" class="blue-text"></span></span>
-          <span>W.title: <span id="jtitleDisplay" class="blue-text"></span></span>
-          <span>W.location: <span id="work1Display" class="blue-text"></span></span>
-        </div>
-        </div>
-      </div>
-
-      <div class="footer-actions">
-        <div class="footer-left">
+  
+        <div class="payroll-table-wrapper">
           <div class="payroll-group">
-          <label for="ckno">Check No. :</label>
-          <input type="text" name="ckno" id="ckno">
-          <button type="button" id="btn-select">선택</button>
-          <button type="button" id="btn-update">수정</button>
-          <button type="button" id="btn-delete">삭제</button>
+            <div class="payroll-item"><label>Check No.</label><input type="text" name="ckno_table" autocomplete="off"></div>
+          </div>
+          <div class="payroll-group">
+            <div class="payroll-item"><label>R.T</label><input type="text" name="rtime" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>O.T</label><input type="text" name="otime" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>D.T</label><input type="text" name="dtime" autocomplete="off" oninput="formatDecimal(this)"></div>
+          </div>
+          <div class="payroll-group">
+            <div class="payroll-item"><label>FW</label><input type="text" name="fw" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>SSE</label><input type="text" name="sse" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>ME</label><input type="text" name="me" autocomplete="off" oninput="formatDecimal(this)"></div>
+          </div>
+          <div class="payroll-group">
+            <div class="payroll-item"><label>CA-W</label><input type="text" name="caw" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>CA-de</label><input type="text" name="cade" autocomplete="off" oninput="formatDecimal(this)"></div>
+          </div>
+          <div class="payroll-group">
+            <div class="payroll-item"><label>ADV.</label><input type="text" name="adv" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>C.S</label><input type="text" name="csp" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>D.D</label><input type="text" name="dd" autocomplete="off"oninput="formatDecimal(this)"></div>
+          </div>
+          <div class="payroll-group" style="align-items: center; justify-content: center;">
+            <div class="payroll-item" style="margin-top: 22px;">
+              <button type="button" class="calculate-btn" onclick="calculateNet()">총액 계산</button>
+            </div>
+          </div>
+          <div class="payroll-group">
+            <div class="payroll-item"><label>Gross</label><input type="text" name="gross" autocomplete="off" oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>Tax</label><input type="text" name="tax" autocomplete="off"oninput="formatDecimal(this)"></div>
+            <div class="payroll-item"><label>Net</label><input type="text" name="net" autocomplete="off"oninput="formatDecimal(this)"></div>
           </div>
         </div>
-        
-        
-        <div class="footer-right">
-          <button type="submit">입력저장</button>
+  
+        <div class="remark-inline">
+          <div class="payroll-group"> 
+          <label for="remark">Remark :</label>
+          <input type="text" name="remark" id="remark">
+          <div class="work-info">
+            <span>W.code: <span id="jcodeDisplay" class="blue-text"></span></span>
+            <span>W.title: <span id="jtitleDisplay" class="blue-text"></span></span>
+            <span>W.location: <span id="work1Display" class="blue-text"></span></span>
+          </div>
+          </div>
         </div>
-      </div>
-      <div id="saveComment"></div>
-      <input type="hidden" name="eid" id="hiddenEid">
-      <input type="hidden" name="jcode" id="hiddenJcode">
-      <input type="hidden" name="jtitle" id="hiddenJtitle">
-      <input type="hidden" name="work1" id="hiddenWork1">
+  
+        <div class="footer-actions">
+          <div class="footer-left">
+            <div class="payroll-group">
+            <label for="ckno">Check No. :</label>
+            <input type="text" name="ckno" id="ckno">
+            <button type="button" id="btn-select">선택</button>
+            <button type="button" id="btn-update">수정</button>
+            <button type="button" id="btn-delete">삭제</button>
+            </div>
+          </div>
+          
+          
+          <div class="footer-right">
+            <button type="submit">입력저장</button>
+          </div>
+        </div>
+        <div id="saveComment"></div>
+        <input type="hidden" name="eid" id="hiddenEid">
+        <input type="hidden" name="jcode" id="hiddenJcode">
+        <input type="hidden" name="jtitle" id="hiddenJtitle">
+        <input type="hidden" name="work1" id="hiddenWork1">
+      </form>
+    
+    </div>
+  <!-- ✅ 하단 Pay List Table -->
+  <h3 style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">Pay Records (Selected Pay Date)</h3>
+  
+  <div class="footer-center">
+    <div class="payroll-group">  [Payroll List 보기]
+    <% // ✅ 콤보박스: 등록된 pay date 목록을 옵션으로 표시 %>
+    <form method="get" style="display: inline;">
+      <select name="pdate" required onchange="this.form.submit()">
+        <option value="">:: Select Pay Date ::</option>
+        <% dates.forEach(date => { %>
+          <option value="<%= date.pdate.toISOString().split('T')[0] %>" 
+            <%= selectedDate === date.pdate.toISOString().split('T')[0] ? 'selected' : '' %>>
+            <%= new Date(date.pdate).toLocaleDateString('en-US') %>
+          </option>
+        <% }) %>
+      </select>
     </form>
+    <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>  
+    <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
+    </div>
+    <div class="payroll-group">
+    Start Check No: <input type="text" id="startCkno" style="width: 80px;">
+    End Check No: <input type="text" id="endCkno" style="width: 80px;">
+    <button type="button" onclick="viewReferencePDF()">📄 Reference PDF</button>
+    </div>
+    <button type="button" onclick="handleResultClick()">📊 Result</button>
+  </div>
+  
+  <div class="pay-table-wrapper">
+  <table class="pay-table">
+    <thead>
+      <tr>
+        <th>Pay Date</th>
+        <th>EID</th>
+        <th>Name</th>
+        <th>Check No</th>
+        <th>R.T</th>
+        <th>O.T</th>
+        <th>D.T</th>
+        <th>FW</th>        
+        <th>SSE</th>       
+        <th>ME</th>        
+        <th>CA-W</th>
+        <th>CA-de</th>
+        <th>ADV.</th>
+        <th>C.S</th>
+        <th>D.D</th>
+        <th>Gross</th>
+        <th>Tax</th>
+        <th>Net</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (paylist && paylist.length > 0) { %>
+        <% paylist.forEach(row => { %>
+          <tr>
+            <td>
+              <% // ✅ 날짜 형식 변환하여 출력 (MM/DD/YYYY) %>
+              <%= new Date(row.pdate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+              }) %>
+            </td> 
+            <td><%= row.eid %></td>
+            <td><%= row.name %></td>
+            <td><%= row.ckno %></td>
+            <td><%= row.rtime %></td>
+            <td><%= row.otime %></td>
+            <td><%= row.dtime %></td>
+            <td><%= row.fw %></td>      
+            <td><%= row.sse %></td>     
+            <td><%= row.me %></td>      
+            <td><%= row.caw %></td>
+            <td><%= row.cade %></td>
+            <td><%= row.adv %></td>
+            <td><%= row.csp || row.csp %></td>
+            <td><%= row.dd %></td>
+            <td><%= row.gross %></td>
+            <td><%= row.tax %></td>
+            <td><%= row.net %></td>
+            <td><%= row.remark || '' %></td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr><td colspan="14" style="text-align:center; padding: 10px;">선택한 날짜에 대한 기록이 없습니다.</td></tr>
+      <% } %>
+    </tbody>
   
   </div>
-<!-- ✅ 하단 Pay List Table -->
-<h3 style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">Pay Records (Selected Pay Date)</h3>
-
-<div class="footer-center">
-  <div class="payroll-group">  [Payroll List 보기]
-  <% // ✅ 콤보박스: 등록된 pay date 목록을 옵션으로 표시 %>
-  <form method="get" style="display: inline;">
-    <select name="pdate" required onchange="this.form.submit()">
-      <option value="">:: Select Pay Date ::</option>
-      <% dates.forEach(date => { %>
-        <option value="<%= date.pdate.toISOString().split('T')[0] %>" 
-          <%= selectedDate === date.pdate.toISOString().split('T')[0] ? 'selected' : '' %>>
-          <%= new Date(date.pdate).toLocaleDateString('en-US') %>
-        </option>
-      <% }) %>
-    </select>
-  </form>
-  <button type="button" onclick="viewPaylistPDF()">📄 View PDF</button>  
-  <button type="button" onclick="downloadCSV()">💾 CSV 저장</button>
-  </div>
-  <div class="payroll-group">
-  Start Check No: <input type="text" id="startCkno" style="width: 80px;">
-  End Check No: <input type="text" id="endCkno" style="width: 80px;">
-  <button type="button" onclick="viewReferencePDF()">📄 Reference PDF</button>
-  </div>
-  <button type="button" onclick="handleResultClick()">📊 Result</button>
-</div>
-
-<div class="pay-table-wrapper">
-<table class="pay-table">
-  <thead>
-    <tr>
-      <th>Pay Date</th>
-      <th>EID</th>
-      <th>Name</th>
-      <th>Check No</th>
-      <th>R.T</th>
-      <th>O.T</th>
-      <th>D.T</th>
-      <th>FW</th>        
-      <th>SSE</th>       
-      <th>ME</th>        
-      <th>CA-W</th>
-      <th>CA-de</th>
-      <th>ADV.</th>
-      <th>C.S</th>
-      <th>D.D</th>
-      <th>Gross</th>
-      <th>Tax</th>
-      <th>Net</th>
-      <th>Remark</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if (paylist && paylist.length > 0) { %>
-      <% paylist.forEach(row => { %>
-        <tr>
-          <td>
-            <% // ✅ 날짜 형식 변환하여 출력 (MM/DD/YYYY) %>
-            <%= new Date(row.pdate).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit'
-            }) %>
-          </td> 
-          <td><%= row.eid %></td>
-          <td><%= row.name %></td>
-          <td><%= row.ckno %></td>
-          <td><%= row.rtime %></td>
-          <td><%= row.otime %></td>
-          <td><%= row.dtime %></td>
-          <td><%= row.fw %></td>      
-          <td><%= row.sse %></td>     
-          <td><%= row.me %></td>      
-          <td><%= row.caw %></td>
-          <td><%= row.cade %></td>
-          <td><%= row.adv %></td>
-          <td><%= row.csp || row.csp %></td>
-          <td><%= row.dd %></td>
-          <td><%= row.gross %></td>
-          <td><%= row.tax %></td>
-          <td><%= row.net %></td>
-          <td><%= row.remark || '' %></td>
-        </tr>
-      <% }) %>
-    <% } else { %>
-      <tr><td colspan="14" style="text-align:center; padding: 10px;">선택한 날짜에 대한 기록이 없습니다.</td></tr>
-    <% } %>
-  </tbody>
-
-</div>
-
-  <script>
-    function updateReferenceInfo() {
-      const selected = document.querySelector('#ep_ref');
-      const option = selected.options[selected.selectedIndex];
-
-      const eidVal = option.getAttribute('data-eid') || '';
-      const jcodeVal = option.getAttribute('data-jcode') || '';
-      const jtitleVal = option.getAttribute('data-jtitle') || '';
-      const work1Val = option.getAttribute('data-work1') || '';
-
-      document.getElementById('eidDisplay').innerText = eidVal;
-      document.getElementById('jcodeDisplay').innerText = jcodeVal;
-      document.getElementById('jtitleDisplay').innerText = jtitleVal;
-      document.getElementById('work1Display').innerText = work1Val;
-
-      document.getElementById('hiddenEid').value = eidVal;
-      document.getElementById('hiddenJcode').value = jcodeVal;
-      document.getElementById('hiddenJtitle').value = jtitleVal;
-      document.getElementById('hiddenWork1').value = work1Val;
-    }
-
-    function loadLatestPaylist() {
-  const selected = document.querySelector('#ep_ref');
-  const eid = selected.options[selected.selectedIndex]?.getAttribute('data-eid');
-
-  if (!eid) {
-    alert('직원을 선택하세요.');
-    return;
-  }
-
-  // ✅ 먼저 모든 필드 초기화
-  const clearFields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'gross', 'tax', 'net', 'remark'];
-  clearFields.forEach(field => {
-    const input = document.querySelector(`[name="${field}"]`);
-    if (input) input.value = '';
-  });
-
-  // ✅ fetch 요청
-  fetch(`/admin/payroll/payroll_tax/paylist/latest?eid=${eid}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data || !data.success) {
-        alert('최근 급여 데이터를 찾을 수 없습니다.');
-        return;
+  
+    <script>
+      function updateReferenceInfo() {
+        const selected = document.querySelector('#ep_ref');
+        const option = selected.options[selected.selectedIndex];
+  
+        const eidVal = option.getAttribute('data-eid') || '';
+        const jcodeVal = option.getAttribute('data-jcode') || '';
+        const jtitleVal = option.getAttribute('data-jtitle') || '';
+        const work1Val = option.getAttribute('data-work1') || '';
+  
+        document.getElementById('eidDisplay').innerText = eidVal;
+        document.getElementById('jcodeDisplay').innerText = jcodeVal;
+        document.getElementById('jtitleDisplay').innerText = jtitleVal;
+        document.getElementById('work1Display').innerText = work1Val;
+  
+        document.getElementById('hiddenEid').value = eidVal;
+        document.getElementById('hiddenJcode').value = jcodeVal;
+        document.getElementById('hiddenJtitle').value = jtitleVal;
+        document.getElementById('hiddenWork1').value = work1Val;
       }
-
-      const fields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
-      fields.forEach(field => {
-        if (data[field] !== undefined) {
-          if (field === 'remark') {
-            document.querySelector(`[name="${field}"]`).value = data[field];
-          } else {
-            document.querySelector(`[name="${field}"]`).value = parseFloat(data[field]).toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            });
-          }
-        }
-      });
-
-      // calculateNet();  // 필요하면 이 부분도 주석 해제
-    })
-    .catch(err => {
-      console.error('Reference 불러오기 오류:', err);
-      alert('데이터를 불러오는 중 오류가 발생했습니다.');
-    });
-}
-
-
-function showSaveComment() {
-  const selected = document.querySelector('#ep_ref');
-  const name = selected.value;
-  const eid = selected.options[selected.selectedIndex]?.getAttribute('data-eid') || '';
-  const commentBox = document.getElementById('saveComment');
-  commentBox.innerText = `eid: ${eid} / ${name} 이 지금 입력되었습니다.`;
-  return true;
-}
-
-    function formatDecimal(input) {
-  let value = input.value;
-
-  // 숫자와 소수점만 허용
-  value = value.replace(/[^\d.]/g, '');
-
-  // 소수점 1개만 유지
-  const parts = value.split('.');
-  if (parts.length > 2) {
-    value = parts[0] + '.' + parts[1];
-  }
-
-  input.value = value; // 입력 중에는 가공하지 않음
-
-  // 포커스 벗어날 때 포맷 적용
-  input.addEventListener('blur', () => {
-    const num = parseFloat(input.value.replace(/,/g, '')); // 쉼표 제거 후 숫자 변환
-    if (!isNaN(num)) {
-      // 소수점 2자리 + 쉼표 형식 적용
-      input.value = num.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+  
+      function loadLatestPaylist() {
+    const selected = document.querySelector('#ep_ref');
+    const eid = selected.options[selected.selectedIndex]?.getAttribute('data-eid');
+  
+    if (!eid) {
+      alert('직원을 선택하세요.');
+      return;
     }
-  });
-}
-
-function calculateNet() {
-  const rtime = parseFloat(document.querySelector('[name="rtime"]').value.replace(/,/g, '')) || 0;
-  const otime = parseFloat(document.querySelector('[name="otime"]').value.replace(/,/g, '')) || 0;
-  const dtime = parseFloat(document.querySelector('[name="dtime"]').value.replace(/,/g, '')) || 0;
-
-  const fw = parseFloat(document.querySelector('[name="fw"]').value.replace(/,/g, '')) || 0;
-  const sse = parseFloat(document.querySelector('[name="sse"]').value.replace(/,/g, '')) || 0;
-  const me = parseFloat(document.querySelector('[name="me"]').value.replace(/,/g, '')) || 0;
-  const caw = parseFloat(document.querySelector('[name="caw"]').value.replace(/,/g, '')) || 0;
-  const cade = parseFloat(document.querySelector('[name="cade"]').value.replace(/,/g, '')) || 0;
-
-  const gross = rtime + otime + dtime;
-  const tax = fw + sse + me + caw + cade;
-  const net = gross - tax;
-
-  const grossField = document.querySelector('[name="gross"]');
-  const taxField = document.querySelector('[name="tax"]');
-  const netField = document.querySelector('[name="net"]');
-
-  grossField.value = gross.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  taxField.value = tax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  netField.value = net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const fieldNames = ['ckno_table', 'rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
-      const fields = fieldNames.map(name => document.querySelector(`[name="${name}"]`)).filter(el => el);
-
-      fields.forEach((field, index) => {
-        field.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            const next = fields[index + 1];
-            if (next) next.focus();
+  
+    // ✅ 먼저 모든 필드 초기화
+    const clearFields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'gross', 'tax', 'net', 'remark'];
+    clearFields.forEach(field => {
+      const input = document.querySelector(`[name="${field}"]`);
+      if (input) input.value = '';
+    });
+  
+    // ✅ fetch 요청
+    fetch(`/admin/payroll/payroll_tax/paylist/latest?eid=${eid}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.success) {
+          alert('최근 급여 데이터를 찾을 수 없습니다.');
+          return;
+        }
+  
+        const fields = ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
+        fields.forEach(field => {
+          if (data[field] !== undefined) {
+            if (field === 'remark') {
+              document.querySelector(`[name="${field}"]`).value = data[field];
+            } else {
+              document.querySelector(`[name="${field}"]`).value = parseFloat(data[field]).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              });
+            }
           }
         });
+  
+        // calculateNet();  // 필요하면 이 부분도 주석 해제
+      })
+      .catch(err => {
+        console.error('Reference 불러오기 오류:', err);
+        alert('데이터를 불러오는 중 오류가 발생했습니다.');
       });
+  }
+  
+  
+  function showSaveComment() {
+    const selected = document.querySelector('#ep_ref');
+    const name = selected.value;
+    const eid = selected.options[selected.selectedIndex]?.getAttribute('data-eid') || '';
+    const commentBox = document.getElementById('saveComment');
+    commentBox.innerText = `eid: ${eid} / ${name} 이 지금 입력되었습니다.`;
+    return true;
+  }
+  
+      function formatDecimal(input) {
+    let value = input.value;
+  
+    // 숫자와 소수점만 허용
+    value = value.replace(/[^\d.]/g, '');
+  
+    // 소수점 1개만 유지
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts[1];
+    }
+  
+    input.value = value; // 입력 중에는 가공하지 않음
+  
+    // 포커스 벗어날 때 포맷 적용
+    input.addEventListener('blur', () => {
+      const num = parseFloat(input.value.replace(/,/g, '')); // 쉼표 제거 후 숫자 변환
+      if (!isNaN(num)) {
+        // 소수점 2자리 + 쉼표 형식 적용
+        input.value = num.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
     });
-
-/* 출력용 Javascript 함수
-function viewPaylistPDF() {
-  const date = document.getElementById('selectedDate').value;
-  if (!date) {
-    alert("날짜를 선택하세요.");
-    return;
   }
-  window.open(`/payroll/pdf-view?pdate=${date}`, '_blank');
-}
-*/
-// window.open(`/admin/payroll/payroll_tax_result/pdfdownload?pdate=${date}`, '_blank');
-
-
-function viewPaylistPDF() {
-  const date = document.querySelector('select[name="pdate"]').value;
-  if (!date) {
-    alert("날짜를 선택하세요.");
-    return;
+  
+  function calculateNet() {
+    const rtime = parseFloat(document.querySelector('[name="rtime"]').value.replace(/,/g, '')) || 0;
+    const otime = parseFloat(document.querySelector('[name="otime"]').value.replace(/,/g, '')) || 0;
+    const dtime = parseFloat(document.querySelector('[name="dtime"]').value.replace(/,/g, '')) || 0;
+  
+    const fw = parseFloat(document.querySelector('[name="fw"]').value.replace(/,/g, '')) || 0;
+    const sse = parseFloat(document.querySelector('[name="sse"]').value.replace(/,/g, '')) || 0;
+    const me = parseFloat(document.querySelector('[name="me"]').value.replace(/,/g, '')) || 0;
+    const caw = parseFloat(document.querySelector('[name="caw"]').value.replace(/,/g, '')) || 0;
+    const cade = parseFloat(document.querySelector('[name="cade"]').value.replace(/,/g, '')) || 0;
+  
+    const gross = rtime + otime + dtime;
+    const tax = fw + sse + me + caw + cade;
+    const net = gross - tax;
+  
+    const grossField = document.querySelector('[name="gross"]');
+    const taxField = document.querySelector('[name="tax"]');
+    const netField = document.querySelector('[name="net"]');
+  
+    grossField.value = gross.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    taxField.value = tax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    netField.value = net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-  window.open(`/admin/payroll/payroll_tax_pdf/pdf?pdate=${date}`, '_blank');
-}
-
-
-
-// function printPaylistPDF() {
-//   const date = document.getElementById('selectedDate').value;
-//   if (!date) {
-//     alert("날짜를 선택하세요.");
-//     return;
-//   }
-//   window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
-// } 
-
-// CVS 출력 용 (Client 측 download)
-
-function downloadCSV() {
-  const pdate = document.querySelector('select[name="pdate"]').value;
-  if (!pdate) {
-    alert("날짜를 선택하세요.");
-    return;
+  
+  
+      document.addEventListener('DOMContentLoaded', () => {
+        const fieldNames = ['ckno_table', 'rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'remark'];
+        const fields = fieldNames.map(name => document.querySelector(`[name="${name}"]`)).filter(el => el);
+  
+        fields.forEach((field, index) => {
+          field.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const next = fields[index + 1];
+              if (next) next.focus();
+            }
+          });
+        });
+      });
+  
+  /* 출력용 Javascript 함수
+  function viewPaylistPDF() {
+    const date = document.getElementById('selectedDate').value;
+    if (!date) {
+      alert("날짜를 선택하세요.");
+      return;
+    }
+    window.open(`/payroll/pdf-view?pdate=${date}`, '_blank');
   }
-  window.open(`/admin/payroll/payroll_tax_csv/csv-export?pdate=${pdate}`, '_blank');
-}
-
-
-
-
-function validateForm() {
-  const name = document.querySelector('[name="name"]').value;
-  const ckno = document.querySelector('[name="ckno"]').value;
-  const gross = document.querySelector('[name="gross"]').value;
-
-  if (!name || !ckno || !gross) {
-    alert('Name, Check No, Gross 값은 필수입니다.');
-    return false;
+  */
+  // window.open(`/admin/payroll/payroll_tax_result/pdfdownload?pdate=${date}`, '_blank');
+  
+  
+  function viewPaylistPDF() {
+    const date = document.querySelector('select[name="pdate"]').value;
+    if (!date) {
+      alert("날짜를 선택하세요.");
+      return;
+    }
+    window.open(`/admin/payroll/payroll_tax_pdf/pdf?pdate=${date}`, '_blank');
   }
-  return true;
-}
-
-function viewReferencePDF() {
-  const start = document.getElementById('startCkno').value;
-  const end = document.getElementById('endCkno').value;
-
-  if (!start || !end) {
-    alert("Check No 범위를 모두 입력하세요.");
-    return;
+  
+  
+  
+  // function printPaylistPDF() {
+  //   const date = document.getElementById('selectedDate').value;
+  //   if (!date) {
+  //     alert("날짜를 선택하세요.");
+  //     return;
+  //   }
+  //   window.open(`/payroll/pdf-generate?pdate=${date}`, '_blank');
+  // } 
+  
+  // CVS 출력 용 (Client 측 download)
+  
+  function downloadCSV() {
+    const pdate = document.querySelector('select[name="pdate"]').value;
+    if (!pdate) {
+      alert("날짜를 선택하세요.");
+      return;
+    }
+    window.open(`/admin/payroll/payroll_tax_csv/csv-export?pdate=${pdate}`, '_blank');
   }
-
-  window.open(`/admin/payroll/payroll_tax_refpdf/refpdf?startCkno=${start}&endCkno=${end}`, '_blank');
-}
-
-// 선택 수정 삭제 Script 
-
-document.getElementById('btn-select').addEventListener('click', selectRecord);
-document.getElementById('btn-update').addEventListener('click', updateRecord);
-document.getElementById('btn-delete').addEventListener('click', deleteRecord);
-
-
-function selectRecord() {
-  const ckno = document.getElementById('ckno').value;
-  if (!ckno) return alert("Check No.를 입력하세요");
-
-  fetch(`/admin/payroll/payroll_tax/select?ckno=${encodeURIComponent(ckno)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) return alert("해당 Check No.를 찾을 수 없습니다.");
-      const record = data.data;
-
-      // ✅ 공통 필드 자동 반영
-      for (const key in record) {
-        const field = document.querySelector(`[name="${key}"]`);
-        if (field) field.value = record[key];
-      }
-
-// ✅ 타임존 영향 없이 날짜 반영 (YYYY-MM-DD 문자열 그대로 사용)
-const pdateInput = document.querySelector('[name="pdate"]');
-if (pdateInput && record.pdate) {
-  pdateInput.value = record.pdate.slice(0, 10);
-}
-
-      // ✅ ckno_table 필드 수동 반영
-      const cknoTableInput = document.querySelector('[name="ckno_table"]');
-      if (cknoTableInput && record.ckno) {
-        cknoTableInput.value = record.ckno;
-      }
-
-      calculateNet(); // 금액 다시 계산
+  
+  
+  
+  
+  function validateForm() {
+    const name = document.querySelector('[name="name"]').value;
+    const ckno = document.querySelector('[name="ckno"]').value;
+    const gross = document.querySelector('[name="gross"]').value;
+  
+    if (!name || !ckno || !gross) {
+      alert('Name, Check No, Gross 값은 필수입니다.');
+      return false;
+    }
+    return true;
+  }
+  
+  function viewReferencePDF() {
+    const start = document.getElementById('startCkno').value;
+    const end = document.getElementById('endCkno').value;
+  
+    if (!start || !end) {
+      alert("Check No 범위를 모두 입력하세요.");
+      return;
+    }
+  
+    window.open(`/admin/payroll/payroll_tax_refpdf/refpdf?startCkno=${start}&endCkno=${end}`, '_blank');
+  }
+  
+  // 선택 수정 삭제 Script 
+  
+  document.getElementById('btn-select').addEventListener('click', selectRecord);
+  document.getElementById('btn-update').addEventListener('click', updateRecord);
+  document.getElementById('btn-delete').addEventListener('click', deleteRecord);
+  
+  
+  function selectRecord() {
+    const ckno = document.getElementById('ckno').value;
+    if (!ckno) return alert("Check No.를 입력하세요");
+  
+    fetch(`/admin/payroll/payroll_tax/select?ckno=${encodeURIComponent(ckno)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) return alert("해당 Check No.를 찾을 수 없습니다.");
+        const record = data.data;
+  
+        // ✅ 공통 필드 자동 반영
+        for (const key in record) {
+          const field = document.querySelector(`[name="${key}"]`);
+          if (field) field.value = record[key];
+        }
+  
+  // ✅ 타임존 영향 없이 날짜 반영 (YYYY-MM-DD 문자열 그대로 사용)
+  const pdateInput = document.querySelector('[name="pdate"]');
+  if (pdateInput && record.pdate) {
+    pdateInput.value = record.pdate.slice(0, 10);
+  }
+  
+        // ✅ ckno_table 필드 수동 반영
+        const cknoTableInput = document.querySelector('[name="ckno_table"]');
+        if (cknoTableInput && record.ckno) {
+          cknoTableInput.value = record.ckno;
+        }
+  
+        calculateNet(); // 금액 다시 계산
+      })
+      .catch(err => {
+        console.error('선택 중 오류:', err);
+        alert("조회 중 오류 발생");
+      });
+  }
+  
+  
+  function updateRecord() {
+    const ckno = document.getElementById('ckno').value;
+    if (!ckno) return alert("Check No.를 입력하세요");
+  
+    const form = document.getElementById('payrollForm');
+    form.action = '/admin/payroll/payroll_tax/update';
+    form.submit();
+  }
+  
+  function deleteRecord() {
+    const ckno = document.getElementById('ckno').value;
+    if (!ckno) return alert("Check No.를 입력하세요");
+  
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+  
+    fetch('/admin/payroll/payroll_tax/delete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ ckno })
     })
-    .catch(err => {
-      console.error('선택 중 오류:', err);
-      alert("조회 중 오류 발생");
-    });
-}
-
-
-function updateRecord() {
-  const ckno = document.getElementById('ckno').value;
-  if (!ckno) return alert("Check No.를 입력하세요");
-
-  const form = document.getElementById('payrollForm');
-  form.action = '/admin/payroll/payroll_tax/update';
-  form.submit();
-}
-
-function deleteRecord() {
-  const ckno = document.getElementById('ckno').value;
-  if (!ckno) return alert("Check No.를 입력하세요");
-
-  if (!confirm("정말 삭제하시겠습니까?")) return;
-
-  fetch('/admin/payroll/payroll_tax/delete', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ ckno })
-  })
-    .then(res => res.json())
-    .then(result => {
-      if (result.success) {
-        alert("삭제 완료");
-        resetForm();           // ✅ 삭제 후 폼 초기화
-        location.reload();     // 🔁 새로고침이 필요 없다면 이 줄은 제거 가능
-      } else {
-        alert("삭제 실패 또는 해당 Check No. 없음");
-      }
-    });
-}
-
-function resetForm() {
-  const form = document.getElementById('payrollForm');
-  form.reset();
-
-  // 숨겨진 필드, 참조 필드들도 초기화
-  document.getElementById('eidDisplay').innerText = '';
-  document.getElementById('jcodeDisplay').innerText = '';
-  document.getElementById('jtitleDisplay').innerText = '';
-  document.getElementById('work1Display').innerText = '';
-
-  document.getElementById('hiddenEid').value = '';
-  document.getElementById('hiddenJcode').value = '';
-  document.getElementById('hiddenJtitle').value = '';
-  document.getElementById('hiddenWork1').value = '';
-
-  document.getElementById('saveComment').innerText = '';
-}
-
-  // ✅ 1. onclick="handleResultClick()" 함수 정의
-  function handleResultClick() {
-    window.open('/admin/payroll/payroll_tax_result', '_self'); // 현재 창에서 이동
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          alert("삭제 완료");
+          resetForm();           // ✅ 삭제 후 폼 초기화
+          location.reload();     // 🔁 새로고침이 필요 없다면 이 줄은 제거 가능
+        } else {
+          alert("삭제 실패 또는 해당 Check No. 없음");
+        }
+      });
   }
- </script>
-</body>
-</html>
+  
+  function resetForm() {
+    const form = document.getElementById('payrollForm');
+    form.reset();
+  
+    // 숨겨진 필드, 참조 필드들도 초기화
+    document.getElementById('eidDisplay').innerText = '';
+    document.getElementById('jcodeDisplay').innerText = '';
+    document.getElementById('jtitleDisplay').innerText = '';
+    document.getElementById('work1Display').innerText = '';
+  
+    document.getElementById('hiddenEid').value = '';
+    document.getElementById('hiddenJcode').value = '';
+    document.getElementById('hiddenJtitle').value = '';
+    document.getElementById('hiddenWork1').value = '';
+  
+    document.getElementById('saveComment').innerText = '';
+  }
+  
+    // ✅ 1. onclick="handleResultClick()" 함수 정의
+    function handleResultClick() {
+      window.open('/admin/payroll/payroll_tax_result', '_self'); // 현재 창에서 이동
+    }
+   </script>
+  </body>
+  </html>

@@ -42,26 +42,45 @@
       text-align: right;
       margin: 20px 0;
     }
+
+    .binding-box {
+    display: inline-flex;              /* ❗️block이 아닌 inline-flex로 크기 최소화 */
+    gap: 1rem;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: #fff;
+  }
+
   </style>
 </head>
 <body>
   <h2>개인별 급여 요약</h2>
 
   <div class="button-row">
+    <div class="binding-box">
+      <span>조회기간: <%= start %> ~ <%= end %></span>
     <form action="/admin/payroll/payroll_tax_result" method="GET" style="display:inline;">
       <button type="submit">🔙 돌아가기</button>
     </form>
     <form action="/admin/payroll/payroll_tax_result_personalviewpdf/pdf" method="get" target="_blank">
         <input type="hidden" name="start" value="<%= start %>">
         <input type="hidden" name="end" value="<%= end %>">
-        <input type="text" name="comment" placeholder="코멘트 입력">
         <button type="submit">📄 PDF 개인 보기</button>
-      </form>      
+      </form>    
+      <form action="/admin/payroll/payroll_tax_result_auditviewpdf/pdf" method="get" target="_blank">
+        <input type="hidden" name="start" value="<%= start %>">
+        <input type="hidden" name="end" value="<%= end %>">
+        <button type="submit">📄 AUDIT 보기</button>
+      </form>     
     <form action="/admin/payroll_tax_result/viewPcsv" method="GET" target="_blank" style="display:inline; margin-left:10px;">
       <input type="hidden" name="start" value="<%= start %>">
       <input type="hidden" name="end" value="<%= end %>">
       <button type="submit">💾 CSV 저장</button>
     </form>
+    </div>
   </div>
 
   <% for (const name in grouped) { %>

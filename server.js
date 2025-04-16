@@ -118,6 +118,9 @@ app.use('/admin/payroll/payroll_tax_result', require('./server/routes/admin/payr
 app.use('/admin/payroll/payroll_tax_result_viewpdf', require('./server/routes/admin/payroll/payroll_tax_result_allviewpdf'));
 
 app.use('/admin/payroll/payroll_tax_result_personalviewpdf', require('./server/routes/admin/payroll/payroll_tax_result_personalviewpdf'));
+
+app.use('/admin/payroll/payroll_tax_result_auditviewpdf', require('./server/routes/admin/payroll/payroll_tax_result_auditviewpdf'));
+
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');

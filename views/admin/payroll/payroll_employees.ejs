@@ -1,375 +1,375 @@
 <head>
-  <meta charset="UTF-8">
-  <title>Employee Management</title>
-  <style>
-    body.employee-page {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      font-size: 12px;
-    }
-
-    h2 {
-      font-size: 20px;
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    button {
-      padding: 4px 12px;
-      font-size: 12px;
-      border: 1px solid #066da5;
-      border-radius: 4px;
-      background-color: #fff;
-      cursor: pointer;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 4px;
-      text-align: center;
-      font-weight: normal;
-    }
-
-    .top-section {
-      padding: 10px;
-    }
-
-    .bottom-section {
-      padding: 10px;
-    }
-
-    input[type="text"], input[type="email"], input[type="number"], input[type="date"] {
-      padding: 4px;
-      font-size: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      height: 24px;
-    }
-
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    .form input {
-      flex: 1 1 auto;
-    }
-
-    .compact-form {
-      padding: 1rem;
-    }
-
-    .compact-table th {
-      background-color: #f0f8ff;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .compact-table tbody tr:hover {
-      background-color: #e9f5ff;
-    }
-
-    .address-col {
-      min-width: 150px;
-    }
-
-    .name-col, .email-col {
-      min-width: 120px;
-    }
-
-    .date-col {
-      min-width: 100px;
-    }
-
-    .id-col {
-      min-width: 50px;
-    }
-  </style>
-</head>
-
-<body class="employee-page">
-  <div class="top-section">
-    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <h2>Employee List</h2>
-      <div>
-        <button onclick="window.open('/employees/pdf-view', '_blank')">📄 View PDF</button>
-        <button onclick="window.open('/employees/pdf-print', '_blank')">🖨️ Print PDF</button>
+    <meta charset="UTF-8">
+    <title>Employee Management</title>
+    <style>
+      body.employee-page {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        font-size: 12px;
+      }
+  
+      h2 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 15px;
+      }
+  
+      button {
+        padding: 4px 12px;
+        font-size: 12px;
+        border: 1px solid #066da5;
+        border-radius: 4px;
+        background-color: #fff;
+        cursor: pointer;
+      }
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+  
+      th, td {
+        border: 1px solid #ccc;
+        padding: 4px;
+        text-align: center;
+        font-weight: normal;
+      }
+  
+      .top-section {
+        padding: 10px;
+      }
+  
+      .bottom-section {
+        padding: 10px;
+      }
+  
+      input[type="text"], input[type="email"], input[type="number"], input[type="date"] {
+        padding: 4px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        height: 24px;
+      }
+  
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+  
+      .form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: space-between;
+      }
+  
+      .form input {
+        flex: 1 1 auto;
+      }
+  
+      .compact-form {
+        padding: 1rem;
+      }
+  
+      .compact-table th {
+        background-color: #f0f8ff;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+  
+      .compact-table tbody tr:hover {
+        background-color: #e9f5ff;
+      }
+  
+      .address-col {
+        min-width: 150px;
+      }
+  
+      .name-col, .email-col {
+        min-width: 120px;
+      }
+  
+      .date-col {
+        min-width: 100px;
+      }
+  
+      .id-col {
+        min-width: 50px;
+      }
+    </style>
+  </head>
+  
+  <body class="employee-page">
+    <div class="top-section">
+      <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Employee List</h2>
+        <div>
+          <button onclick="window.open('/employees/pdf-view', '_blank')">📄 View PDF</button>
+          <button onclick="window.open('/employees/pdf-print', '_blank')">🖨️ Print PDF</button>
+        </div>
+      </div>
+  
+      <table id="employeeTable" class="compact-table">
+        <thead>
+          <tr>
+            <th class="id-col">ID</th>
+            <th>Status</th>
+            <th>EID</th>
+            <th class="name-col">Name</th>
+            <th>SS No</th>
+            <th class="date-col">Birthday</th>
+            <th class="email-col">Email</th>
+            <th>Phone</th>
+            <th>Job Code</th>
+            <th>Job Title</th>
+            <th class="date-col">Start</th>
+            <th class="date-col">End</th>
+            <th>Sick</th>
+            <th>Work</th>
+            <th class="address-col">Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (employees && employees.length > 0) { %>
+            <% employees.forEach(emp => { %>
+              <tr>
+                <td class="id-col"><%= emp.id %></td>
+                <td><%= emp.status || '' %></td>
+                <td><%= emp.eid || '' %></td>
+                <td class="name-col"><%= emp.name || '' %></td>
+                <td><%= emp.ss || '' %></td>
+                <td class="date-col"><%= emp.birth ? new Date(emp.birth).toLocaleDateString('en-US') : '' %></td>
+                <td class="email-col"><%= emp.email || '' %></td>
+                <td><%= emp.phone || '' %></td>
+                <td><%= emp.jcode || '' %></td>
+                <td><%= emp.jtitle || '' %></td>
+                <td class="date-col"><%= emp.sdate ? new Date(emp.sdate).toLocaleDateString('en-US') : '' %></td>
+                <td class="date-col"><%= emp.edate ? new Date(emp.edate).toLocaleDateString('en-US') : '' %></td>
+                <td><%= emp.sick || '' %></td>
+                <td><%= emp.work1 || '' %></td>
+                <td class="address-col"><%= emp.address || '' %></td>
+                <td><%= emp.city || '' %></td>
+                <td><%= emp.state || '' %></td>
+                <td><%= emp.zip || '' %></td>
+                <td><%= emp.remark || '' %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="19">직원 정보가 없습니다.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- 수정된 하단 영역만 반영한 employees.ejs 하단부 -->
+    <div class="bottom-section compact-form" style="padding: 1rem;">
+      <div class="table-header">
+        <h2>Input, Search, Edit, Delete</h2>
+      </div>
+    
+      <form id="employeeForm" action="/admin/payroll/payroll_employees/add" method="post" class="form" 
+      style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; justify-content: space-between;">
+  
+  <!-- 첫 번째 줄: 기본 인적 사항 및 근무 정보 -->
+  <input type="text" name="status" placeholder="Status" style="flex: 1 1 8%;" />
+  <input type="text" name="eid" placeholder="EID" required style="flex: 1 1 8%;" />
+  <input type="text" name="name" placeholder="Name" required style="flex: 1 1 10%;" />
+  <input type="text" name="ss" placeholder="SS No" style="flex: 1 1 10%;" />
+  <input type="date" name="birth" placeholder="Birthday" style="flex: 1 1 10%;" />
+  <input type="email" name="email" placeholder="Email" style="flex: 1 1 13%;" />
+  <input type="text" name="phone" placeholder="Phone" style="flex: 1 1 10%;" />
+  <input type="text" name="jcode" placeholder="Job Code" style="flex: 1 1 8%;" />
+  <input type="text" name="jtitle" placeholder="Job Title" style="flex: 1 1 10%;" />
+  <input type="date" name="sdate" placeholder="Start Date" style="flex: 1 1 10%;" />
+  <input type="date" name="edate" placeholder="End Date" style="flex: 1 1 10%;" />
+  <input type="number" name="sick" placeholder="Sick Days" style="flex: 1 1 6%;" />
+  <input type="text" name="work1" placeholder="Work Type" style="flex: 1 1 8%;" />
+  
+  <!-- 두 번째 줄: 주소 관련 -->
+  <input type="text" name="address" placeholder="Address" style="flex: 1 1 20%;" />
+  <input type="text" name="city" placeholder="City" style="flex: 1 1 10%;" />
+  <input type="text" name="state" placeholder="State" style="flex: 1 1 6%;" />
+  <input type="text" name="zip" placeholder="Zip Code" style="flex: 1 1 10%;" />
+  <input type="text" name="remark" placeholder="Remark" style="flex: 1 1 30%;" />
+  </form>
+    
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+        <button type="button" onclick="clearFormInputs()">🧹 입력초기화</button>
+        <button form="employeeForm" type="submit" title="Add">➕ 입력저장</button>
+        <input type="text" name="selectedEid" placeholder="EID 입력" style="padding: 0.3rem;" />
+        <button type="button" onclick="selectEmployee()">🔍 선택</button>
+        <button type="submit" title="Edit" onclick="prepareEdit(event)">✏️ 수정</button>
+        <form action="/delete/<%= deleteId || '' %>" method="post" style="display: inline;"><button type="button" title="Delete" onclick="prepareDelete()">🗑️ 삭제</button></form>
+        <button onclick="window.print()" title="Print">📄 화면출력</button>
+        <button type="button" title="View Record" onclick="viewEmployee()">📋 보기</button>
+        <button type="button" title="Print Record" onclick="printEmployee()">📋 출력</button>
       </div>
     </div>
-
-    <table id="employeeTable" class="compact-table">
-      <thead>
-        <tr>
-          <th class="id-col">ID</th>
-          <th>Status</th>
-          <th>EID</th>
-          <th class="name-col">Name</th>
-          <th>SS No</th>
-          <th class="date-col">Birthday</th>
-          <th class="email-col">Email</th>
-          <th>Phone</th>
-          <th>Job Code</th>
-          <th>Job Title</th>
-          <th class="date-col">Start</th>
-          <th class="date-col">End</th>
-          <th>Sick</th>
-          <th>Work</th>
-          <th class="address-col">Address</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Zip</th>
-          <th>Remark</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (employees && employees.length > 0) { %>
-          <% employees.forEach(emp => { %>
-            <tr>
-              <td class="id-col"><%= emp.id %></td>
-              <td><%= emp.status || '' %></td>
-              <td><%= emp.eid || '' %></td>
-              <td class="name-col"><%= emp.name || '' %></td>
-              <td><%= emp.ss || '' %></td>
-              <td class="date-col"><%= emp.birth ? new Date(emp.birth).toLocaleDateString('en-US') : '' %></td>
-              <td class="email-col"><%= emp.email || '' %></td>
-              <td><%= emp.phone || '' %></td>
-              <td><%= emp.jcode || '' %></td>
-              <td><%= emp.jtitle || '' %></td>
-              <td class="date-col"><%= emp.sdate ? new Date(emp.sdate).toLocaleDateString('en-US') : '' %></td>
-              <td class="date-col"><%= emp.edate ? new Date(emp.edate).toLocaleDateString('en-US') : '' %></td>
-              <td><%= emp.sick || '' %></td>
-              <td><%= emp.work1 || '' %></td>
-              <td class="address-col"><%= emp.address || '' %></td>
-              <td><%= emp.city || '' %></td>
-              <td><%= emp.state || '' %></td>
-              <td><%= emp.zip || '' %></td>
-              <td><%= emp.remark || '' %></td>
-            </tr>
-          <% }) %>
-        <% } else { %>
-          <tr><td colspan="19">직원 정보가 없습니다.</td></tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- 수정된 하단 영역만 반영한 employees.ejs 하단부 -->
-  <div class="bottom-section compact-form" style="padding: 1rem;">
-    <div class="table-header">
-      <h2>Input, Search, Edit, Delete</h2>
-    </div>
-  
-    <form id="employeeForm" action="/admin/payroll/payroll_employees/add" method="post" class="form" 
-    style="display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; justify-content: space-between;">
-
-<!-- 첫 번째 줄: 기본 인적 사항 및 근무 정보 -->
-<input type="text" name="status" placeholder="Status" style="flex: 1 1 8%;" />
-<input type="text" name="eid" placeholder="EID" required style="flex: 1 1 8%;" />
-<input type="text" name="name" placeholder="Name" required style="flex: 1 1 10%;" />
-<input type="text" name="ss" placeholder="SS No" style="flex: 1 1 10%;" />
-<input type="date" name="birth" placeholder="Birthday" style="flex: 1 1 10%;" />
-<input type="email" name="email" placeholder="Email" style="flex: 1 1 13%;" />
-<input type="text" name="phone" placeholder="Phone" style="flex: 1 1 10%;" />
-<input type="text" name="jcode" placeholder="Job Code" style="flex: 1 1 8%;" />
-<input type="text" name="jtitle" placeholder="Job Title" style="flex: 1 1 10%;" />
-<input type="date" name="sdate" placeholder="Start Date" style="flex: 1 1 10%;" />
-<input type="date" name="edate" placeholder="End Date" style="flex: 1 1 10%;" />
-<input type="number" name="sick" placeholder="Sick Days" style="flex: 1 1 6%;" />
-<input type="text" name="work1" placeholder="Work Type" style="flex: 1 1 8%;" />
-
-<!-- 두 번째 줄: 주소 관련 -->
-<input type="text" name="address" placeholder="Address" style="flex: 1 1 20%;" />
-<input type="text" name="city" placeholder="City" style="flex: 1 1 10%;" />
-<input type="text" name="state" placeholder="State" style="flex: 1 1 6%;" />
-<input type="text" name="zip" placeholder="Zip Code" style="flex: 1 1 10%;" />
-<input type="text" name="remark" placeholder="Remark" style="flex: 1 1 30%;" />
-</form>
-  
-    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
-      <button type="button" onclick="clearFormInputs()">🧹 입력초기화</button>
-      <button form="employeeForm" type="submit" title="Add">➕ 입력저장</button>
-      <input type="text" name="selectedEid" placeholder="EID 입력" style="padding: 0.3rem;" />
-      <button type="button" onclick="selectEmployee()">🔍 선택</button>
-      <button type="submit" title="Edit" onclick="prepareEdit(event)">✏️ 수정</button>
-      <form action="/delete/<%= deleteId || '' %>" method="post" style="display: inline;"><button type="button" title="Delete" onclick="prepareDelete()">🗑️ 삭제</button></form>
-      <button onclick="window.print()" title="Print">📄 화면출력</button>
-      <button type="button" title="View Record" onclick="viewEmployee()">📋 보기</button>
-      <button type="button" title="Print Record" onclick="printEmployee()">📋 출력</button>
-    </div>
-  </div>
-  
-
-  <script>
-
-  // ▶️ 입력값 초기화 버튼 기능 추가
-  function clearFormInputs() {
-    const form = document.getElementById("employeeForm");
-    if (!form) return;
-
-    const inputs = form.querySelectorAll("input[type='text'], input[type='email'], input[type='date'], input[type='number']");
-    inputs.forEach(input => input.value = "");
-  }
-
-  // ▶️ 수정된 버튼 영역: 입력 버튼 앞에 초기화 버튼 추가
-  // (이 내용은 기존 <div> 안에 삽입해 주세요)
-  // <button type="button" onclick="clearFormInputs()">🧹 입력초기화</button>
-
     
-    // Enter 키로 다음 input으로 이동
-    document.addEventListener("DOMContentLoaded", () => {
-      const formInputs = document.querySelectorAll(".form input");
-      formInputs.forEach((input, index) => {
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const nextInput = formInputs[index + 1];
-            if (nextInput) nextInput.focus();
-            else formInputs[0].focus();
-          }
-        });
-      });
-    });
-
-        // employee edit 관련
-    function prepareEdit(event) {
-    event.preventDefault();
-
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("수정할 직원의 EID를 먼저 선택하거나 입력해주세요.");
-      return;
-    }
-
-    const form = document.getElementById("employeeForm");
-    form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
-    form.submit();  // employeeForm을 /edit/:eid 로 제출
-    }
-
-
-    function setEditAction() {
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("수정할 직원의 EID를 먼저 선택하거나 입력해주세요.");
-      event.preventDefault();
-      return;
-    }
-    const form = document.getElementById('editForm');
-    form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
-    }
-
-    // employee delete 관련
-    function prepareDelete() {
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("삭제할 직원의 EID를 먼저 입력하거나 선택해주세요.");
-      return;
-    }
-
-    const confirmDelete = confirm(`정말 삭제하시겠습니까? EID: ${eid}`);
-    if (!confirmDelete) return;
-
-    // form 없이 fetch를 통한 POST 요청
-    fetch(`/admin/payroll/payroll_employees/delete/${eid}`, {
-  method: 'POST',
-})
-    .then(response => response.text())
-    .then(html => {
-      document.open();
-      document.write(html);
-      document.close();
-    })
-    .catch(error => {
-      console.error('삭제 요청 실패:', error);
-      alert('직원 삭제 중 오류가 발생했습니다.');
-    });
-  }
-
-  // employee print 관련
-  function printRecord() {
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("출력할 직원의 EID를 입력 또는 선택해주세요.");
-      return;
-    }
-    window.open(`/print/${eid}`, '_blank');
-  }
-
-
-// ▶️ view / print 버튼 내부 로직 확인: eid 가 form 외부 input 에서 넘어오고 있음
-  // 그러나 form 안에 같은 이름의 hidden input 을 둔다면 안정성 증가 가능
-  // 아래 두 함수에는 문제가 없습니다만, "eid"가 비어있으면 동작 안 합니다
-
-    // 선택된 직원 보기
-    function viewEmployee() {
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("출력할 직원의 EID를 먼저 입력하거나 선택해주세요.");
-      return;
-    }
-    window.open(`/view-one/${eid}`, '_blank');
-  }
   
-
-  // 선택된 직원 출력
-  function printEmployee() {
-    const eid = document.querySelector('input[name="eid"]').value.trim();
-    if (!eid) {
-      alert("출력할 직원의 EID를 먼저 입력하거나 선택해주세요.");
-      return;
+    <script>
+  
+    // ▶️ 입력값 초기화 버튼 기능 추가
+    function clearFormInputs() {
+      const form = document.getElementById("employeeForm");
+      if (!form) return;
+  
+      const inputs = form.querySelectorAll("input[type='text'], input[type='email'], input[type='date'], input[type='number']");
+      inputs.forEach(input => input.value = "");
     }
-    window.open(`/print/${eid}`, '_blank');
-  }
-
-    // 선택 버튼 클릭 시 EID 검색 및 자동 입력
-    function selectEmployee() {
-      const eidInput = document.querySelector('input[name="selectedEid"]');
-      const eidValue = eidInput.value.trim();
-      const rows = document.querySelectorAll("#employeeTable tbody tr");
-      let found = false;
-
-      rows.forEach(row => {
-        const eidCell = row.cells[2];
-        if (eidCell && eidCell.innerText.trim() === eidValue) {
-          found = true;
-          row.style.backgroundColor = "#ffff99";
-
-          const fieldMap = ["status", "eid", "name", "ss", "birth", "email", "phone", "jcode", "jtitle", "sdate", "edate", "sick", "work1", "address", "city", "state", "zip", "remark"];
-          fieldMap.forEach((field, i) => {
-            const input = document.querySelector(`.form input[name="${field}"]`);
-            const cell = row.cells[i + 1];
-            if (input && cell) {
-              let value = cell.innerText.trim();
-              if (input.type === "date" && value) {
-                const parts = value.split("/");
-                if (parts.length === 3) value = `${parts[2]}-${parts[0].padStart(2, "0")}-${parts[1].padStart(2, "0")}`;
-              }
-              input.value = value;
+  
+    // ▶️ 수정된 버튼 영역: 입력 버튼 앞에 초기화 버튼 추가
+    // (이 내용은 기존 <div> 안에 삽입해 주세요)
+    // <button type="button" onclick="clearFormInputs()">🧹 입력초기화</button>
+  
+      
+      // Enter 키로 다음 input으로 이동
+      document.addEventListener("DOMContentLoaded", () => {
+        const formInputs = document.querySelectorAll(".form input");
+        formInputs.forEach((input, index) => {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              const nextInput = formInputs[index + 1];
+              if (nextInput) nextInput.focus();
+              else formInputs[0].focus();
             }
           });
-        } else {
-          row.style.backgroundColor = "";
-        }
+        });
       });
-
-      if (!found) alert("해당 EID를 가진 직원을 찾을 수 없습니다.");
+  
+          // employee edit 관련
+      function prepareEdit(event) {
+      event.preventDefault();
+  
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("수정할 직원의 EID를 먼저 선택하거나 입력해주세요.");
+        return;
+      }
+  
+      const form = document.getElementById("employeeForm");
+      form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
+      form.submit();  // employeeForm을 /edit/:eid 로 제출
+      }
+  
+  
+      function setEditAction() {
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("수정할 직원의 EID를 먼저 선택하거나 입력해주세요.");
+        event.preventDefault();
+        return;
+      }
+      const form = document.getElementById('editForm');
+      form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
+      }
+  
+      // employee delete 관련
+      function prepareDelete() {
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("삭제할 직원의 EID를 먼저 입력하거나 선택해주세요.");
+        return;
+      }
+  
+      const confirmDelete = confirm(`정말 삭제하시겠습니까? EID: ${eid}`);
+      if (!confirmDelete) return;
+  
+      // form 없이 fetch를 통한 POST 요청
+      fetch(`/admin/payroll/payroll_employees/delete/${eid}`, {
+    method: 'POST',
+  })
+      .then(response => response.text())
+      .then(html => {
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch(error => {
+        console.error('삭제 요청 실패:', error);
+        alert('직원 삭제 중 오류가 발생했습니다.');
+      });
     }
-  </script>
-</div>
+  
+    // employee print 관련
+    function printRecord() {
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("출력할 직원의 EID를 입력 또는 선택해주세요.");
+        return;
+      }
+      window.open(`/print/${eid}`, '_blank');
+    }
+  
+  
+  // ▶️ view / print 버튼 내부 로직 확인: eid 가 form 외부 input 에서 넘어오고 있음
+    // 그러나 form 안에 같은 이름의 hidden input 을 둔다면 안정성 증가 가능
+    // 아래 두 함수에는 문제가 없습니다만, "eid"가 비어있으면 동작 안 합니다
+  
+      // 선택된 직원 보기
+      function viewEmployee() {
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("출력할 직원의 EID를 먼저 입력하거나 선택해주세요.");
+        return;
+      }
+      window.open(`/view-one/${eid}`, '_blank');
+    }
+    
+  
+    // 선택된 직원 출력
+    function printEmployee() {
+      const eid = document.querySelector('input[name="eid"]').value.trim();
+      if (!eid) {
+        alert("출력할 직원의 EID를 먼저 입력하거나 선택해주세요.");
+        return;
+      }
+      window.open(`/print/${eid}`, '_blank');
+    }
+  
+      // 선택 버튼 클릭 시 EID 검색 및 자동 입력
+      function selectEmployee() {
+        const eidInput = document.querySelector('input[name="selectedEid"]');
+        const eidValue = eidInput.value.trim();
+        const rows = document.querySelectorAll("#employeeTable tbody tr");
+        let found = false;
+  
+        rows.forEach(row => {
+          const eidCell = row.cells[2];
+          if (eidCell && eidCell.innerText.trim() === eidValue) {
+            found = true;
+            row.style.backgroundColor = "#ffff99";
+  
+            const fieldMap = ["status", "eid", "name", "ss", "birth", "email", "phone", "jcode", "jtitle", "sdate", "edate", "sick", "work1", "address", "city", "state", "zip", "remark"];
+            fieldMap.forEach((field, i) => {
+              const input = document.querySelector(`.form input[name="${field}"]`);
+              const cell = row.cells[i + 1];
+              if (input && cell) {
+                let value = cell.innerText.trim();
+                if (input.type === "date" && value) {
+                  const parts = value.split("/");
+                  if (parts.length === 3) value = `${parts[2]}-${parts[0].padStart(2, "0")}-${parts[1].padStart(2, "0")}`;
+                }
+                input.value = value;
+              }
+            });
+          } else {
+            row.style.backgroundColor = "";
+          }
+        });
+  
+        if (!found) alert("해당 EID를 가진 직원을 찾을 수 없습니다.");
+      }
+    </script>
+  </div>
