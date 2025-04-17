@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Document File Manager</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f7fa; color: #333; font-size: 12px; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .upload-form { display: flex; gap: 10px; margin-bottom: 20px; }
+    .upload-form select, .upload-form input[type="file"], .upload-form input[type="text"] {
+      font-size: 12px; padding: 4px; height: 24px;
+    }
+    .upload-form button {
+      font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white;
+      border: none; border-radius: 4px;
+    }
+    .table-wrapper { max-height: 800px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    .btn-delete { color: red; cursor: pointer; }
+  </style>
+  <script>
+    function confirmDelete(e) {
+      if (!confirm("정말 삭제하시겠습니까?")) e.preventDefault();
+    }
+    function filterByDoc(select) {
+      const selectedId = select.value;
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        row.style.display = (!selectedId || row.dataset.docid === selectedId) ? '' : 'none';
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Document File Manager</h2>
+
+    <form class="upload-form" action="/admin/document/document_manager/upload" method="POST" enctype="multipart/form-data">
+      <select name="doc_id" required onchange="filterByDoc(this)">
+        <option value="">:: 카테고리 선택 ::</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>"><%= cat.name %> (<%= cat.code %>)</option>
+        <% }) %>
+      </select>
+      <input type="file" name="file" required>
+      <input type="text" name="comment" placeholder="파일 설명">
+      <button type="submit">Upload</button>
+    </form>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>파일 이름</th>
+            <th>설명</th>
+            <th>업로드 날짜</th>
+            <th>다운로드</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.forEach(file => { %>
+            <tr data-docid="<%= file.doc_id %>">
+              <td><%= file.category_name %></td>
+              <td><%= file.originalname %></td>
+              <td><%= file.comment %></td>
+              <td><%= file.upload_date.toISOString().slice(0, 10) %></td>
+              <td><a href="/doc_uploads/<%= file.filename %>" target="_blank">Download</a></td>
+              <td>
+                <form action="/admin/document/document_manager/delete/<%= file.id %>" method="POST" onsubmit="confirmDelete(event)">
+                  <button type="submit" class="btn-delete">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

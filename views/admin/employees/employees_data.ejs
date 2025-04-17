@@ -87,7 +87,7 @@
     <h2>Employee Document Manager</h2>
 
     <form class="upload-form" action="/admin/employees/employees_data/upload" method="POST" enctype="multipart/form-data">
-      <select name="eid" required>
+      <select name="eid" required onchange="filterByEid(this)">
         <option value="">:: 직원 선택 ::</option>
         <% employees.forEach(emp => { %>
           <option value="<%= emp.eid %>"><%= emp.name %> (<%= emp.eid %>)</option>
@@ -129,5 +129,21 @@
       </table>
     </div>
   </div>
+
+  <script>
+    function filterByEid(select) {
+      const selectedEid = select.value;
+      const rows = document.querySelectorAll('tbody tr');
+  
+      rows.forEach(row => {
+        const cellText = row.cells[0].textContent; // "홍길동 (E001)" 형태
+        if (!selectedEid || cellText.includes(`(${selectedEid})`)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+  </script>
 </body>
 </html>

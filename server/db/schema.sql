@@ -185,3 +185,40 @@ CREATE TABLE employees_data (
   comment VARCHAR(255),            -- 파일에 대한 설명 또는 메모
   upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE schedule_plan (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cycle_type ENUM('yearly', 'monthly', 'weekly', 'daily') NOT NULL, -- 반복 주기
+  month INT DEFAULT NULL,      -- 매년: 월 (1~12)
+  day INT DEFAULT NULL,        -- 매년, 매월: 일 (1~31)
+  weekday ENUM('sun','mon','tue','wed','thu','fri','sat') DEFAULT NULL, -- 매주
+  hour INT NOT NULL,           -- 알림 시
+  minute INT NOT NULL,         -- 알림 분
+  message TEXT NOT NULL,       -- 팝업 메시지
+  active BOOLEAN DEFAULT TRUE, -- 사용 여부
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE doc_list (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,        -- 카테고리 이름
+  code VARCHAR(50) UNIQUE,           -- 내부코드 (예: "REQUIRED", "TAX", "BIZ_INS", 등)
+  description TEXT DEFAULT NULL,     -- 설명 (선택)
+  active BOOLEAN DEFAULT TRUE,       -- 사용 여부 (숨김처리 등 관리용)
+  sort_order INT DEFAULT 0,          -- 정렬 우선순위 (콤보박스에서 정렬 용도)
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE doc_manager (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  doc_id INT NOT NULL,                         -- doc_list.id 와 연결
+  filename VARCHAR(255) NOT NULL,              -- 저장된 실제 파일명
+  originalname VARCHAR(255) NOT NULL,          -- 원본 파일명
+  comment TEXT,                                -- 파일 설명
+  upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (doc_id) REFERENCES doc_list(id) ON DELETE CASCADE
+);
