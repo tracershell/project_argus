@@ -138,6 +138,12 @@ app.use('/admin/document/document_list', require('./server/routes/admin/document
 app.use('/admin/document/document_manager', require('./server/routes/admin/document/document_manager'));
 
 //====================================================================================================================
+
+app.use('/admin/creditcard/creditcard_list', require('./server/routes/admin/creditcard/creditcard_list'));
+
+app.use('/admin/creditcard/creditcard_acclist', require('./server/routes/admin/creditcard/creditcard_acclist'));
+
+//====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Card 등록 관리</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f7fa; color: #333; font-size: 12px; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .form input { font-size: 12px; padding: 4px; height: 24px; }
+    .form button { font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white; border: none; border-radius: 4px; height: 28px; }
+    .table-wrapper { max-height: 800px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    .btn-delete { color: red; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Credit Card 등록 관리</h2>
+
+  <form class="form" action="/admin/creditcard/creditcard_list/add" method="POST">
+    <input type="text" name="cardcom_name" placeholder="카드사 이름" required>
+    <input type="text" name="cardcom_account" placeholder="카드사 계정번호">
+    <input type="text" name="cardown_name" placeholder="소유자 이름" required>
+    <input type="text" name="cardown_account" placeholder="카드번호 뒷자리">
+    <button type="submit">등록</button>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>카드사</th>
+          <th>카드사 계정</th>
+          <th>소유자</th>
+          <th>카드번호</th>
+          <th>상태</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cards.forEach(card => { %>
+          <tr>
+            <td><%= card.cardcom_name %></td>
+            <td><%= card.cardcom_account %></td>
+            <td><%= card.cardown_name %></td>
+            <td><%= card.cardown_account %></td>
+            <td><%= card.active ? '✅' : '❌' %></td>
+            <td>
+              <form action="/admin/creditcard/creditcard_list/edit/<%= card.id %>" method="POST">
+                <input type="text" name="cardcom_name" value="<%= card.cardcom_name %>" required>
+                <input type="text" name="cardcom_account" value="<%= card.cardcom_account %>">
+                <input type="text" name="cardown_name" value="<%= card.cardown_name %>" required>
+                <input type="text" name="cardown_account" value="<%= card.cardown_account %>">
+                <button type="submit">수정</button>
+              </form>
+            </td>
+            <td>
+              <form action="/admin/creditcard/creditcard_list/delete/<%= card.id %>" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <button type="submit" class="btn-delete">삭제</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

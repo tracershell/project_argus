@@ -222,3 +222,27 @@ CREATE TABLE doc_manager (
   upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (doc_id) REFERENCES doc_list(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE card_list (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cardcom_name VARCHAR(100) NOT NULL,        -- 카드사 이름 (ex: Samsung Card, Amex)
+  cardcom_account VARCHAR(50),               -- 카드사 제공 계정 번호 또는 식별자
+  cardown_name VARCHAR(100) NOT NULL,        -- 카드 소유자 이름 (ex: 홍길동)
+  cardown_account VARCHAR(50),               -- 카드 번호 뒷자리 또는 내부 식별용
+  card_type ENUM('개인', '법인') DEFAULT '개인', -- 선택사항: 카드 성격
+  active BOOLEAN DEFAULT TRUE,               -- 사용 여부
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE card_acclist (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cardacc_name VARCHAR(100) NOT NULL,        -- 항목 이름
+  cardacc_code VARCHAR(50) NOT NULL,         -- 항목 코드 (예: FUEL, TRAVEL)
+  cardacc_comment TEXT,                      -- 설명
+  active BOOLEAN DEFAULT TRUE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

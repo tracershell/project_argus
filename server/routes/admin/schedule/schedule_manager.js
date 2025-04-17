@@ -23,29 +23,27 @@ router.get('/', async (req, res) => {
 router.post('/add', async (req, res) => {
   const { cycle_type, month, day, weekday, hour, minute, message } = req.body;
 
+  const toNull = (v) => (v === '' || v === undefined) ? null : v;
   const parsedHour = parseInt(hour);
   const parsedMinute = parseInt(minute);
 
   if (!cycle_type || !message) {
-    return res.send('<script>alert(\"주기와 메시지를 입력하세요.\"); history.back();</script>');
+    return res.send('<script>alert("주기와 메시지를 입력하세요."); history.back();</script>');
   }
 
   if (isNaN(parsedHour) || isNaN(parsedMinute)) {
-    return res.send('<script>alert(\"시간 또는 분을 정확히 입력하세요.\"); history.back();</script>');
+    return res.send('<script>alert("시간 또는 분을 정확히 입력하세요."); history.back();</script>');
   }
 
   if (cycle_type === 'yearly' && (!month || !day)) {
-    return res.send('<script>alert(\"매년 주기에는 월과 일이 필요합니다.\"); history.back();</script>');
+    return res.send('<script>alert("매년 주기에는 월과 일이 필요합니다."); history.back();</script>');
   }
   if (cycle_type === 'monthly' && !day) {
-    return res.send('<script>alert(\"매월 주기에는 일이 필요합니다.\"); history.back();</script>');
+    return res.send('<script>alert("매월 주기에는 일이 필요합니다."); history.back();</script>');
   }
   if (cycle_type === 'weekly' && !weekday) {
-    return res.send('<script>alert(\"매주 주기에는 요일이 필요합니다.\"); history.back();</script>');
+    return res.send('<script>alert("매주 주기에는 요일이 필요합니다."); history.back();</script>');
   }
-
-  // 빈 문자열 → null 처리
-  const toNull = (v) => v === '' ? null : v;
 
   try {
     await db.query(`
@@ -59,8 +57,8 @@ router.post('/add', async (req, res) => {
       toNull(weekday),
       parsedHour,
       parsedMinute,
-      message,     // ✅ 올바르게 문자열 메시지
-      true         // ✅ 마지막 active 자리
+      message,
+      true
     ]);
 
     res.redirect('/admin/schedule');
@@ -69,10 +67,6 @@ router.post('/add', async (req, res) => {
     res.status(500).send('스케줄 등록 중 오류가 발생했습니다.');
   }
 });
-
-
-
-
 
 // ✅ 삭제
 router.post('/delete/:id', async (req, res) => {
