@@ -124,6 +124,10 @@ app.use('/admin/payroll/payroll_tax_result_auditviewpdf', require('./server/rout
 app.use('/admin/payroll/payroll_tax_result_auditcsv', require('./server/routes/admin/payroll/payroll_tax_result_auditcsv'));
 
 //====================================================================================================================
+
+app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));
+
+//====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨

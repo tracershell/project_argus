@@ -175,3 +175,13 @@ CREATE TABLE movies (
   keyword VARCHAR(100),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE employees_data (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  eid VARCHAR(50) NOT NULL,        -- 직원 ID (employees.eid와 연결)
+  filename VARCHAR(255) NOT NULL,  -- 실제 저장된 파일명
+  originalname VARCHAR(255),       -- 원래 파일명 (보여주기 용도)
+  comment VARCHAR(255),            -- 파일에 대한 설명 또는 메모
+  upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
+);
