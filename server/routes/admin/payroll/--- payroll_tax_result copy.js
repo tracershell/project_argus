@@ -21,20 +21,15 @@ router.get('/', async (req, res) => {
       )[0];
     }
 
-    const today = new Date().toISOString().slice(0, 10);
-    const defaultStart = start || today;
-    const defaultEnd = end || today;
-
     res.render('admin/payroll/payroll_tax_result', {
       layout: 'layout',
       title: 'Payroll Tax Result',
       isAuthenticated: true,
       name: req.session.user.name,
-      start: defaultStart,
-      end: defaultEnd,
+      start,
+      end,
       payrecords
     });
-
   } catch (err) {
     console.error('payroll_tax_result DB 오류:', err);
     res.status(500).send('DB 오류');
@@ -44,26 +39,22 @@ router.get('/', async (req, res) => {
 
 // 👤 개인별 HTML 보기 라우터
 router.get('/viewPhtml', async (req, res) => {
-  console.log('🟢 viewPhtml route triggered'); // ✅ 로그 출력되면 라우터 진입 확인
   const { start, end } = req.query;
-  console.log('🟢 Query received:', start, end); // ✅ start, end 파라미터 로그
   if (!req.session.user) return res.redirect('/login');
   if (!start || !end) return res.status(400).send('기간을 입력하세요.');
 
   try {
-    // 📦 DB에서 pdate 조건에 맞는 데이터 조회 (eid 있는 사람만)
     const [rows] = await db.query(
       `SELECT eid, name, pdate, ckno, rtime, otime, dtime,
               fw, sse, me, caw, cade, adv, csp, dd, gross, tax, net
-       FROM payroll_tax
+       FROM payroll_tax 
        WHERE pdate BETWEEN ? AND ?
-       AND eid IS NOT NULL
        ORDER BY name ASC, pdate ASC`,
       [start, end]
     );
 
-    const grouped = {};       // 이름 기준 그룹
-    const eidMap = {};        // 이름 → eid 매핑
+    const grouped = {};
+    const eidMap = {};  // ✅ name → eid 저장
     const totalAll = {
       rtime: 0, otime: 0, dtime: 0,
       fw: 0, sse: 0, me: 0,
@@ -71,18 +62,14 @@ router.get('/viewPhtml', async (req, res) => {
       gross: 0, tax: 0, net: 0
     };
 
-    // 🔄 각 행 처리
-    console.log('📊 rows:', rows);                      // 전체 row 배열 확인
-    console.log('📏 rows.length:', rows.length);        // 0이면 문제 있음
     rows.forEach(row => {
-      console.log('🔍 name:', row.name, '| eid:', row.eid);
-
-      if (!grouped[row.name]) {
-        grouped[row.name] = [];
-        eidMap[row.name] = row.eid;
+      const name = row.name;
+      if (!grouped[name]) {
+        grouped[name] = [];
+        eidMap[name] = row.eid;  // ✅ name 그룹의 대표 eid 저장
       }
 
-      grouped[row.name].push(row);
+      grouped[name].push(row);
 
       totalAll.rtime += parseFloat(row.rtime || 0);
       totalAll.otime += parseFloat(row.otime || 0);
@@ -100,7 +87,8 @@ router.get('/viewPhtml', async (req, res) => {
       totalAll.net += parseFloat(row.net || 0);
     });
 
-    // 🧾 렌더링
+    console.log('🚀 eidMap in render:', eidMap);
+
     res.render('admin/payroll/payroll_tax_result_viewPhtml', {
       layout: 'layout',
       title: '개인별 급여 HTML 보기',
@@ -109,12 +97,12 @@ router.get('/viewPhtml', async (req, res) => {
       start,
       end,
       grouped,
-      eidMap,
+      eidMap,          // ✅ 꼭 포함해야 합니다!
       totalAll
     });
 
   } catch (err) {
-    console.error('📛 viewPhtml 오류:', err);
+    console.error('viewPhtml 오류:', err);
     res.status(500).send('DB 오류');
   }
 });
