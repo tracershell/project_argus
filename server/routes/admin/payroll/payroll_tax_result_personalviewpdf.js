@@ -25,10 +25,11 @@ async function generatePersonalGroupedPDF(res, records, comment, isDownload) {
 
   const grouped = {};
   for (const row of records) {
-    if (!grouped[row.name]) grouped[row.name] = [];
-    grouped[row.name].push(row);
+    if (!grouped[row.name]) {
+      grouped[row.name] = { eid: row.eid, records: [] };
+    }
+    grouped[row.name].records.push(row);
   }
-
   const headers = ['P.Date', 'CK.No', 'R.Time', 'O.Time', 'D.Time', 'FW', 'SSE', 'ME', 'CAW', 'CADE', 'ADV', 'CSP', 'DD', 'GROSS', 'TAX', 'NET'];
   const colWidths = [55, 45, 55, 55, 55, 45, 35, 35, 35, 35, 35, 35, 45, 55, 55, 55];
   const rowHeight = 16;  // 줄간격 줄이기
@@ -62,13 +63,15 @@ async function generatePersonalGroupedPDF(res, records, comment, isDownload) {
 
   const overallTotals = {};
   for (const name in grouped) {
+    const { eid, records } = grouped[name];
+
     y = checkPageEnd(y);
-    doc.fontSize(9).text(`👤 ${name}`, doc.page.margins.left, y - 14);
+    doc.fontSize(9).text(` ${eid} :  ${name}`, doc.page.margins.left, y - 14);
     drawRow(headers, y, true);
     y += rowHeight;
 
     const totals = {};
-    grouped[name].forEach(row => {
+    records.forEach(row => {
       const rowData = [
         row.pdate.toISOString().slice(0, 10),
         row.ckno,
@@ -82,7 +85,7 @@ async function generatePersonalGroupedPDF(res, records, comment, isDownload) {
       drawRow(rowData.map(v => typeof v === 'number' ? v.toFixed(2) : v), y);
       y += rowHeight;
 
-      ['rtime','otime','dtime','fw','sse','me','caw','cade','adv','csp','dd','gross','tax','net'].forEach(key => {
+      ['rtime', 'otime', 'dtime', 'fw', 'sse', 'me', 'caw', 'cade', 'adv', 'csp', 'dd', 'gross', 'tax', 'net'].forEach(key => {
         totals[key] = (totals[key] || 0) + parseFloat(row[key]);
         overallTotals[key] = (overallTotals[key] || 0) + parseFloat(row[key]);
       });

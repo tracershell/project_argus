@@ -44,9 +44,9 @@ router.get('/', async (req, res) => {
 
 // 👤 개인별 HTML 보기 라우터
 router.get('/viewPhtml', async (req, res) => {
-  console.log('🟢 viewPhtml route triggered'); // ✅ 로그 출력되면 라우터 진입 확인
+
   const { start, end } = req.query;
-  console.log('🟢 Query received:', start, end); // ✅ start, end 파라미터 로그
+
   if (!req.session.user) return res.redirect('/login');
   if (!start || !end) return res.status(400).send('기간을 입력하세요.');
 
@@ -72,10 +72,9 @@ router.get('/viewPhtml', async (req, res) => {
     };
 
     // 🔄 각 행 처리
-    console.log('📊 rows:', rows);                      // 전체 row 배열 확인
-    console.log('📏 rows.length:', rows.length);        // 0이면 문제 있음
+
     rows.forEach(row => {
-      console.log('🔍 name:', row.name, '| eid:', row.eid);
+
 
       if (!grouped[row.name]) {
         grouped[row.name] = [];

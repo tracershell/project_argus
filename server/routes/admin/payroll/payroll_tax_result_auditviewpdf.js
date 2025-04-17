@@ -22,7 +22,7 @@ async function generateAuditPDF(res, grouped, start, end, isDownload) {
   doc.pipe(res);
 
   const headers = ['EID', 'Name', 'Job Title', 'Job Code', 'Wages', 'Regular Time', '1.5 Times', '2 Times'];
-  const colWidths = [80, 120, 120, 80, 80, 80, 80, 80]; // ✅ eid 넓이 60 → 80 으로 수정
+  const colWidths = [50, 160, 180, 60, 70, 70, 70, 70]; // ✅ eid 넓이 60 → 80 으로 수정
   const rowHeight = 16;
 
   const drawRow = (data, y, isHeader = false) => {

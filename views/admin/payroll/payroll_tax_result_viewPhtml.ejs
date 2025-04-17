@@ -60,10 +60,7 @@
   <h2>개인별 급여 요약</h2>
 
     <!-- ✅ DEBUG용: eidMap이 잘 넘어왔는지 확인 -->
-    <pre style="font-size:10px; color:gray;">
-      eidMap = <%= JSON.stringify(eidMap) %>
-    </pre>
-    
+       
   <div class="button-row">
     <div class="binding-box">
       <span>조회기간: <%= start %> ~ <%= end %></span>
@@ -80,7 +77,7 @@
         <input type="hidden" name="end" value="<%= end %>">
         <button type="submit">📄 AUDIT 보기</button>
       </form>     
-    <form action="/admin/payroll_tax_result/viewPcsv" method="GET" target="_blank" style="display:inline; margin-left:10px;">
+    <form action="/admin/payroll/payroll_tax_result_auditcsv/downloadauditcsv" method="GET" target="_blank" style="display:inline; margin-left:10px;">
       <input type="hidden" name="start" value="<%= start %>">
       <input type="hidden" name="end" value="<%= end %>">
       <button type="submit">💾 CSV 저장</button>
