@@ -70,13 +70,23 @@
           <tr>
             <td><%= new Date(row.sickdate).toLocaleDateString('en-US') %></td>
             <td><%= row.usedsick %></td>
-            <td><input type="date" value="<%= row.sickdate.toISOString().slice(0, 10) %>"></td>
-            <td><input type="number" value="<%= row.usedsick %>" step="0.5"></td>
             <td>
-              <form action="/admin/employees/employees_sick/delete/<%= row.id %>?eid=<%= row.eid %>" method="POST">
-                <button class="btn-delete" type="submit">삭제</button>
-              </form>
+              <form action="/admin/employees/employees_sick/update/<%= row.id %>" method="POST" style="margin:0;">
+                <input type="hidden" name="eid" value="<%= row.eid %>">
+                <input type="date" name="sickdate" value="<%= row.sickdate.toISOString().slice(0, 10) %>" required>
             </td>
+            <td>
+                <input type="number" name="usedsick" value="<%= row.usedsick %>" step="0.5" required>
+            </td>
+            <td>
+              <button type="submit">수정</button>
+            </form>
+            <form action="/admin/employees/employees_sick/delete/<%= row.id %>?eid=<%= row.eid %>" method="POST" style="display:inline; margin-left:5px;">
+              <button class="btn-delete" type="submit">삭제</button>
+            </form>
+            </td>
+
+
           </tr>
         <% }) %>
       </tbody>

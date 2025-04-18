@@ -65,6 +65,24 @@ router.post('/add', async (req, res) => {
   }
 });
 
+// POST 수정
+router.post('/update/:id', async (req, res) => {
+  const { id } = req.params;
+  const { eid, sickdate, usedsick } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE sick_list SET sickdate = ?, usedsick = ? WHERE id = ?',
+      [sickdate, usedsick, id]
+    );
+
+    res.redirect(`/admin/employees/employees_sick?eid=${eid}`);
+  } catch (err) {
+    console.error('수정 오류:', err);
+    res.status(500).send('Sick 수정 오류');
+  }
+});
+
 // ✅ POST: sick 기록 삭제
 router.post('/delete/:id', async (req, res) => {
   const { id } = req.params;
