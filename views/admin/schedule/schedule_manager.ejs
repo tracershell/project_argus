@@ -149,5 +149,15 @@
     </table>
   </div>
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  socket.on('schedule_alert', function(message) {
+    alert("📢 알림 메시지:\n" + message);
+    // 또는: document.getElementById('alertBox').innerText = message;
+  });
+</script>
 </body>
 </html>

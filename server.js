@@ -9,7 +9,8 @@ const injectUser = require('./middleware/injectUser'); // res.render() 마다 us
 
 const app = express();
 
-
+const http = require('http').createServer(app);  // http 서버 생성 :scheddule.js 에서 사용
+const io = require('socket.io')(http);  // 소켓 서버  생성 : scheddule.js 에서 사용
 
 // ===== redis 세션 설정 ===== \\ : 로그인 후 세션을 저장하면 RAM 에 저장되며 서버가 재시작 되면 사라짐 (저장된 세션의 ID와 PATH 는 Client 에 쿠키 형태로 저장장)
 // redis Client 생성 및 연결
@@ -63,6 +64,21 @@ app.set('views', path.join(__dirname, 'views'));    // views 가 있는 곳: 현
 // ===== 공통 layout 을 사용하기 위한 미들 웨어 ===== \\
 app.use(expressLayouts);
 app.set('layout', 'layout'); // 'views/layout.ejs'를 기본 레이아웃으로 사용 
+
+// ===== 소켓 연결 이벤트 ====== \\
+io.on('connection', (socket) => {
+  console.log('🟢 클라이언트 연결됨');
+
+  // 메시지를 수신하는 이벤트 (테스트용)
+  socket.on('test_message', (msg) => {
+    console.log('받은 메시지:', msg);
+  });
+});
+
+// 스케줄 메시지 브라우저로 전송 (router에서 접근 가능하도록 export)
+module.exports = { app, http, io };
+
+
 
 // ===== webpage 마다 route 설정 \\
 // ===== admin Routes 설정 ===== \\
@@ -179,9 +195,12 @@ app.use('/', employeesRoutes);   // 라우터 등록 : 로그인 authController 
 
 
 // ====== 서버 시작 ====== \\
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
+// });
+
+const PORT = process.env.PORT || 3000;  // ✅ 포트 선언 필수!
+http.listen(PORT, () => {
   console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
 });
-
-

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../../db/mysql');
+const cron = require('node-cron');  // ⬅️ 꼭 라우터 상단에 추가 : 메시시 자동실행 로직- 매분마다 실행되게 할 때 필요
+const { io } = require('../../../../server');  // 📌 상대 경로: schedule_manager.js → server.js
 
 // ✅ 스케줄 목록 조회
 router.get('/', async (req, res) => {
@@ -56,15 +58,15 @@ router.post('/add', async (req, res) => {
   const cleanedWeekday = toNull(extractFirst(weekday));
 
   try {
-    console.log('📥 INSERT VALUES:', {
-      cycle_type,
-      month: cleanedMonth,
-      day: cleanedDay,
-      weekday: cleanedWeekday,
-      hour: parsedHour,
-      minute: parsedMinute,
-      message
-    });
+    // console.log('📥 INSERT VALUES:', {
+    //   cycle_type,
+    //   month: cleanedMonth,
+    //   day: cleanedDay,
+    //   weekday: cleanedWeekday,
+    //   hour: parsedHour,
+    //   minute: parsedMinute,
+    //   message
+    // });
 
     await db.query(`
       INSERT INTO schedule_plan (
@@ -100,5 +102,40 @@ router.post('/delete/:id', async (req, res) => {
     res.status(500).send('스케줄 삭제 중 오류가 발생했습니다.');
   }
 });
+
+
+// ✅ 메시지 자동 실행 로직 - 매분마다 실행됨
+cron.schedule('* * * * *', async () => {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const month = now.getMonth() + 1;
+  const date = now.getDate();
+  const weekday = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][now.getDay()];
+
+  try {
+    const [schedules] = await db.query(
+      'SELECT * FROM schedule_plan WHERE hour = ? AND minute = ? AND active = 1',
+      [hour, minute]
+    );
+
+    schedules.forEach(item => {
+      let match = false;
+
+      if (item.cycle_type === 'daily') match = true;
+      else if (item.cycle_type === 'weekly' && item.weekday === weekday) match = true;
+      else if (item.cycle_type === 'monthly' && item.day === date) match = true;
+      else if (item.cycle_type === 'yearly' && item.day === date && item.month === month) match = true;
+
+      if (match) {
+        console.log('🔔 메시지 실행:', item.message);
+        io.emit('schedule_alert', item.message); // ✅ 이제 정상
+      }
+    });
+  } catch (err) {
+    console.error('⛔ node-cron 실행 오류:', err);
+  }
+});
+
 
 module.exports = router;
