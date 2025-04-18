@@ -145,6 +145,10 @@ app.use('/admin/employees/employees_data', require('./server/routes/admin/employ
 
 app.use('/admin/employees/employees_sick', require('./server/routes/admin/employees/employees_sick'));
 
+app.use('/admin/employees/employees_sick_personalviewpdf', require('./server/routes/admin/employees/employees_sick_personalviewpdf'));
+
+app.use('/admin/employees/employees_sick_all', require('./server/routes/admin/employees/employees_sick_all'));
+
 //====================================================================================================================
 
 app.use('/admin/schedule/schedule_manager', require('./server/routes/admin/schedule/schedule_manager'));

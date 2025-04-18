@@ -44,64 +44,73 @@
   <% } %>
 
   <!-- ✅ 선택된 직원 정보 표시 -->
-  <% if (selectedEmployee) { %>
-    <div class="info-box">
-      <strong>EID:</strong> <%= selectedEmployee.eid %><br>
-      <strong>Name:</strong> <%= selectedEmployee.name %><br>
-      <strong>Given Sick Days:</strong> <%= selectedEmployee.sick %>
-    </div>
-  <% } %>
+<!-- ✅ Sick 기록 테이블 상단에 PDF 보기 버튼 -->
+<% if (selectedEmployee) { %>
+  <div style="margin-bottom: 10px;">
+    <form action="/admin/employees/employees_sick_personalviewpdf/pdf" method="GET" target="_blank" style="display:inline;">
+      <input type="hidden" name="eid" value="<%= selectedEmployee.eid %>">
+      <button type="submit">📄 PDF 보기</button>
+    </form>
+    <!-- ✅ 전체 HTML 보기 버튼 추가 -->
+    <form action="/admin/employees/employees_sick_all" method="GET" target="_blank" style="display:inline; margin-left: 10px;">
+      <button type="submit">🔍 전체 HTML 보기</button>
+    </form>
+  </div>
+<% } %>
 
-  <!-- ✅ Sick 기록 테이블 -->
-  <div class="table-wrapper">
-    <table>
-      <thead>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Sick Date</th>
+        <th>Used Sick</th>
+        <th>New Sick Date</th>
+        <th>New Used</th>
+        <th>수정</th>   <!-- 수정 버튼용 칼럼 -->
+        <th>삭제</th>   <!-- 삭제 버튼용 칼럼 -->
+      </tr>
+    </thead>
+    <tbody>
+      <% let totalUsed = 0; %>
+      <% sickList.forEach(row => { totalUsed += parseFloat(row.usedsick || 0); %>
         <tr>
-          <th>Sick Date</th>
-          <th>Used Sick</th>
-          <th>New Sick Date</th>
-          <th>New Used</th>
-          <th>삭제</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% let totalUsed = 0; %>
-        <% sickList.forEach(row => { totalUsed += parseFloat(row.usedsick || 0); %>
-          <tr>
+          <form action="/admin/employees/employees_sick/update/<%= row.id %>" method="POST" style="margin:0;">
+            <input type="hidden" name="eid" value="<%= row.eid %>">
             <td><%= new Date(row.sickdate).toLocaleDateString('en-US') %></td>
             <td><%= row.usedsick %></td>
             <td>
-              <form action="/admin/employees/employees_sick/update/<%= row.id %>" method="POST" style="margin:0;">
-                <input type="hidden" name="eid" value="<%= row.eid %>">
-                <input type="date" name="sickdate" value="<%= row.sickdate.toISOString().slice(0, 10) %>" required>
+              <input type="date" name="sickdate" value="<%= row.sickdate.toISOString().slice(0, 10) %>" required>
             </td>
             <td>
-                <input type="number" name="usedsick" value="<%= row.usedsick %>" step="0.5" required>
+              <input type="number" name="usedsick" value="<%= row.usedsick %>" step="0.5" required>
             </td>
             <td>
               <button type="submit">수정</button>
-            </form>
-            <form action="/admin/employees/employees_sick/delete/<%= row.id %>?eid=<%= row.eid %>" method="POST" style="display:inline; margin-left:5px;">
+            </td>
+          </form>
+          <td>
+            <form action="/admin/employees/employees_sick/delete/<%= row.id %>?eid=<%= row.eid %>" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?')" style="margin:0;">
               <button class="btn-delete" type="submit">삭제</button>
             </form>
-            </td>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+    <% if (selectedEmployee) { %>
+      <tfoot>
+        <tr>
+          <td>합계</td>
+          <td><%= totalUsed.toFixed(1) %></td>
+          <td>남은 Sick</td>
+          <td colspan="3"><%= (selectedEmployee.sick - totalUsed).toFixed(1) %></td>
+        </tr>
+      </tfoot>
+    <% } %>
+  </table>
+</div>
 
 
-          </tr>
-        <% }) %>
-      </tbody>
-      <% if (selectedEmployee) { %>
-        <tfoot>
-          <tr>
-            <td>합계</td>
-            <td><%= totalUsed.toFixed(1) %></td>
-            <td>남은 Sick</td>
-            <td colspan="2"><%= (selectedEmployee.sick - totalUsed).toFixed(1) %></td>
-          </tr>
-        </tfoot>
-      <% } %>
-    </table>
-  </div>
+
 </div>
 </body>
 </html>

@@ -16,7 +16,9 @@
 /* Navigation Bar */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 50px;
+  justify-content: center;
   align-items: center;
   padding: 8px 24px;
   background-color: #ffffff;
@@ -24,6 +26,8 @@
 }
 
 .navbar .logo {
+  position: absolute;
+  left: 24px;
   font-size: 20px;
   font-weight: bold;
   color: #066da5;
@@ -32,6 +36,15 @@
   line-height: 1.2;
   white-space: nowrap;     /* 한 줄 유지 */
   line-height: 1;          /* 줄 간격 축소 */
+}
+
+/* 로그인/로그아웃 버튼 영역 */
+.navbar .auth-buttons {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .logo-text {
@@ -56,12 +69,7 @@
   transition: background-color 0.2s ease;
 }
 
-/* 로그인/로그아웃 버튼 영역 */
-.navbar .auth-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+
 
 .auth-buttons .btn-signin {
   display: inline-block;
@@ -155,6 +163,7 @@
 
     <% if (isAuthenticated) { %>
     <div class="menu">
+      <a href="/admin/a_dashboard">Home</a>
       <div class="dropdown">
         <a href="#">General</a>
           <div class="dropdown-content">
@@ -183,6 +192,15 @@
           </div>
       </div>
       <div class="dropdown">
+        <a href="#">Mail</a>
+          <div class="dropdown-content">
+            <a href="#">Envelop</a>
+            <a href="#">Pay Sheet</a>
+            <a href="#">mail Sheet</a>
+            <a href="#"></a>
+          </div>
+      </div>
+      <div class="dropdown">
         <a href="#">Employees</a>
           <div class="dropdown-content">
             <a href="/admin/payroll/payroll_tax">Payroll Tax</a>
@@ -191,15 +209,13 @@
             <a href="/admin/employees/employees_sick">Employees Sick</a>
           </div>
       </div>
-      <a href="/employees">employees</a>
-      <a href="/payroll">paylist</a>
       <div class="dropdown">
-      <a href="/import_an">Anmiwha</a>
+      <!-- <a href="/import_an">Anmiwha</a>
       <a href="/import_vendor">Vendor</a>
       <a href="#">Blog</a>
       <a href="#">Company</a>
       <a href="/import_an">Anmiwha</a>
-      <a href="/import_vendor">Vendor</a>
+      <a href="/import_vendor">Vendor</a> -->
       <div class="dropdown">
         <a href="#">Personal</a>
           <div class="dropdown-content">
