@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sick Day Input</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f7fa; font-size: 12px; color: #333; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .form input, .form select { font-size: 12px; padding: 4px; height: 24px; }
+    .form button { font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white; border: none; border-radius: 4px; height: 28px; }
+    .info-box { margin: 10px 0; padding: 10px; background-color: #e9f0f5; border: 1px solid #bcd; display: inline-block; font-size: 13px; }
+    .table-wrapper { max-height: 700px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    .btn-delete { color: red; cursor: pointer; }
+    tfoot td { font-weight: bold; background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Sick Day Input</h2>
+
+  <!-- ✅ 이름 선택 전용 GET 폼 (eid 선택 시 자동 submit) -->
+  <form class="form" method="GET" action="/admin/employees/employees_sick">
+    <select name="eid" required onchange="this.form.submit()">
+      <option value="">:: 이름 선택 ::</option>
+      <% employees.forEach(e => { %>
+        <option value="<%= e.eid %>" <%= selectedEid === e.eid ? 'selected' : '' %>><%= e.name %></option>
+      <% }) %>
+    </select>
+  </form>
+
+  <!-- ✅ Sick 입력용 POST 폼: name 선택 이후만 사용 -->
+  <% if (selectedEid) { %>
+  <form class="form" action="/admin/employees/employees_sick/add" method="POST">
+    <input type="hidden" name="eid" value="<%= selectedEid %>">
+    <input type="date" name="sickdate" required>
+    <input type="number" name="usedsick" placeholder="Sick Hours" step="0.5" required>
+    <button type="submit">입력</button>
+  </form>
+  <% } %>
+
+  <!-- ✅ 선택된 직원 정보 표시 -->
+  <% if (selectedEmployee) { %>
+    <div class="info-box">
+      <strong>EID:</strong> <%= selectedEmployee.eid %><br>
+      <strong>Name:</strong> <%= selectedEmployee.name %><br>
+      <strong>Given Sick Days:</strong> <%= selectedEmployee.sick %>
+    </div>
+  <% } %>
+
+  <!-- ✅ Sick 기록 테이블 -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Sick Date</th>
+          <th>Used Sick</th>
+          <th>New Sick Date</th>
+          <th>New Used</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let totalUsed = 0; %>
+        <% sickList.forEach(row => { totalUsed += parseFloat(row.usedsick || 0); %>
+          <tr>
+            <td><%= new Date(row.sickdate).toLocaleDateString('en-US') %></td>
+            <td><%= row.usedsick %></td>
+            <td><input type="date" value="<%= row.sickdate.toISOString().slice(0, 10) %>"></td>
+            <td><input type="number" value="<%= row.usedsick %>" step="0.5"></td>
+            <td>
+              <form action="/admin/employees/employees_sick/delete/<%= row.id %>?eid=<%= row.eid %>" method="POST">
+                <button class="btn-delete" type="submit">삭제</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+      <% if (selectedEmployee) { %>
+        <tfoot>
+          <tr>
+            <td>합계</td>
+            <td><%= totalUsed.toFixed(1) %></td>
+            <td>남은 Sick</td>
+            <td colspan="2"><%= (selectedEmployee.sick - totalUsed).toFixed(1) %></td>
+          </tr>
+        </tfoot>
+      <% } %>
+    </table>
+  </div>
+</div>
+</body>
+</html>

@@ -143,6 +143,8 @@ app.use('/admin/payroll/payroll_tax_result_auditcsv', require('./server/routes/a
 
 app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));
 
+app.use('/admin/employees/employees_sick', require('./server/routes/admin/employees/employees_sick'));
+
 //====================================================================================================================
 
 app.use('/admin/schedule/schedule_manager', require('./server/routes/admin/schedule/schedule_manager'));
@@ -158,6 +160,9 @@ app.use('/admin/document/document_manager', require('./server/routes/admin/docum
 app.use('/admin/creditcard/creditcard_list', require('./server/routes/admin/creditcard/creditcard_list'));
 
 app.use('/admin/creditcard/creditcard_acclist', require('./server/routes/admin/creditcard/creditcard_acclist'));
+
+app.use('/admin/creditcard/creditcard_manager', require('./server/routes/admin/creditcard/creditcard_manager'));
+
 
 //====================================================================================================================
 // ===== user Routes 설정 ===== \\

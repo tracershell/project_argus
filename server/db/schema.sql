@@ -246,3 +246,34 @@ CREATE TABLE card_acclist (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE card_transaction (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cardcom_name VARCHAR(100),
+  cardcom_account VARCHAR(50),
+  cardown_name VARCHAR(100),
+  cardown_account VARCHAR(50),
+  cardacc_name VARCHAR(100),
+  cardacc_code VARCHAR(50),
+  paydate DATE,
+  paytype ENUM('check pay', 'direct debit'),
+  checkno VARCHAR(50),
+  payamount DECIMAL(10,2),
+  trdate DATE,
+  tramount DECIMAL(10,2),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE sick_list (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  eid VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  givensick DECIMAL(5,1) DEFAULT 0,
+  sickdate DATE NOT NULL,
+  usedsick DECIMAL(5,1) NOT NULL,
+  remainsick DECIMAL(5,1) GENERATED ALWAYS AS (givensick - usedsick) STORED,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

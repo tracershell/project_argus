@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Card Manager</title>
+  <style>
+    body { margin: 0; font-family: Arial; background-color: #f5f7fa; font-size: 12px; color: #333; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .form-section { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+    .form-section input, .form-section select { padding: 4px; font-size: 12px; height: 24px; }
+    .form-section label { margin-right: 5px; }
+    .transaction-form { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .table-wrapper { max-height: 500px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    button { font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-delete { color: red; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Credit Card Manager</h2>
+
+  <form id="paymentForm" class="form-section">
+    <label>Payment Date:</label><input type="date" name="paydate" required>
+    <label>Pay Type:</label>
+    <select name="paytype" id="paytype" required onchange="toggleCheckNo()">
+      <option value="check pay">Check Pay</option>
+      <option value="direct debit">Direct Debit</option>
+    </select>
+    <label>Check No:</label><input type="text" name="checkno" id="checkno">
+    <label>Pay Amount:</label><input type="number" name="payamount" required>
+    <button type="submit">시작</button>
+  </form>
+
+  <form id="cardInfoForm" class="form-section">
+    <label>Card Company:</label>
+    <% 
+    const seen = new Set(); 
+    const uniqueCardList = cardList.filter(c => {
+      if (seen.has(c.cardcom_name)) return false;
+      seen.add(c.cardcom_name);
+      return true;
+    });
+    %>
+    <select name="cardcom_name" id="cardcom_name" required onchange="filterOwnerAccounts(); saveSelectedCard()">
+      <option value="">:: 카드사 선택 ::</option>
+      <% uniqueCardList.forEach(c => { %>
+        <option value="<%= c.cardcom_name %>" data-account="<%= c.cardcom_account %>"><%= c.cardcom_name %></option>
+      <% }) %>
+    </select>
+
+    <label>Owner Account:</label>
+    <select name="cardown_account" id="cardown_account" required>
+      <option value="">:: 카드 소유자 선택 ::</option>
+      <% cardList.forEach(c => { %>
+        <option value="<%= c.cardown_account %>" data-company="<%= c.cardcom_name %>"><%= c.cardown_name %></option>
+      <% }) %>
+    </select>
+  </form>
+
+  <form id="transactionForm" class="transaction-form" method="POST" action="/admin/creditcard/creditcard_manager/add">
+    <select name="cardacc_name" required>
+      <% accList.forEach(a => { %>
+        <option value="<%= a.cardacc_name %>"><%= a.cardacc_name %> (<%= a.cardacc_code %>)</option>
+      <% }) %>
+    </select>
+    <input type="date" name="trdate" required>
+    <input type="number" name="tramount" id="tramount" required>
+
+    <input type="hidden" name="cardcom_name" id="hidden_cardcom_name">
+    <input type="hidden" name="cardcom_account" id="hidden_cardcom_account">
+    <input type="hidden" name="cardown_name" id="hidden_cardown_name">
+    <input type="hidden" name="cardown_account" id="hidden_cardown_account">
+    <input type="hidden" name="cardacc_code" id="hidden_cardacc_code">
+    <input type="hidden" name="paydate" id="hidden_paydate">
+    <input type="hidden" name="paytype" id="hidden_paytype">
+    <input type="hidden" name="checkno" id="hidden_checkno">
+    <input type="hidden" name="payamount" id="hidden_payamount">
+
+    <button type="submit">저장</button>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Card Co.</th><th>Card Acc.</th><th>Owner</th><th>Owner Acc.</th>
+          <th>Acc Name</th><th>Acc Code</th><th>Pay Date</th><th>Type</th><th>Check No</th>
+          <th>Pay Amount</th><th>Tr Date</th><th>Tr Amount</th><th>수정</th><th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% transactions.forEach(row => { %>
+          <tr>
+            <td><%= row.cardcom_name %></td>
+            <td><%= row.cardcom_account %></td>
+            <td><%= row.cardown_name %></td>
+            <td><%= row.cardown_account %></td>
+            <td><%= row.cardacc_name %></td>
+            <td><%= row.cardacc_code %></td>
+            <td><%= row.paydate %></td>
+            <td><%= row.paytype %></td>
+            <td><%= row.checkno %></td>
+            <td><%= row.payamount %></td>
+            <td><%= row.trdate %></td>
+            <td><%= row.tramount %></td>
+            <td><button>수정</button></td>
+            <td><form method="POST" action="/admin/creditcard/creditcard_manager/delete/<%= row.id %>">
+              <button class="btn-delete" type="submit">삭제</button>
+            </form></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function toggleCheckNo() {
+    document.getElementById('checkno').disabled = (document.getElementById('paytype').value !== 'check pay');
+  }
+
+  function filterOwnerAccounts() {
+    const selectedCompany = document.getElementById('cardcom_name').value;
+    const ownerSelect = document.getElementById('cardown_account');
+    const options = ownerSelect.querySelectorAll('option');
+    options.forEach(option => {
+      option.style.display = option.dataset.company === selectedCompany || !option.value ? '' : 'none';
+    });
+    ownerSelect.value = '';
+  }
+
+  function saveSelectedCard() {
+    const selected = document.getElementById('cardcom_name').value;
+    localStorage.setItem('selectedCard', selected);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('selectedCard');
+    if (saved) {
+      document.getElementById('cardcom_name').value = saved;
+      filterOwnerAccounts();
+    }
+  });
+
+  document.getElementById('transactionForm').addEventListener('submit', function () {
+    const cardcomSelect = document.getElementById('cardcom_name');
+    const cardownSelect = document.getElementById('cardown_account');
+    const cardaccSelect = document.querySelector('select[name="cardacc_name"]');
+
+    document.getElementById('hidden_cardcom_name').value = cardcomSelect.value;
+    document.getElementById('hidden_cardcom_account').value = cardcomSelect.selectedOptions[0].dataset.account || '';
+    document.getElementById('hidden_cardown_name').value = cardownSelect.selectedOptions[0]?.text || '';
+    document.getElementById('hidden_cardown_account').value = cardownSelect.value;
+
+    const accText = cardaccSelect.selectedOptions[0]?.text || '';
+    const codeMatch = accText.match(/\((.*?)\)$/);
+    document.getElementById('hidden_cardacc_code').value = codeMatch ? codeMatch[1] : '';
+
+    document.getElementById('hidden_paydate').value = document.querySelector('input[name="paydate"]').value;
+    document.getElementById('hidden_paytype').value = document.getElementById('paytype').value;
+    document.getElementById('hidden_checkno').value = document.getElementById('checkno').value;
+    document.getElementById('hidden_payamount').value = document.querySelector('input[name="payamount"]').value;
+
+    setTimeout(() => {
+      document.getElementById('tramount').value = '';
+      document.getElementById('tramount').focus();
+    }, 100);
+  });
+</script>
+</body>
+</html>
