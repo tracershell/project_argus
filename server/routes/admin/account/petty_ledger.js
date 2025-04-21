@@ -81,4 +81,20 @@ router.post('/delete/:id', async (req, res) => {
   res.redirect('/admin/account/petty_ledger');
 });
 
+
+// ✅ 추가 From 을 연결해 주는 라우터
+router.get('/form', (req, res) => {
+  const { start, end } = req.query;
+
+  res.render('admin/account/petty_ledger_form', {
+    layout: 'layout',
+    title: '필요 항목 입력',
+    start: start || '',
+    end: end || '',
+    isAuthenticated: true
+  });
+});
+
+
+
 module.exports = router;

@@ -28,13 +28,19 @@
   </form>
 
   <!-- 기간 검색 및 PDF 보기 -->
-  <form action="/admin/account/petty_ledger" method="GET">
-    <input type="date" name="start" value="<%= start %>">
-    <input type="date" name="end" value="<%= end %>">
-    <button type="submit">검색</button>
+  <form id="searchForm" action="/admin/account/petty_ledger" method="GET">
+    <input type="date" name="start" value="<%= start %>" id="startDate">
+    <input type="date" name="end" value="<%= end %>" id="endDate">
+    <!-- 자동 검색되므로 버튼 제거 -->
     <button type="submit" formaction="/admin/account/petty_ledger_viewpdf/viewpdf" formtarget="_blank">PDF View</button>
   </form>
 
+  <form action="/admin/account/petty_ledger/form" method="GET" style="display:inline;">
+    <input type="hidden" name="start" value="<%= start %>">
+    <input type="hidden" name="end" value="<%= end %>">
+    <button type="submit">📋 필요 항목 PDF 보기</button>
+  </form>
+  
   <!-- 리스트 -->
   <table>
     <thead>
@@ -44,9 +50,15 @@
       </tr>
     </thead>
     <tbody>
-      <% ledgers.forEach(row => { %>
+      <% ledgers.forEach(row => { 
+           const date = new Date(row.pldate);
+           const mm = String(date.getMonth() + 1).padStart(2, '0');
+           const dd = String(date.getDate()).padStart(2, '0');
+           const yyyy = date.getFullYear();
+           const formattedDate = `${mm}/${dd}/${yyyy}`;
+      %>
         <tr>
-          <td><%= row.pldate %></td>
+          <td><%= formattedDate %></td>
           <td><%= row.plcredit %></td>
           <td><%= row.pldebit %></td>
           <td><%= row.plbalance %></td>
@@ -76,6 +88,16 @@
         </tr>
       <% }) %>
     </tbody>
+    
   </table>
+  <script>
+    // 날짜 자동 검색 기능
+    document.getElementById('endDate').addEventListener('change', function () {
+      const start = document.getElementById('startDate').value;
+      if (start && this.value) {
+        document.getElementById('searchForm').submit();
+      }
+    });
+  </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ const fs = require('fs');
 
 router.get('/viewpdf', async (req, res) => {
   const { start, end } = req.query;
+
   try {
     const [rows] = await db.query(
       'SELECT * FROM petty_ledger WHERE pldate BETWEEN ? AND ? ORDER BY pldate, id',
@@ -16,33 +17,76 @@ router.get('/viewpdf', async (req, res) => {
     const fontPath = path.resolve('public/fonts/NotoSansKR-Regular.ttf');
     if (!fs.existsSync(fontPath)) return res.status(500).send('폰트 파일이 없습니다.');
 
-    const doc = new PDFDocument({ margin: 40 });
-    doc.registerFont('Korean', fontPath).font('Korean');
+    const doc = new PDFDocument({
+      size: 'letter',
+      layout: 'portrait',
+      margin: 40
+    });
 
+    doc.registerFont('Korean', fontPath).font('Korean');
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline; filename=petty_ledger.pdf');
     doc.pipe(res);
 
-    doc.fontSize(16).text(`Petty Ledger: ${start} ~ ${end}`, { align: 'center' });
-    doc.moveDown();
+    // Title
+    doc.fontSize(14).text(`Petty Money Ledger`, { align: 'center' });
+    doc.fontSize(10).text(`( ${start} ~ ${end} )`, { align: 'center' });
+    doc.moveDown(1);
+
+    // 테이블 헤더 설정
+    const tableTop = doc.y;
+    const colWidths = {
+      date: 70,
+      credit: 70,
+      debit: 70,
+      balance: 70,
+      comment: 200
+    };
+    const colX = {
+      date: 40,
+      credit: 120,
+      debit: 200,
+      balance: 280,
+      comment: 360
+    };
+
+    doc.fontSize(10)        // table header font size
+    .text('Date', colX.date, tableTop, { width: colWidths.date, align: 'center' })
+    .text('Credit', colX.credit, tableTop, { width: colWidths.credit, align: 'center' })
+    .text('Debit', colX.debit, tableTop, { width: colWidths.debit, align: 'center' })
+    .text('Balance', colX.balance, tableTop, { width: colWidths.balance, align: 'center' })
+    .text('Comment', colX.comment, tableTop, { width: colWidths.comment, align: 'center' });
+    doc.lineWidth(0.5);  // 선의 굵기 가늘게 
+
+    doc.moveTo(40, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+
+    // 테이블 행 출력
+    let y = tableTop + 20;
 
     rows.forEach(row => {
-      doc.fontSize(11).text(`날짜: ${row.pldate} | Credit: ${row.plcredit} | Debit: ${row.pldebit} | Balance: ${row.plbalance}`);
-      doc.text(`내용: ${row.plcomment}`);
-      doc.moveDown();
+      if (y > 730) {
+        doc.addPage();
+        y = 40;
+      }
+    
+      const credit = parseFloat(row.plcredit) || 0;
+      const debit = parseFloat(row.pldebit) || 0;
+      const balance = parseFloat(row.plbalance) || 0;
+    
+      const dateObj = new Date(row.pldate);
+      const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const dd = String(dateObj.getDate()).padStart(2, '0');
+      const yyyy = dateObj.getFullYear();
+      const formattedDate = `${mm}/${dd}/${yyyy}`;
+    
+      doc.text(formattedDate, colX.date, y)
+        .text(credit.toFixed(2), colX.credit, y, { width: colWidths.credit, align: 'right' })
+        .text(debit.toFixed(2), colX.debit, y, { width: colWidths.debit, align: 'right' })
+        .text(balance.toFixed(2), colX.balance, y, { width: colWidths.balance, align: 'right' })
+        .text(row.plcomment || '', colX.comment, y, { width: colWidths.comment });
+    
+      y += 14;  // ✅ 줄 간격 줄임
     });
-
-    // ✅ 오른쪽 상단 필요 항목 입력 필드 (하드코딩 예시)
-    doc.addPage();
-    doc.fontSize(14).text('필요 항목 입력', { align: 'left' });
-    const items = ['항목1', '항목2', '항목3', '항목4'];
-    let total = 0;
-    items.forEach((item, i) => {
-      const amount = 0; // 추후 입력 기능 추가 시 활용
-      doc.fontSize(12).text(`${item}: $${amount.toFixed(2)}`);
-      total += amount;
-    });
-    doc.text(`총합계: $${total.toFixed(2)}`);
 
     doc.end();
   } catch (err) {

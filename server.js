@@ -183,7 +183,7 @@ app.use('/admin/account/petty_ledger', require('./server/routes/admin/account/pe
 
 app.use('/admin/account/petty_ledger_viewpdf', require('./server/routes/admin/account/petty_ledger_viewpdf'));
 
-app.use('/admin/account/petty_ledger_form_viewpdf', require('./server/routes/admin/account/petty_ledger_form_viewpdf'));
+app.use('/admin/account/petty_ledger_formviewpdf', require('./server/routes/admin/account/petty_ledger_formviewpdf'));
 
 
 

@@ -6,37 +6,89 @@
   <style>
     body { font-family: Arial; background: #f5f7fa; font-size: 11px; color: #333; padding: 20px; }
     h2 { font-size: 20px; margin-bottom: 15px; }
-    form { display: flex; flex-direction: column; gap: 8px; width: 300px; }
-    label { font-weight: bold; }
-    input { padding: 4px; font-size: 11px; height: 24px; }
-    button { font-size: 11px; padding: 6px 12px; background: #066da5; color: #fff; border: none; border-radius: 4px; margin-top: 10px; }
+    form { display: flex; flex-direction: column; gap: 10px; max-width: 700px; }
+    .row { display: flex; gap: 10px; align-items: center; }
+    label { width: 60px; font-weight: bold; }
+    input[type="text"], input[type="number"], input[type="date"] {
+      padding: 4px;
+      font-size: 11px;
+      height: 24px;
+      flex: 1;
+    }
+    .button-row { margin-top: 20px; display: flex; gap: 10px; }
+    button {
+      font-size: 11px;
+      padding: 6px 12px;
+      background: #066da5;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .total-row {
+      display: flex;
+      justify-content: flex-end;
+      font-weight: bold;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
   <h2>PDF 생성용 항목 입력</h2>
 
-  <form action="/admin/account/petty_ledger/formpdf" method="GET" target="_blank">
-    <label>기간 (Start ~ End)</label>
-    <input type="date" name="start" required>
-    <input type="date" name="end" required>
+  <form action="/admin/account/petty_ledger_formviewpdf/formpdf" method="GET" target="_blank" oninput="calculateTotal()">
+    
+    <div class="row">
+      <label>기간</label>
+      <input type="date" name="start" value="<%= start %>" required>
+      <span>~</span>
+      <input type="date" name="end" value="<%= end %>" required>
+    </div>
 
-    <label>항목1</label>
-    <input type="text" name="item1" placeholder="예: 사무용품">
-    <input type="number" step="0.01" name="amount1" placeholder="금액">
+    <div class="row">
+      <label>항목1</label>
+      <input type="text" name="item1" placeholder="예: 사무용품">
+      <input type="number" step="0.01" name="amount1" placeholder="금액">
+    </div>
 
-    <label>항목2</label>
-    <input type="text" name="item2">
-    <input type="number" step="0.01" name="amount2">
+    <div class="row">
+      <label>항목2</label>
+      <input type="text" name="item2">
+      <input type="number" step="0.01" name="amount2">
+    </div>
 
-    <label>항목3</label>
-    <input type="text" name="item3">
-    <input type="number" step="0.01" name="amount3">
+    <div class="row">
+      <label>항목3</label>
+      <input type="text" name="item3">
+      <input type="number" step="0.01" name="amount3">
+    </div>
 
-    <label>항목4</label>
-    <input type="text" name="item4">
-    <input type="number" step="0.01" name="amount4">
+    <div class="row">
+      <label>항목4</label>
+      <input type="text" name="item4">
+      <input type="number" step="0.01" name="amount4">
+    </div>
 
-    <button type="submit">📄 PDF 보기</button>
+    <!-- 합계 출력 -->
+    <div class="total-row">
+      합계: $<span id="totalAmount">0.00</span>
+    </div>
+
+    <div class="button-row">
+      <button type="button" onclick="history.back()">🔙 돌아가기</button>
+      <button type="submit">📄 PDF 보기</button>
+    </div>
   </form>
+
+  <script>
+    function calculateTotal() {
+      const a1 = parseFloat(document.querySelector('[name="amount1"]').value) || 0;
+      const a2 = parseFloat(document.querySelector('[name="amount2"]').value) || 0;
+      const a3 = parseFloat(document.querySelector('[name="amount3"]').value) || 0;
+      const a4 = parseFloat(document.querySelector('[name="amount4"]').value) || 0;
+      const total = a1 + a2 + a3 + a4;
+      document.getElementById('totalAmount').innerText = total.toFixed(2);
+    }
+  </script>
 </body>
 </html>
