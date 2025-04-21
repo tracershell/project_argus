@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Envelope Entry</title>
+  <style>
+    body { font-family: Arial; background: #f5f7fa; font-size: 11px; color: #333; padding: 20px; }
+    h2 { font-size: 20px; margin-bottom: 15px; }
+    form { display: flex; gap: 10px; margin-bottom: 15px; }
+    input { padding: 4px; font-size: 11px; height: 24px; }
+    button { font-size: 11px; padding: 4px 10px; background: #066da5; color: #fff; border: none; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: center; }
+    thead th { background: #e1e5ea; }
+    .btn-delete { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Payment Envelope Entry</h2>
+
+  <form action="/admin/mail/envelop_glist/add" method="POST">
+    <input type="text" name="gno" placeholder="Group No" required>
+    <input type="text" name="ono" placeholder="Order" required>
+    <input type="text" name="gmname" placeholder="Name" required>
+    <button type="submit">입력</button>
+  </form>
+
+  <% groups.forEach(group => { %>
+    <h3>Group: <%= group.gno %></h3>
+    <form action="/admin/mail/envelop_glist_viewpdf/pdf/<%= group.gno %>" method="GET" target="_blank">
+      <button type="submit">PDF 보기</button>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>순서</th><th>이름</th><th>순서 수정</th><th>이름 수정</th><th>수정</th><th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% group.members.forEach(row => { %>
+          <tr>
+            <td><%= row.ono %></td>
+            <td><%= row.gmname %></td>
+            <td>
+              <form action="/admin/mail/envelop_glist/update/<%= row.id %>" method="POST">
+                <input type="text" name="ono" value="<%= row.ono %>" style="width: 50px;">
+            </td>
+            <td>
+                <input type="text" name="gmname" value="<%= row.gmname %>">
+            </td>
+            <td>
+                <button type="submit">수정</button>
+              </form>
+            </td>
+            <td>
+              <form action="/admin/mail/envelop_glist/delete/<%= row.id %>" method="POST" onsubmit="return confirm('삭제하시겠습니까?')">
+                <button class="btn-delete" type="submit">삭제</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% }) %>
+</body>
+</html>

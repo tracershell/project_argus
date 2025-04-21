@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Petty Money Ledger</title>
+  <style>
+    body { font-family: Arial; background: #f5f7fa; font-size: 11px; color: #333; padding: 20px; }
+    h2 { font-size: 20px; margin-bottom: 15px; }
+    form { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    input, select { padding: 4px; font-size: 11px; height: 24px; }
+    button { font-size: 11px; padding: 4px 10px; background: #066da5; color: #fff; border: none; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: center; }
+    thead th { background: #e1e5ea; }
+    .btn-delete { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Petty Money Ledger</h2>
+
+  <!-- 입력폼 -->
+  <form action="/admin/account/petty_ledger/add" method="POST">
+    <input type="date" name="pldate" required>
+    <input type="number" step="0.01" name="plcredit" placeholder="Credit">
+    <input type="number" step="0.01" name="pldebit" placeholder="Debit">
+    <input type="text" name="plcomment" placeholder="Comment">
+    <button type="submit">입력</button>
+  </form>
+
+  <!-- 기간 검색 및 PDF 보기 -->
+  <form action="/admin/account/petty_ledger" method="GET">
+    <input type="date" name="start" value="<%= start %>">
+    <input type="date" name="end" value="<%= end %>">
+    <button type="submit">검색</button>
+    <button type="submit" formaction="/admin/account/petty_ledger_viewpdf/viewpdf" formtarget="_blank">PDF View</button>
+  </form>
+
+  <!-- 리스트 -->
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Credit</th><th>Debit</th><th>Balance</th><th>Comment</th>
+        <th>Date</th><th>Credit</th><th>Debit</th><th>Comment</th><th>수정</th><th>삭제</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% ledgers.forEach(row => { %>
+        <tr>
+          <td><%= row.pldate %></td>
+          <td><%= row.plcredit %></td>
+          <td><%= row.pldebit %></td>
+          <td><%= row.plbalance %></td>
+          <td><%= row.plcomment %></td>
+          <td>
+            <form action="/admin/account/petty_ledger/update/<%= row.id %>" method="POST">
+              <input type="date" name="pldate" value="<%= row.pldate.toISOString().split('T')[0] %>">
+          </td>
+          <td>
+              <input type="number" step="0.01" name="plcredit" value="<%= row.plcredit %>">
+          </td>
+          <td>
+              <input type="number" step="0.01" name="pldebit" value="<%= row.pldebit %>">
+          </td>
+          <td>
+              <input type="text" name="plcomment" value="<%= row.plcomment %>">
+          </td>
+          <td>
+              <button type="submit">수정</button>
+            </form>
+          </td>
+          <td>
+            <form action="/admin/account/petty_ledger/delete/<%= row.id %>" method="POST" onsubmit="return confirm('삭제하시겠습니까?')">
+              <button class="btn-delete" type="submit">삭제</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

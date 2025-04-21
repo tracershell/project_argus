@@ -167,8 +167,28 @@ app.use('/admin/creditcard/creditcard_acclist', require('./server/routes/admin/c
 
 app.use('/admin/creditcard/creditcard_manager', require('./server/routes/admin/creditcard/creditcard_manager'));
 
+//====================================================================================================================
+
+app.use('/admin/mail/envelop_elist', require('./server/routes/admin/mail/envelop_elist'));
+
+app.use('/admin/mail/envelop_elist_viewpdf', require('./server/routes/admin/mail/envelop_elist_viewpdf'));
+
+app.use('/admin/mail/envelop_glist', require('./server/routes/admin/mail/envelop_glist'));
+
+app.use('/admin/mail/envelop_glist_viewpdf', require('./server/routes/admin/mail/envelop_glist_viewpdf'));
 
 //====================================================================================================================
+
+app.use('/admin/account/petty_ledger', require('./server/routes/admin/account/petty_ledger'));
+
+app.use('/admin/account/petty_ledger_viewpdf', require('./server/routes/admin/account/petty_ledger_viewpdf'));
+
+app.use('/admin/account/petty_ledger_form_viewpdf', require('./server/routes/admin/account/petty_ledger_form_viewpdf'));
+
+
+
+//====================================================================================================================
+
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨

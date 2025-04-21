@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Envelope List</title>
+  <style>
+    body { font-family: Arial; background: #f5f7fa; font-size: 11px; color: #333; padding: 20px; }
+    h2 { font-size: 20px; margin-bottom: 15px; }
+    form { display: flex; gap: 10px; margin-bottom: 15px; }
+    input { padding: 4px; font-size: 11px; height: 24px; }
+    button { font-size: 11px; padding: 4px 10px; background: #066da5; color: #fff; border: none; border-radius: 4px; }
+    table, th, td {  font-size: 14px;} /* ← 원하는 크기로 설정 (예: 10px 또는 9px 등) */
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: center; vertical-align: center; }
+    thead th { background: #e1e5ea; }
+    .btn-delete { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Envelope Entry</h2>
+
+  <form action="/admin/mail/envelop_elist/add" method="POST">
+    <input type="text" name="ename" placeholder="Name" required>
+    <input type="text" name="eref" placeholder="Reference">
+    <input type="text" name="estreet" placeholder="Street Address">
+    <input type="text" name="ecity" placeholder="City">
+    <button type="submit">입력</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Reference</th><th>Street</th><th>City</th><th>PDF</th><th>Edit</th><th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% envelops.forEach(row => { %>
+        <tr>
+          <td><%= row.ename %></td>
+          <td><%= row.eref %></td>
+          <td><%= row.estreet %></td>
+          <td><%= row.ecity %></td>
+          <td>
+            <form action="/admin/mail/envelop_elist_viewpdf/pdf/<%= row.id %>" method="GET" target="_blank">
+              <button type="submit">PDF 보기</button>
+            </form>
+          </td>
+          <td>
+            <form action="/admin/mail/envelop_elist/update/<%= row.id %>" method="POST">
+              <input type="text" name="ename" value="<%= row.ename %>" required>
+              <input type="text" name="eref" value="<%= row.eref %>">
+              <input type="text" name="estreet" value="<%= row.estreet %>">
+              <input type="text" name="ecity" value="<%= row.ecity %>">
+              <button type="submit">수정</button>
+            </form>
+          </td>
+          <td>
+            <form action="/admin/mail/envelop_elist/delete/<%= row.id %>" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+              <button class="btn-delete" type="submit">삭제</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <script>
+    // 폼 내 Enter 키로 다음 input으로 이동
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form[action="/admin/mail/envelop_elist/add"]');
+      const inputs = form.querySelectorAll('input');
+  
+      inputs.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const next = inputs[index + 1];
+            if (next) next.focus();
+            else form.querySelector('button[type="submit"]').focus();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
