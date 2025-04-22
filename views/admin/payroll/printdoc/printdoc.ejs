@@ -84,35 +84,32 @@
       </div>
     </form>
   </div>
+
   <div class="section">
     <h2>Child Support Add</h2>
   
-    <!-- ✅ Upload Form : Childsupport-->
-<!-- ✅ Upload Form : 보여지는 조건에 따라 Upload 또는 Delete -->
-<div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
-  <!-- 업로드 폼 (오른쪽에 위치) -->
-  <form action="/admin/payroll/printdoc/printdoc/upload" method="POST" enctype="multipart/form-data"
-        style="display: flex; align-items: center; gap: 10px;">
-    <input type="file" name="file" accept="application/pdf" required>
-    <button type="submit">📤 Upload</button>
-  </form>
+    <!-- ✅ Upload Form : Child Support -->
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
+      <form action="/admin/payroll/printdoc/printdoc/upload/childsupport" method="POST" enctype="multipart/form-data"
+            style="display: flex; align-items: center; gap: 10px;">
+        <input type="file" name="file" accept="application/pdf" required>
+        <button type="submit">📤 Upload</button>
+      </form>
+  
+      <span style="color: #c7142c; font-weight: bold;"><%= uploadedChildFile ? uploadedChildFile.originalname : '' %></span>
 
-  <!-- 업로드된 파일 이름 표시 -->
-  <span><%= uploadedFile ? uploadedFile.originalname : '' %></span>
-
-  <!-- 삭제 버튼 -->
-  <form action="/admin/payroll/printdoc/printdoc/delete/<%= uploadedFile ? uploadedFile.id : '' %>" method="POST"
-        onsubmit="return confirm('정말 삭제하시겠습니까?')">
-    <button type="submit" class="btn-delete" <%= uploadedFile ? '' : 'disabled style="opacity: 0.4; cursor: not-allowed;"' %>>
-      Delete
-    </button>
-  </form>
-</div>
-
+  
+      <form action="/admin/payroll/printdoc/printdoc/delete/<%= uploadedChildFile ? uploadedChildFile.id : '' %>" method="POST"
+            onsubmit="return confirm('정말 삭제하시겠습니까?')">
+        <button type="submit" class="btn-delete" <%= uploadedChildFile ? '' : 'disabled style="opacity: 0.4; cursor: not-allowed;"' %>>
+          Delete
+        </button>
+      </form>
+    </div>
   
     <!-- ✅ Metadata Input Form -->
     <form action="/admin/payroll/printdoc/printdoc_childsp_viewpdf" method="GET" target="_blank">
-      <input type="hidden" name="filename" value="<%= uploadedFile ? uploadedFile.filename : '' %>">
+      <input type="hidden" name="filename" value="<%= uploadedChildFile ? uploadedChildFile.filename : '' %>">
   
       <div class="row">
         <div class="form-group">
@@ -139,22 +136,23 @@
       </div>
     </form>
   </div>
+  
   <div class="section">
     <h2>Payroll Deduction Add</h2>
   
-    <!-- ✅ Upload Form -->
+    <!-- ✅ Upload Form : Deduction -->
     <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
-      <form action="/admin/payroll/printdoc/printdoc/upload" method="POST" enctype="multipart/form-data"
+      <form action="/admin/payroll/printdoc/printdoc/upload/deduction" method="POST" enctype="multipart/form-data"
             style="display: flex; align-items: center; gap: 10px;">
         <input type="file" name="file" accept="application/pdf" required>
         <button type="submit">📤 Upload</button>
       </form>
   
-      <span><%= uploadedFile ? uploadedFile.originalname : '' %></span>
+      <span style="color: #c7142c; font-weight: bold;"><%= uploadedDeductFile ? uploadedDeductFile.originalname : '' %></span>
   
-      <form action="/admin/payroll/printdoc/printdoc/delete/<%= uploadedFile ? uploadedFile.id : '' %>" method="POST"
+      <form action="/admin/payroll/printdoc/printdoc/delete/<%= uploadedDeductFile ? uploadedDeductFile.id : '' %>" method="POST"
             onsubmit="return confirm('정말 삭제하시겠습니까?')">
-        <button type="submit" class="btn-delete" <%= uploadedFile ? '' : 'disabled style="opacity: 0.4; cursor: not-allowed;"' %>>
+        <button type="submit" class="btn-delete" <%= uploadedDeductFile ? '' : 'disabled style="opacity: 0.4; cursor: not-allowed;"' %>>
           Delete
         </button>
       </form>
@@ -162,7 +160,7 @@
   
     <!-- ✅ Metadata Input Form -->
     <form action="/admin/payroll/printdoc/printdoc_deduction_viewpdf" method="GET" target="_blank">
-      <input type="hidden" name="filename" value="<%= uploadedFile ? uploadedFile.filename : '' %>">
+      <input type="hidden" name="filename" value="<%= uploadedDeductFile ? uploadedDeductFile.filename : '' %>">
   
       <div class="row">
         <div class="form-group">
@@ -182,13 +180,14 @@
   
         <div class="form-group">
           <label>Amount:</label>
-          <input type="text" name="amount" value="$50.01">
+          <input type="text" name="amount" value="$25.00">
         </div>
   
         <button type="submit">📄 View PDF</button>
       </div>
     </form>
   </div>
+  
   
   <script>
     document.querySelectorAll('#timesheetForm input').forEach((el, i, arr) => {
