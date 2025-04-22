@@ -147,6 +147,7 @@ app.use('/admin/payroll/printdoc/printdoc_timeadd_viewpdf', require('./server/ro
 
 app.use('/admin/payroll/printdoc/printdoc_childsp_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_childsp_viewpdf'));
 
+app.use('/admin/payroll/printdoc/printdoc_deduction_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_deduction_viewpdf'));
 
 //====================================================================================================================
 

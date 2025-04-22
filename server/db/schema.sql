@@ -317,4 +317,5 @@ CREATE TABLE simple_doc (
   filename VARCHAR(255) NOT NULL,
   originalname VARCHAR(255),
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  category VARCHAR(50) DEFAULT NOT NULL,      -- 카테고리 (ex: "invoice", "receipt", "contract" 등)
 );
