@@ -149,6 +149,8 @@ app.use('/admin/payroll/printdoc/printdoc_childsp_viewpdf', require('./server/ro
 
 app.use('/admin/payroll/printdoc/printdoc_deduction_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_deduction_viewpdf'));
 
+app.use('/admin/payroll/printdoc/printdoc_cashpay_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_cashpay_viewpdf'));
+
 //====================================================================================================================
 
 app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));

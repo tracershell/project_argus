@@ -188,6 +188,40 @@
     </form>
   </div>
   
+<div class="section">
+  <h2>Cash Pay Sheet</h2>
+  <form action="/admin/payroll/printdoc/printdoc_cashpay_viewpdf" method="GET" target="_blank" id="cashpayForm">
+    <div class="row">
+      <div class="form-group">
+        <label>Date:</label>
+        <input type="date" name="paydate" required>
+      </div>
+
+      <div class="form-group">
+        <label>Name:</label>
+        <input type="text" name="name" value="Edgar" required>
+      </div>
+
+      <div class="form-group">
+        <label>Regular Time:</label>
+        <input type="text" name="rtime" placeholder="hh:mm" required>
+      </div>
+
+      <div class="form-group">
+        <label>Over Time:</label>
+        <input type="text" name="otime" placeholder="hh:mm" value="0:00" required>
+      </div>
+
+      <div class="form-group">
+        <label>Cash Rate:</label>
+        <input type="number" name="rate" step="0.01" value="3.00" required>
+      </div>
+
+      <button type="submit">📄 PDF 보기</button>
+    </div>
+  </form>
+</div>
+
   
   <script>
     document.querySelectorAll('#timesheetForm input').forEach((el, i, arr) => {
