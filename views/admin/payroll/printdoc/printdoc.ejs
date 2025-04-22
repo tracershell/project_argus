@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Print Document</title>
+  <style>
+    body { font-family: Arial; font-size: 12px; padding: 20px; background: #f5f7fa; }
+    h2 { font-size: 18px; margin-bottom: 10px; }
+    .section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: white; }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    input[type="text"], input[type="number"] {
+      height: 24px;
+      padding: 4px;
+      font-size: 12px;
+      width: 80px;
+    }
+
+    input[name="comment"] {
+      width: 200px;
+    }
+
+    button {
+      background-color: #066da5;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      height: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="section">
+    <h2>Time Sheet Add</h2>
+    <form action="/admin/payroll/printdoc/printdoc_timeadd_viewpdf" method="GET" target="_blank" id="timesheetForm">
+      <div class="row">
+        <div class="form-group">
+          <label>Regular Time:</label>
+          <input type="text" name="regular" placeholder="hh:mm" required>
+        </div>
+
+        <div class="form-group">
+          <label>Over Time:</label>
+          <input type="text" name="overtime" placeholder="hh:mm" value="0:00" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Double Time:</label>
+          <input type="text" name="doubletime" placeholder="hh:mm" value="0:00" required>
+        </div>
+        
+
+        <div class="form-group">
+          <label>Lunch count:</label>
+          <input type="number" name="lunchcount" min="0" value="0" required>
+        </div>
+
+        <div class="form-group">
+          <label>Comment</label>
+          <input type="text" name="comment" placeholder="Comment">
+        </div>
+
+        <button type="submit">📄 PDF 보기</button>
+      </div>
+    </form>
+  </div>
+  <div class="section">
+    <h2>Child Support Add</h2>
+  
+    <!-- ✅ Upload Form : Childsupport-->
+<!-- ✅ Upload Form : 보여지는 조건에 따라 Upload 또는 Delete -->
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
+  <!-- 업로드 폼 (오른쪽에 위치) -->
+  <form action="/admin/payroll/printdoc/printdoc/upload" method="POST" enctype="multipart/form-data"
+        style="display: flex; align-items: center; gap: 10px;">
+    <input type="file" name="file" accept="application/pdf" required>
+    <button type="submit">📤 Upload</button>
+  </form>
+
+  <!-- 업로드된 파일 이름 표시 -->
+  <span><%= uploadedFile ? uploadedFile.originalname : '' %></span>
+
+  <!-- 삭제 버튼 -->
+  <form action="/admin/payroll/printdoc/printdoc/delete/<%= uploadedFile ? uploadedFile.id : '' %>" method="POST"
+        onsubmit="return confirm('정말 삭제하시겠습니까?')">
+    <button type="submit" class="btn-delete" <%= uploadedFile ? '' : 'disabled style="opacity: 0.4; cursor: not-allowed;"' %>>
+      Delete
+    </button>
+  </form>
+</div>
+
+  
+    <!-- ✅ Metadata Input Form -->
+    <form action="/admin/payroll/printdoc/printdoc_childsp_viewpdf" method="GET" target="_blank">
+      <input type="hidden" name="filename" value="<%= uploadedFile ? uploadedFile.filename : '' %>">
+  
+      <div class="row">
+        <div class="form-group">
+          <label>Date:</label>
+          <input type="date" name="paydate" required>
+        </div>
+  
+        <div class="form-group">
+          <label>Name:</label>
+          <input type="text" name="name" value="Jonathan Gutierrez">
+        </div>
+  
+        <div class="form-group">
+          <label>Check No:</label>
+          <input type="text" name="ckno" placeholder="Check No">
+        </div>
+  
+        <div class="form-group">
+          <label>Amount:</label>
+          <input type="text" name="amount" value="$50.01">
+        </div>
+  
+        <button type="submit">📄 View PDF</button>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    document.querySelectorAll('#timesheetForm input').forEach((el, i, arr) => {
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const next = arr[i + 1];
+          if (next) next.focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

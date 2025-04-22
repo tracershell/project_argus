@@ -139,6 +139,15 @@ app.use('/admin/payroll/payroll_tax_result_auditviewpdf', require('./server/rout
 
 app.use('/admin/payroll/payroll_tax_result_auditcsv', require('./server/routes/admin/payroll/payroll_tax_result_auditcsv'));
 
+//---------------------------------------------------
+
+app.use('/admin/payroll/printdoc/printdoc', require('./server/routes/admin/payroll/printdoc/printdoc'));
+
+app.use('/admin/payroll/printdoc/printdoc_timeadd_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_timeadd_viewpdf'));
+
+app.use('/admin/payroll/printdoc/printdoc_childsp_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_childsp_viewpdf'));
+
+
 //====================================================================================================================
 
 app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));
@@ -184,6 +193,8 @@ app.use('/admin/account/petty_ledger', require('./server/routes/admin/account/pe
 app.use('/admin/account/petty_ledger_viewpdf', require('./server/routes/admin/account/petty_ledger_viewpdf'));
 
 app.use('/admin/account/petty_ledger_formviewpdf', require('./server/routes/admin/account/petty_ledger_formviewpdf'));
+
+//====================================================================================================================
 
 
 
