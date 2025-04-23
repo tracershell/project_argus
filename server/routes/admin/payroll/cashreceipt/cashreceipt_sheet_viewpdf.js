@@ -80,21 +80,21 @@ router.get('/', async (req, res) => {
 
     firstPage.drawText(line3, {
       x: 370,
-      y: yTop - 200,
+      y: yTop - 193,
       size: textSize,
       font: customFont,
     });
 
     firstPage.drawText(line4, {
       x: 400,
-      y: yTop - 250,
+      y: yTop - 235,
       size: textSize,
       font: customFont,
     });
 
     firstPage.drawText(line5, {
       x: 300,
-      y: yTop - 275,
+      y: yTop - 270,
       size: textSize,
       font: customFont,
     });

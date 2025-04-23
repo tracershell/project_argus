@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Card Monthly Pay List</title>
+  <style>
+    body { margin: 0; font-family: Arial; background-color: #f5f7fa; font-size: 12px; color: #333; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .form-section, .transaction-form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+    .form-section input, .form-section select, .transaction-form input { padding: 4px; font-size: 12px; height: 24px; }
+    .form-section label, .transaction-form label { margin-right: 5px; }
+    .table-wrapper { max-height: 500px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    button { font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-delete { color: red; }
+    textarea { width: 100%; resize: vertical; font-size: 12px; }
+    .remark-cell {
+  white-space: pre-wrap;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Credit Card Monthly Pay List</h2>
+
+  <% 
+  const seenCompanies = new Set();
+  const uniqueCompanies = cardList.filter(c => {
+    if (seenCompanies.has(c.cardcom_name)) return false;
+    seenCompanies.add(c.cardcom_name);
+    return true;
+  });
+  %>
+
+  <form id="filterForm" class="form-section">
+    <label>Card Company:</label>
+    <select id="filter_company" onchange="filterOwners('filter_company', 'filter_owner')">
+      <option value="">전체</option>
+      <% uniqueCompanies.forEach(c => { %>
+        <option value="<%= c.cardcom_name %>"><%= c.cardcom_name %></option>
+      <% }) %>
+    </select>
+    <label>Owner:</label>
+    <select id="filter_owner">
+      <option value="">전체</option>
+      <% cardList.forEach(c => { %>
+        <option value="<%= c.cardown_name %>" data-company="<%= c.cardcom_name %>"><%= c.cardown_name %></option>
+      <% }) %>
+    </select>
+    <button type="button" onclick="filterTable()">PDF 보기</button>
+  </form>
+
+  <form id="entryForm" class="transaction-form" method="POST" action="/admin/general/monthlycd_list/add">
+    <select name="mcdcompany" id="mcdcompany" required onchange="updateAccounts(); filterOwners('mcdcompany', 'mcdowner')">
+      <option value="">:: 카드사 선택 ::</option>
+      <% uniqueCompanies.forEach(c => { %>
+        <option value="<%= c.cardcom_name %>" data-account="<%= c.cardcom_account %>"><%= c.cardcom_name %></option>
+      <% }) %>
+    </select>
+    <select name="mcdowner" id="mcdowner" required>
+      <option value="">:: 소유자 선택 ::</option>
+      <% cardList.forEach(c => { %>
+        <option value="<%= c.cardown_name %>" data-company="<%= c.cardcom_name %>" data-account="<%= c.cardown_account %>"><%= c.cardown_name %></option>
+      <% }) %>
+    </select>
+    <input type="number" name="mcdcgdate" placeholder="날짜(1~31)" min="1" max="31" required>
+    <input type="number" name="mcdcharge" placeholder="월 금액" required>
+    <input type="text" name="mcdcomment" placeholder="내역">
+    <input type="text" name="mcdsite" placeholder="Web Site">
+    <input type="text" name="mcdlogin" placeholder="Login">
+    <input type="text" name="mcdpw" placeholder="Password">
+    <input type="text" name="mcdremark" placeholder="Remark">
+    <input type="hidden" name="mcdcoaccount" id="hidden_coaccount">
+    <input type="hidden" name="mcdowaccount" id="hidden_owaccount">
+    <button type="submit">저장</button>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Card Co.</th><th>Co. Acc</th><th>Owner</th><th>Owner Acc</th>
+          <th>Day</th><th>Amount</th><th>내역</th><th>Site</th><th>Login</th><th>PW</th><th>Remark</th><th>수정</th><th>삭제</th>
+        </tr>
+      </thead>
+      <tbody id="monthlyList">
+        <% monthlyList.forEach(row => { %>
+          <tr>
+            <td><%= row.mcdcompany %></td>
+            <td><%= row.mcdcoaccount %></td>
+            <td><%= row.mcdowner %></td>
+            <td><%= row.mcdowaccount %></td>
+            <td><%= row.mcdcgdate %></td>
+            <td><%= row.mcdcharge %></td>
+            <td><%= row.mcdcomment %></td>
+            <td><%= row.mcdsite %></td>
+            <td><%= row.mcdlogin %></td>
+            <td><%= row.mcdpw %></td>
+            <td class="remark-cell" style="white-space: pre-wrap;"><%= row.mcdremark %></td>
+            <td><button onclick="editRow(<%= row.id %>)">수정</button></td>
+            <td><form method="POST" action="/admin/general/monthlycd_list/delete/<%= row.id %>"><button class="btn-delete">삭제</button></form></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  function updateAccounts() {
+    const co = document.getElementById('mcdcompany');
+    const ow = document.getElementById('mcdowner');
+    const coAccount = co.options[co.selectedIndex]?.dataset.account;
+    const owAccount = ow.options[ow.selectedIndex]?.dataset.account;
+    document.getElementById('hidden_coaccount').value = coAccount || '';
+    document.getElementById('hidden_owaccount').value = owAccount || ''; // ✅ 이 줄이 누락되면 저장이 안됨
+  }
+
+  function filterOwners(companyId, ownerId) {
+    const companySelect = document.getElementById(companyId);
+    const ownerSelect = document.getElementById(ownerId);
+    const selectedCompany = companySelect.value;
+    const options = ownerSelect.querySelectorAll('option');
+
+    options.forEach(option => {
+      if (!option.value) {
+        option.style.display = ''; // ":: 소유자 선택 ::" 항상 보이게
+      } else {
+        const company = option.getAttribute('data-company');
+        option.style.display = (company === selectedCompany) ? '' : 'none';
+      }
+    });
+    ownerSelect.selectedIndex = 0;
+  }
+</script>
+</body>
+</html>

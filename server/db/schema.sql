@@ -329,3 +329,20 @@ CREATE TABLE cash_receipt (
   comment TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ✅ MySQL 테이블 monthlycd_list 생성
+CREATE TABLE monthlycd_list (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mcdcompany VARCHAR(100) NOT NULL,
+  mcdcoaccount VARCHAR(100) NOT NULL,
+  mcdowner VARCHAR(100) NOT NULL,
+  mcdowaccount VARCHAR(100) NOT NULL,
+  mcdcgdate INT NOT NULL CHECK (mcdcgdate BETWEEN 1 AND 31),
+  mcdcharge DECIMAL(10,2) DEFAULT 0,
+  mcdcomment TEXT,
+  mcdsite VARCHAR(255),
+  mcdlogin VARCHAR(255),
+  mcdpw VARCHAR(255),
+  mcdremark TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

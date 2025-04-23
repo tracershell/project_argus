@@ -205,7 +205,7 @@ app.use('/admin/account/petty_ledger_formviewpdf', require('./server/routes/admi
 
 //====================================================================================================================
 
-
+app.use('/admin/general/monthlycd_list', require('./server/routes/admin/general/monthlycd_list'));
 
 //====================================================================================================================
 

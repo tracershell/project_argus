@@ -101,11 +101,11 @@
             <td><%= row.cardown_account %></td>
             <td><%= row.cardacc_name %></td>
             <td><%= row.cardacc_code %></td>
-            <td><%= row.paydate %></td>
+            <td><%= new Date(row.paydate).toLocaleDateString('en-US') %></td>
             <td><%= row.paytype %></td>
             <td><%= row.checkno %></td>
             <td><%= row.payamount %></td>
-            <td><%= row.trdate %></td>
+            <td><%= new Date(row.trdate).toLocaleDateString('en-US') %></td>
             <td><%= row.tramount %></td>
             <td><button>수정</button></td>
             <td><form method="POST" action="/admin/creditcard/creditcard_manager/delete/<%= row.id %>">
