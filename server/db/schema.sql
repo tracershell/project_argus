@@ -319,3 +319,13 @@ CREATE TABLE simple_doc (
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
   category VARCHAR(50) DEFAULT NOT NULL,      -- 카테고리 (ex: "invoice", "receipt", "contract" 등)
 );
+
+
+CREATE TABLE cash_receipt (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  crname VARCHAR(100) NOT NULL,
+  cramount DECIMAL(10,2) NOT NULL DEFAULT 0,
+  category ENUM('period', 'day') NOT NULL,
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

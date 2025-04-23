@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cash Receipt 관리</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f7fa; color: #333; font-size: 12px; }
+    h2 { font-size: 20px; margin: 10px; }
+    .container { padding: 20px; }
+    .form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .form input, .form select { font-size: 12px; padding: 4px; height: 24px; }
+    .form button { font-size: 12px; padding: 4px 10px; background-color: #066da5; color: white; border: none; border-radius: 4px; height: 28px; }
+    .table-wrapper { max-height: 800px; overflow-y: auto; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { position: sticky; top: 0; background-color: #e1e5ea; z-index: 1; }
+    table th, table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    .btn-delete { color: red; cursor: pointer; }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputs = document.querySelectorAll('.form input, .form select');
+      inputs.forEach((input, index) => {
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (input.select) input.select(); else input.setSelectionRange(0, input.value.length);
+            const next = inputs[index + 1];
+            if (next) next.focus();
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+<div class="container">
+  <h2>Cash Receipt 관리</h2>
+
+  <form class="form" action="/admin/payroll/cashreceipt/cashreceipt_list/add" method="POST">
+    <input type="text" name="crname" placeholder="이름" required>
+    <input type="number" step="0.01" name="cramount" placeholder="금액" required>
+    <select name="category" required>
+      <option value="period">기간</option>
+      <option value="day">일일</option>
+    </select>
+    <input type="text" name="comment" placeholder="코멘트">
+    <button type="submit">등록</button>
+  </form>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>금액</th>
+          <th>적용</th>
+          <th>코멘트</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% receipts.forEach(r => { %>
+          <tr>
+            <td><%= r.crname %></td>
+            <td><%= Number(r.cramount).toFixed(2) %></td>
+            <td><%= r.category %></td>
+            <td><%= r.comment %></td>
+            <td>
+              <form action="/admin/payroll/cashreceipt/cashreceipt_list/edit/<%= r.id %>" method="POST">
+                <input type="text" name="crname" value="<%= r.crname %>" required>
+                <input type="number" step="0.01" name="cramount" value="<%= r.cramount %>" required>
+                <select name="category">
+                  <option value="period" <%= r.category === 'period' ? 'selected' : '' %>>기간</option>
+                  <option value="day" <%= r.category === 'day' ? 'selected' : '' %>>일일</option>
+                </select>
+                <input type="text" name="comment" value="<%= r.comment %>">
+                <button type="submit">수정</button>
+              </form>
+            </td>
+            <td>
+              <form action="/admin/payroll/cashreceipt/cashreceipt_list/delete/<%= r.id %>" method="POST" onsubmit="return confirm('삭제하시겠습니까?');">
+                <button class="btn-delete" type="submit">삭제</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

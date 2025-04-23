@@ -189,7 +189,7 @@
   </div>
   
 <div class="section">
-  <h2>Cash Pay Sheet</h2>
+  <h2>Cash Calculation Note</h2>
   <form action="/admin/payroll/printdoc/printdoc_cashpay_viewpdf" method="GET" target="_blank" id="cashpayForm">
     <div class="row">
       <div class="form-group">
@@ -224,15 +224,29 @@
 
   
   <script>
-    document.querySelectorAll('#timesheetForm input').forEach((el, i, arr) => {
+  // 모든 form 에 적용
+  document.querySelectorAll('form').forEach(form => {
+    const inputs = form.querySelectorAll('input');
+
+    inputs.forEach((el, i) => {
       el.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          const next = arr[i + 1];
-          if (next) next.focus();
+          const next = inputs[i + 1];
+          if (next) {
+            next.focus();
+            // delay 를 줘야 select 작동함
+            setTimeout(() => next.select(), 10);
+          }
         }
       });
+
+      // focus 될 때 기본값 전체 선택
+      el.addEventListener('focus', e => {
+        setTimeout(() => e.target.select(), 10);
+      });
     });
+  });
   </script>
 </body>
 </html>

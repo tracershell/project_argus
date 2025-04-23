@@ -151,6 +151,12 @@ app.use('/admin/payroll/printdoc/printdoc_deduction_viewpdf', require('./server/
 
 app.use('/admin/payroll/printdoc/printdoc_cashpay_viewpdf', require('./server/routes/admin/payroll/printdoc/printdoc_cashpay_viewpdf'));
 
+app.use('/admin/payroll/cashreceipt/cashreceipt_list', require('./server/routes/admin/payroll/cashreceipt/cashreceipt_list'));
+
+app.use('/admin/payroll/cashreceipt/cashreceipt_sheet', require('./server/routes/admin/payroll/cashreceipt/cashreceipt_sheet'));
+
+app.use('/admin/payroll/cashreceipt/cashreceipt_sheet_viewpdf', require('./server/routes/admin/payroll/cashreceipt/cashreceipt_sheet_viewpdf'));
+
 //====================================================================================================================
 
 app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));
