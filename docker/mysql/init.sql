@@ -1,6 +1,6 @@
-CREATE DATABASE project_201_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE project_301_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE project_201_db;
+USE project_301_db;
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,                     -- 고유 ID (자동 증가)

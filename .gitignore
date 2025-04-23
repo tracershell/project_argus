@@ -31,6 +31,7 @@ dist/
 build/
 
 # thumbnails 와 uploads 사진을 제외
+/reserve/
 /public/m_uploads/
 /public/m_text/
 /public/uploads/

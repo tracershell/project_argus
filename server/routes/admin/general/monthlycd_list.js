@@ -47,6 +47,7 @@ router.post('/add', async (req, res) => {
       mcdsite, mcdlogin, mcdpw, mcdremark
     ];
 
+
     await db.query(query, values);
     res.redirect('/admin/general/monthlycd_list');
   } catch (err) {

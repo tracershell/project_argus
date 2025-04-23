@@ -18,10 +18,10 @@
     .btn-delete { color: red; }
     textarea { width: 100%; resize: vertical; font-size: 12px; }
     .remark-cell {
-  white-space: pre-wrap;
-  max-width: 200px;
-  word-wrap: break-word;
-}
+      white-space: pre-wrap;
+      max-width: 200px;
+      word-wrap: break-word;
+    }
   </style>
 </head>
 <body>
@@ -55,7 +55,7 @@
     <button type="button" onclick="filterTable()">PDF 보기</button>
   </form>
 
-  <form id="entryForm" class="transaction-form" method="POST" action="/admin/general/monthlycd_list/add">
+  <form id="entryForm" class="transaction-form" method="POST" action="/admin/general/monthlycd_list/add" onsubmit="updateAccounts()">
     <select name="mcdcompany" id="mcdcompany" required onchange="updateAccounts(); filterOwners('mcdcompany', 'mcdowner')">
       <option value="">:: 카드사 선택 ::</option>
       <% uniqueCompanies.forEach(c => { %>
@@ -101,7 +101,7 @@
             <td><%= row.mcdsite %></td>
             <td><%= row.mcdlogin %></td>
             <td><%= row.mcdpw %></td>
-            <td class="remark-cell" style="white-space: pre-wrap;"><%= row.mcdremark %></td>
+            <td class="remark-cell"><%= row.mcdremark %></td>
             <td><button onclick="editRow(<%= row.id %>)">수정</button></td>
             <td><form method="POST" action="/admin/general/monthlycd_list/delete/<%= row.id %>"><button class="btn-delete">삭제</button></form></td>
           </tr>
@@ -111,31 +111,66 @@
   </div>
 </div>
 <script>
-  function updateAccounts() {
-    const co = document.getElementById('mcdcompany');
-    const ow = document.getElementById('mcdowner');
-    const coAccount = co.options[co.selectedIndex]?.dataset.account;
-    const owAccount = ow.options[ow.selectedIndex]?.dataset.account;
-    document.getElementById('hidden_coaccount').value = coAccount || '';
-    document.getElementById('hidden_owaccount').value = owAccount || ''; // ✅ 이 줄이 누락되면 저장이 안됨
-  }
+function filterTable() {
+  const selectedCompany = document.getElementById('filter_company').value;
+  const selectedOwner = document.getElementById('filter_owner').value;
+  const rows = document.querySelectorAll('#monthlyList tr');
 
-  function filterOwners(companyId, ownerId) {
-    const companySelect = document.getElementById(companyId);
-    const ownerSelect = document.getElementById(ownerId);
-    const selectedCompany = companySelect.value;
-    const options = ownerSelect.querySelectorAll('option');
+  rows.forEach(row => {
+    const company = row.children[0].innerText.trim();
+    const owner = row.children[2].innerText.trim();
+    const matchCompany = !selectedCompany || company === selectedCompany;
+    const matchOwner = !selectedOwner || owner === selectedOwner;
+    row.style.display = (matchCompany && matchOwner) ? '' : 'none';
+  });
+}
 
-    options.forEach(option => {
-      if (!option.value) {
-        option.style.display = ''; // ":: 소유자 선택 ::" 항상 보이게
-      } else {
-        const company = option.getAttribute('data-company');
-        option.style.display = (company === selectedCompany) ? '' : 'none';
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('filter_company').addEventListener('change', filterTable);
+  document.getElementById('filter_owner').addEventListener('change', filterTable);
+
+  const formInputs = document.querySelectorAll('#entryForm input, #entryForm select');
+  formInputs.forEach((el, index) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const next = formInputs[index + 1];
+        if (next) {
+          next.focus();
+          if (next.select) next.select();
+        }
       }
     });
-    ownerSelect.selectedIndex = 0;
-  }
+  });
+});
+
+function updateAccounts() {
+  const co = document.getElementById('mcdcompany');
+  const ow = document.getElementById('mcdowner');
+  const coAccount = co.options[co.selectedIndex]?.dataset.account;
+  const owAccount = ow.options[ow.selectedIndex]?.dataset.account;
+  console.log('💬 coAccount:', coAccount);
+  console.log('💬 owAccount:', owAccount);
+  document.getElementById('hidden_coaccount').value = coAccount || '';
+  document.getElementById('hidden_owaccount').value = owAccount || '';
+}
+
+function filterOwners(companyId, ownerId) {
+  const companySelect = document.getElementById(companyId);
+  const ownerSelect = document.getElementById(ownerId);
+  const selectedCompany = companySelect.value;
+  const options = ownerSelect.querySelectorAll('option');
+
+  options.forEach(option => {
+    if (!option.value) {
+      option.style.display = '';
+    } else {
+      const company = option.getAttribute('data-company');
+      option.style.display = (company === selectedCompany) ? '' : 'none';
+    }
+  });
+  ownerSelect.selectedIndex = 0;
+}
 </script>
 </body>
 </html>
