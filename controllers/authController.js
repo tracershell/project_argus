@@ -9,6 +9,7 @@ const loginUser = async (req, res) => {   // router 로 부터 연결된 loginUs
   // 예외 또는 오류 발생시 처리하가 위한 try-catch 문 : DB 조회나 bcrypt 처리중 오류가 생기면 catch 로 넘어가도록 보호호
   try {
     const [rows] = await db.execute('SELECT * FROM users WHERE username = ?', [username]); // 사용자 정보 조회 쿼리 : ? 는 sql 인젝션 방지를 위한 자리표시자자
+    console.log('조회된 사용자:', rows);  // 🔍 debug 를 위해 줄 추가
     const user = rows[0]; // 첫번째 레코드 row[0] 의 값을 user 로 저장 ==> 객체가 되어 user.password ~ user.email 을 사용 가능
     // user.id, user.name, user.password, user.email, user.name, user.role, user.status, user.last_login
 

@@ -17,8 +17,8 @@ const io = require('socket.io')(http);  // 소켓 서버  생성 : scheddule.js 
 const redisClient = createClient({
   legacyMode: true,
   socket: {
-    host: 'localhost',
-    port: 6380
+    host: 'redis',  // docker 안에서는 localhost 대신 'redis' 사용
+    port: 6379          // docker 안에서는 내부 포트를 사용해야 함 : redis local host 서버 외부 포트 6380
   }
 });
 

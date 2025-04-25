@@ -1,0 +1,11 @@
+services:
+  node:
+    image: project-argus:prod           # ✅ 운영용 태그
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    volumes: []                         # 운영에서는 코드 mount 안 함
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production

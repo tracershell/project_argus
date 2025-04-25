@@ -1,17 +1,30 @@
 # Node.js 관련
 node_modules/
 npm-debug.log
+yarn-debug.log
 yarn-error.log
 
 # 환경 설정 파일
 .env
 
-# admin seed 파일
-/server/db/admin-seed.js
+# Docker 관련
+*.tar
+*.pid
+docker-compose.override.yml
 
 # 운영체제 관련
 .DS_Store
 Thumbs.db
+
+# OS/편집기 관련
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+.idea/
+.vscode/
+*.code-workspace
 
 # 로그 파일
 logs/
@@ -23,12 +36,12 @@ logs/
 *.sublime-project
 *.sublime-workspace
 
-# Docker 관련 (선택)
-docker-compose.override.yml
 
 # Build 결과물 (예: 나중에 빌드 도구 추가 시)
 dist/
 build/
+.env.local
+.env.*.local
 
 # thumbnails 와 uploads 사진을 제외
 /reserve/
@@ -41,3 +54,4 @@ build/
 /public/e_uploads/
 /public/doc_uploads/
 /public/paydoc_uploads/
+/mysql-data/

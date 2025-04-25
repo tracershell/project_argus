@@ -1,25 +1,20 @@
-CREATE DATABASE project_301_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+-- CREATE DATABASE project_301_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 USE project_301_db;
 
 CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,                     -- 고유 ID (자동 증가)
-  username VARCHAR(50) NOT NULL UNIQUE,                  -- 로그인 ID (중복 불가)
-  password VARCHAR(255) NOT NULL,                        -- 암호화된 비밀번호 저장용
-  email VARCHAR(100),                                    -- 이메일 (선택)
-  name VARCHAR(100),                                     -- 이름 (선택)
-  role ENUM('admin', 'user') DEFAULT 'user',             -- 사용자 권한
-  status ENUM('active', 'inactive') DEFAULT 'active',    -- 계정 상태
-  last_login DATETIME,                                   -- 마지막 로그인 시간
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,        -- 생성 시간
+  id INT AUTO_INCREMENT PRIMARY KEY,                    
+  username VARCHAR(50) NOT NULL UNIQUE,                 
+  password VARCHAR(255) NOT NULL,                       
+  email VARCHAR(100),                                    
+  name VARCHAR(100),                                    
+  role ENUM('admin', 'user') DEFAULT 'user',            
+  status ENUM('active', 'inactive') DEFAULT 'active',    
+  last_login DATETIME,                                   
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,       
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
-              ON UPDATE CURRENT_TIMESTAMP                -- 수정 시간 자동 업데이트
+              ON UPDATE CURRENT_TIMESTAMP                
 );
-
-INSERT INTO users (username, password, role)
-VALUES 
-('tshell', 'ts3300', 'user'),
-('tracershell', 'ts330069', 'admin');
 
 
 
@@ -44,20 +39,15 @@ CREATE TABLE import_po (
   pcs INT DEFAULT 1,
   cost DECIMAL(10,2) DEFAULT 0.00,
   po_amount DECIMAL(12,2) DEFAULT 0.00,
-
-  -- Paid 된 deposit Amount 저장칸
   pdp_amount DECIMAL(12,2) DEFAULT 0.00,
-
   v_rate DECIMAL(5,2) DEFAULT 0.00,
   dp_amount DECIMAL(12,2) DEFAULT 0.00,
   balance DECIMAL(12,2) DEFAULT 0.00,
   note TEXT,
-
   dex_date DATE,
   dex_rmbamount DECIMAL(12,2) DEFAULT 0.00,
   dex_rate DECIMAL(10,4),
   dex_amount DECIMAL(12,2),
-
   bex_date DATE,
   bex_rmbamount DECIMAL(12,2) DEFAULT 0.00,
   bex_rate DECIMAL(10,4),
@@ -78,14 +68,14 @@ CREATE TABLE domestic_vendor (
 
 CREATE TABLE domestic_invoice (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  iv_date DATE NOT NULL,            -- Invoice Date
-  dv_name VARCHAR(100) NOT NULL,    -- Domestic Vendor Name (from domestic_vendor.v_name)
-  di_no VARCHAR(50) NOT NULL,       -- Domestic Invoice Number
-  di_amount DECIMAL(12, 2) NOT NULL,-- Invoice Total Amount
-  ip_date DATE DEFAULT NULL,        -- Invoice Pay Date
-  ip_amount DECIMAL(12, 2) DEFAULT 0.00, -- Paid Amount
-  ib_amount DECIMAL(12, 2) DEFAULT 0.00, -- Balance = di_amount - ip_amount
-  note TEXT                         -- Note or remarks (ex: full paid)
+  iv_date DATE NOT NULL,            
+  dv_name VARCHAR(100) NOT NULL,    
+  di_no VARCHAR(50) NOT NULL,       
+  di_amount DECIMAL(12, 2) NOT NULL,
+  ip_date DATE DEFAULT NULL,       
+  ip_amount DECIMAL(12, 2) DEFAULT 0.00,
+  ib_amount DECIMAL(12, 2) DEFAULT 0.00,
+  note TEXT                         
 );
 
 CREATE TABLE employees (
@@ -158,12 +148,12 @@ CREATE TABLE photos (
 
 CREATE TABLE musics (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  original VARCHAR(255) NOT NULL,        -- 음악 파일명 (파일시스템에 저장된 이름)
-  textfile VARCHAR(255),                 -- 선택적으로 업로드한 텍스트 파일명 (.txt)
-  date DATE NOT NULL,                    -- 음악과 관련된 날짜
-  comment TEXT NOT NULL,                 -- 코멘트 입력
-  keyword VARCHAR(255) NOT NULL,         -- 키워드 입력
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- 레코드 생성 시각
+  original VARCHAR(255) NOT NULL,        
+  textfile VARCHAR(255),                 
+  date DATE NOT NULL,                    
+  comment TEXT NOT NULL,                 
+  keyword VARCHAR(255) NOT NULL,         
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
 );
 
 CREATE TABLE movies (
@@ -179,24 +169,24 @@ CREATE TABLE movies (
 
 CREATE TABLE employees_data (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  eid VARCHAR(50) NOT NULL,        -- 직원 ID (employees.eid와 연결)
-  filename VARCHAR(255) NOT NULL,  -- 실제 저장된 파일명
-  originalname VARCHAR(255),       -- 원래 파일명 (보여주기 용도)
-  comment VARCHAR(255),            -- 파일에 대한 설명 또는 메모
+  eid VARCHAR(50) NOT NULL,      
+  filename VARCHAR(255) NOT NULL, 
+  originalname VARCHAR(255),      
+  comment VARCHAR(255),            
   upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
 CREATE TABLE schedule_plan (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  cycle_type ENUM('yearly', 'monthly', 'weekly', 'daily') NOT NULL, -- 반복 주기
-  month INT DEFAULT NULL,      -- 매년: 월 (1~12)
-  day INT DEFAULT NULL,        -- 매년, 매월: 일 (1~31)
-  weekday ENUM('sun','mon','tue','wed','thu','fri','sat') DEFAULT NULL, -- 매주
-  hour INT NOT NULL,           -- 알림 시
-  minute INT NOT NULL,         -- 알림 분
-  message TEXT NOT NULL,       -- 팝업 메시지
-  active BOOLEAN DEFAULT TRUE, -- 사용 여부
+  cycle_type ENUM('yearly', 'monthly', 'weekly', 'daily') NOT NULL, 
+  month INT DEFAULT NULL,     
+  day INT DEFAULT NULL,        
+  weekday ENUM('sun','mon','tue','wed','thu','fri','sat') DEFAULT NULL,
+  hour INT NOT NULL,           
+  minute INT NOT NULL,         
+  message TEXT NOT NULL,       
+  active BOOLEAN DEFAULT TRUE, 
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -204,21 +194,21 @@ CREATE TABLE schedule_plan (
 
 CREATE TABLE doc_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,        -- 카테고리 이름
-  code VARCHAR(50) UNIQUE,           -- 내부코드 (예: "REQUIRED", "TAX", "BIZ_INS", 등)
-  description TEXT DEFAULT NULL,     -- 설명 (선택)
-  active BOOLEAN DEFAULT TRUE,       -- 사용 여부 (숨김처리 등 관리용)
-  sort_order INT DEFAULT 0,          -- 정렬 우선순위 (콤보박스에서 정렬 용도)
+  name VARCHAR(100) NOT NULL,       
+  code VARCHAR(50) UNIQUE,           
+  description TEXT DEFAULT NULL,     
+  active BOOLEAN DEFAULT TRUE,       
+  sort_order INT DEFAULT 0,          
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE doc_manager (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  doc_id INT NOT NULL,                         -- doc_list.id 와 연결
-  filename VARCHAR(255) NOT NULL,              -- 저장된 실제 파일명
-  originalname VARCHAR(255) NOT NULL,          -- 원본 파일명
-  comment TEXT,                                -- 파일 설명
+  doc_id INT NOT NULL,                        
+  filename VARCHAR(255) NOT NULL,             
+  originalname VARCHAR(255) NOT NULL,        
+  comment TEXT,                               
   upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (doc_id) REFERENCES doc_list(id) ON DELETE CASCADE
 );
@@ -226,12 +216,12 @@ CREATE TABLE doc_manager (
 
 CREATE TABLE card_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  cardcom_name VARCHAR(100) NOT NULL,        -- 카드사 이름 (ex: Samsung Card, Amex)
-  cardcom_account VARCHAR(50),               -- 카드사 제공 계정 번호 또는 식별자
-  cardown_name VARCHAR(100) NOT NULL,        -- 카드 소유자 이름 (ex: 홍길동)
-  cardown_account VARCHAR(50),               -- 카드 번호 뒷자리 또는 내부 식별용
-  card_type ENUM('개인', '법인') DEFAULT '개인', -- 선택사항: 카드 성격
-  active BOOLEAN DEFAULT TRUE,               -- 사용 여부
+  cardcom_name VARCHAR(100) NOT NULL,        
+  cardcom_account VARCHAR(50),              
+  cardown_name VARCHAR(100) NOT NULL,       
+  cardown_account VARCHAR(50),              
+  card_type ENUM('person', 'company') DEFAULT 'person', 
+  active BOOLEAN DEFAULT TRUE,              
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -239,9 +229,9 @@ CREATE TABLE card_list (
 
 CREATE TABLE card_acclist (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  cardacc_name VARCHAR(100) NOT NULL,        -- 항목 이름
-  cardacc_code VARCHAR(50) NOT NULL,         -- 항목 코드 (예: FUEL, TRAVEL)
-  cardacc_comment TEXT,                      -- 설명
+  cardacc_name VARCHAR(100) NOT NULL,        
+  cardacc_code VARCHAR(50) NOT NULL,         
+  cardacc_comment TEXT,                      
   active BOOLEAN DEFAULT TRUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -278,7 +268,7 @@ CREATE TABLE sick_list (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- ✅ MySQL 스키마: envelop_each
+
 CREATE TABLE envelop_each (
   id INT AUTO_INCREMENT PRIMARY KEY,
   ename VARCHAR(100) NOT NULL,
@@ -316,8 +306,8 @@ CREATE TABLE simple_doc (
   id INT AUTO_INCREMENT PRIMARY KEY,
   filename VARCHAR(255) NOT NULL,
   originalname VARCHAR(255),
-  uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  category VARCHAR(50) DEFAULT NOT NULL,      -- 카테고리 (ex: "invoice", "receipt", "contract" 등)
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  category VARCHAR(50) NOT NULL
 );
 
 
@@ -330,7 +320,7 @@ CREATE TABLE cash_receipt (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ✅ MySQL 테이블 monthlycd_list 생성
+
 CREATE TABLE monthlycd_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
   mcdcompany VARCHAR(100) NOT NULL,

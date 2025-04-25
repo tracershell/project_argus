@@ -9,24 +9,23 @@ services:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       node:
-        condition: service_healthy
-    restart: unless-stopped
+        condition: service_healthy   # ✅ healthcheck 기반 의존
+    restart: unless-stopped          # (옵션) nginx 재시작 정책
 
   node:
-    image: project-argus:dev         # ✅ 이미지 이름 명시
-    build:
-      context: .
-      dockerfile: Dockerfile.dev     # ✅ 개발용 Dockerfile
+    build: .
     ports:
       - "5173:5173"
     volumes:
-      - /home/tslinux0101/uploads-data:/app/public/uploads  # ✅ 절대 경로로 수정 : 운영시에는 상대경로로 지정해서 이식성을 증대시키는 것이 좋음
+      - .:/app
+      - ./public:/app/public
+      - /home/tslinux0101/uploads-data:/app/public/uploads  # ✅ 절대 경로로 수정
     env_file:
       - .env
     depends_on:
       - mysql
       - redis
-    healthcheck:
+    healthcheck:                    # ✅ node 서비스 준비 확인용
       test: ["CMD", "curl", "-f", "http://localhost:5173"]
       interval: 10s
       timeout: 5s
@@ -41,7 +40,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - /home/tslinux0101/mysql-data:/var/lib/mysql # 절대 경로로 변경해서 project 외부에서 관리리 ./mysql-data:/var/lib/mysql  # 상대경로 (이식성 증가)
+      - /home/tslinux0101/mysql-data:/var/lib/mysql
 
   redis:
     image: redis:latest
