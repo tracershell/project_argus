@@ -23,7 +23,11 @@ const redisClient = createClient({
 });
 
 
-redisClient.connect().catch(console.error);   //// redis connect
+
+redisClient.connect().catch(console.error);  // ✅ 연결 실행
+redisClient.on('error', (err) => {
+  console.error('❌ Redis 연결 오류:', err);
+});
 
 // ====== express-session + redis 연동 ======
 app.use(session({
@@ -206,6 +210,10 @@ app.use('/admin/account/petty_ledger_formviewpdf', require('./server/routes/admi
 //====================================================================================================================
 
 app.use('/admin/general/monthlycd_list', require('./server/routes/admin/general/monthlycd_list'));
+
+//====================================================================================================================
+
+app.use('/admin/general/board/board', require('./server/routes/admin/general/board/board'));
 
 //====================================================================================================================
 

@@ -1,8 +1,8 @@
--- CREATE DATABASE project_301_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS project_argus_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE project_301_db;
+USE project_argus_db;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,                    
   username VARCHAR(50) NOT NULL UNIQUE,                 
   password VARCHAR(255) NOT NULL,                       
@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 
 
-CREATE TABLE import_vendor (
+CREATE TABLE IF NOT EXISTS import_vendor (
   id INT AUTO_INCREMENT PRIMARY KEY,
   date DATE,
   v_name VARCHAR(100),
@@ -30,7 +30,7 @@ CREATE TABLE import_vendor (
   v_note TEXT
 );
 
-CREATE TABLE import_po (
+CREATE TABLE IF NOT EXISTS import_po (
   id INT PRIMARY KEY AUTO_INCREMENT,
   po_date DATE NOT NULL,
   v_name VARCHAR(100) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE import_po (
 );
 
 
-CREATE TABLE domestic_vendor (
+CREATE TABLE IF NOT EXISTS domestic_vendor (
   id INT AUTO_INCREMENT PRIMARY KEY,
   date DATE,
   v_name VARCHAR(100),
@@ -66,7 +66,7 @@ CREATE TABLE domestic_vendor (
   v_note TEXT
 );
 
-CREATE TABLE domestic_invoice (
+CREATE TABLE IF NOT EXISTS domestic_invoice (
   id INT AUTO_INCREMENT PRIMARY KEY,
   iv_date DATE NOT NULL,            
   dv_name VARCHAR(100) NOT NULL,    
@@ -78,7 +78,7 @@ CREATE TABLE domestic_invoice (
   note TEXT                         
 );
 
-CREATE TABLE employees (
+CREATE TABLE IF NOT EXISTS employees (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   status VARCHAR(10),
   eid VARCHAR(10),
@@ -101,41 +101,35 @@ CREATE TABLE employees (
 );
 
 
-CREATE TABLE payroll_tax (
+CREATE TABLE IF NOT EXISTS payroll_tax (
   id INT AUTO_INCREMENT PRIMARY KEY,
   eid VARCHAR(50) NOT NULL,
   name VARCHAR(100) NOT NULL,
   jcode VARCHAR(20),
   jtitle VARCHAR(50),
   work1 VARCHAR(50),
-
   pdate DATE NOT NULL,
   ckno VARCHAR(20),
   rtime DECIMAL(10,2) DEFAULT 0,
   otime DECIMAL(10,2) DEFAULT 0,
   dtime DECIMAL(10,2) DEFAULT 0,
-
   fw DECIMAL(10,2) DEFAULT 0,
   sse DECIMAL(10,2) DEFAULT 0,
   me DECIMAL(10,2) DEFAULT 0,
   caw DECIMAL(10,2) DEFAULT 0,
   cade DECIMAL(10,2) DEFAULT 0,
-
   adv DECIMAL(10,2) DEFAULT 0,
   csp DECIMAL(10,2) DEFAULT 0,
   dd DECIMAL(10,2) DEFAULT 0,
-
   gross DECIMAL(10,2) DEFAULT 0,
   tax DECIMAL(10,2) DEFAULT 0,
   net DECIMAL(10,2) DEFAULT 0,
-
   remark VARCHAR(255),
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
-CREATE TABLE photos (
+CREATE TABLE IF NOT EXISTS photos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   original VARCHAR(255),
   thumbnail VARCHAR(255),
@@ -146,7 +140,7 @@ CREATE TABLE photos (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE musics (
+CREATE TABLE IF NOT EXISTS musics (
   id INT AUTO_INCREMENT PRIMARY KEY,
   original VARCHAR(255) NOT NULL,        
   textfile VARCHAR(255),                 
@@ -156,7 +150,7 @@ CREATE TABLE musics (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
 );
 
-CREATE TABLE movies (
+CREATE TABLE IF NOT EXISTS movies (
   id INT AUTO_INCREMENT PRIMARY KEY,
   video_filename VARCHAR(255),
   thumbnail VARCHAR(255),
@@ -167,7 +161,7 @@ CREATE TABLE movies (
 );
 
 
-CREATE TABLE employees_data (
+CREATE TABLE IF NOT EXISTS employees_data (
   id INT AUTO_INCREMENT PRIMARY KEY,
   eid VARCHAR(50) NOT NULL,      
   filename VARCHAR(255) NOT NULL, 
@@ -177,7 +171,7 @@ CREATE TABLE employees_data (
 );
 
 
-CREATE TABLE schedule_plan (
+CREATE TABLE IF NOT EXISTS schedule_plan (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cycle_type ENUM('yearly', 'monthly', 'weekly', 'daily') NOT NULL, 
   month INT DEFAULT NULL,     
@@ -192,7 +186,7 @@ CREATE TABLE schedule_plan (
 );
 
 
-CREATE TABLE doc_list (
+CREATE TABLE IF NOT EXISTS doc_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,       
   code VARCHAR(50) UNIQUE,           
@@ -203,7 +197,7 @@ CREATE TABLE doc_list (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE doc_manager (
+CREATE TABLE IF NOT EXISTS doc_manager (
   id INT AUTO_INCREMENT PRIMARY KEY,
   doc_id INT NOT NULL,                        
   filename VARCHAR(255) NOT NULL,             
@@ -214,7 +208,7 @@ CREATE TABLE doc_manager (
 );
 
 
-CREATE TABLE card_list (
+CREATE TABLE IF NOT EXISTS card_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cardcom_name VARCHAR(100) NOT NULL,        
   cardcom_account VARCHAR(50),              
@@ -227,7 +221,7 @@ CREATE TABLE card_list (
 );
 
 
-CREATE TABLE card_acclist (
+CREATE TABLE IF NOT EXISTS card_acclist (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cardacc_name VARCHAR(100) NOT NULL,        
   cardacc_code VARCHAR(50) NOT NULL,         
@@ -237,7 +231,7 @@ CREATE TABLE card_acclist (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE card_transaction (
+CREATE TABLE IF NOT EXISTS card_transaction (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cardcom_name VARCHAR(100),
   cardcom_account VARCHAR(50),
@@ -256,7 +250,7 @@ CREATE TABLE card_transaction (
 );
 
 
-CREATE TABLE sick_list (
+CREATE TABLE IF NOT EXISTS sick_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
   eid VARCHAR(50) NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -269,7 +263,7 @@ CREATE TABLE sick_list (
 );
 
 
-CREATE TABLE envelop_each (
+CREATE TABLE IF NOT EXISTS envelop_each (
   id INT AUTO_INCREMENT PRIMARY KEY,
   ename VARCHAR(100) NOT NULL,
   eref VARCHAR(100),
@@ -280,7 +274,7 @@ CREATE TABLE envelop_each (
 );
 
 
-CREATE TABLE envelop_group (
+CREATE TABLE IF NOT EXISTS envelop_group (
   id INT AUTO_INCREMENT PRIMARY KEY,
   gno VARCHAR(50) NOT NULL,
   ono INT NOT NULL,
@@ -290,7 +284,7 @@ CREATE TABLE envelop_group (
 );
 
 
-CREATE TABLE petty_ledger (
+CREATE TABLE IF NOT EXISTS petty_ledger (
   id INT AUTO_INCREMENT PRIMARY KEY,
   pldate DATE NOT NULL,
   plcredit DECIMAL(10,2) DEFAULT 0,
@@ -302,7 +296,7 @@ CREATE TABLE petty_ledger (
 );
 
 
-CREATE TABLE simple_doc (
+CREATE TABLE IF NOT EXISTS simple_doc (
   id INT AUTO_INCREMENT PRIMARY KEY,
   filename VARCHAR(255) NOT NULL,
   originalname VARCHAR(255),
@@ -311,7 +305,7 @@ CREATE TABLE simple_doc (
 );
 
 
-CREATE TABLE cash_receipt (
+CREATE TABLE IF NOT EXISTS cash_receipt (
   id INT AUTO_INCREMENT PRIMARY KEY,
   crname VARCHAR(100) NOT NULL,
   cramount DECIMAL(10,2) NOT NULL DEFAULT 0,
@@ -321,7 +315,7 @@ CREATE TABLE cash_receipt (
 );
 
 
-CREATE TABLE monthlycd_list (
+CREATE TABLE IF NOT EXISTS monthlycd_list (
   id INT AUTO_INCREMENT PRIMARY KEY,
   mcdcompany VARCHAR(100) NOT NULL,
   mcdcoaccount VARCHAR(100) NOT NULL,

@@ -13,23 +13,16 @@ services:
     restart: unless-stopped
 
   node:
-    image: project-argus:dev
+    image: project-argus:dev # ✅ 이미지 이름 명시
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.dev # ✅ 개발용 Dockerfile
     ports:
       - "5173:5173"
     volumes:
-      # ✅ 코드 자동 반영을 위한 bind mount 추가
-      - .:/app
-      - /app/node_modules  # 컨테이너 안 node_modules 유지 (redis 사용)
-      # ✅ 업로드 데이터 폴더 연결
-      - /home/tslinux0101/uploads-data:/app/public/uploads
-      # ✅ nodemon 감시 제외를 위한 옵션 가능 (선택)
-      # - /app/node_modules  # 로컬 node_modules 무시 (이미지 안에 설치됨)
+      - /home/tslinux0101/uploads-data:/app/public/uploads # ✅ 절대 경로로 수정 : 운영시에는 상대경로로 지정해서 이식성을 증대시키는 것이 좋음
     env_file:
       - .env
-    command: npm run dev  # ✅ nodemon 사용
     depends_on:
       - mysql
       - redis
@@ -49,12 +42,12 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /home/tslinux0101/mysql-data:/var/lib/mysql
+      - /home/tslinux0101/mysql-data:/var/lib/mysql # 절대 경로로 변경해서 project 외부에서 관리리 ./mysql-data:/var/lib/mysql  # 상대경로 (이식성 증가)
 
   redis:
     image: redis:latest
     ports:
-      - "6379:6379"
+      - "6380:6380"
 
 volumes:
   mysql_data:

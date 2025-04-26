@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>General Board</title>
+  <style>
+    body { font-family: Arial; background: #f5f7fa; font-size: 11px; color: #333; padding: 20px; }
+    h2 { font-size: 20px; margin-bottom: 20px; }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr); /* 10개씩 한 줄 */
+      gap: 10px;
+    }
+
+    .board-button {
+      font-size: 11px;
+      padding: 10px;
+      background: #066da5;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .board-button:hover {
+      background: #055c8c;
+    }
+  </style>
+</head>
+<body>
+  <h2>General Board</h2>
+
+  <div class="button-grid">
+    <% for (let i = 1; i <= 40; i++) { 
+         const label = `board ${String(i).padStart(2, '0')}`;
+    %>
+      <form action="/admin/general/board/board/select" method="POST">
+        <input type="hidden" name="boardName" value="<%= label %>">
+        <button type="submit" class="board-button"><%= label %></button>
+      </form>
+    <% } %>
+  </div>
+</body>
+</html>

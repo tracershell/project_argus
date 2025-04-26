@@ -1,5 +1,5 @@
 {
-  "name": "project-201",
+  "name": "project-argus",
   "version": "1.0.0",
   "scripts": {
     "start": "node server.js",
