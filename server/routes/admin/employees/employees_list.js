@@ -11,7 +11,7 @@ router.get('/employees', async (req, res) => {
   try {
     const [results] = await db.query('SELECT * FROM employees');
 
-    res.render('admin/payroll/payroll_employees', {
+    res.render('admin/employees/employees_list', {
       layout: 'layout',
       title: 'employees',
       editId: 'none',
@@ -59,7 +59,7 @@ router.post('/add', async (req, res) => {
     ];
 
     await db.query(insertQuery, values);
-    res.redirect('/admin/payroll/payroll_employees/employees');
+    res.redirect('/admin/employees/employees_list/employees');
   } catch (err) {
     console.error('직원 추가 오류:', err);
     res.status(500).send('직원 추가 중 오류가 발생했습니다.');
@@ -96,7 +96,7 @@ router.post('/edit/:eid', async (req, res) => {
     if (result.affectedRows === 0) {
       return res.send(`<script>alert("수정할 직원 정보를 찾을 수 없습니다: ${eidParam}"); history.back();</script>`);
     }
-    res.redirect('/admin/payroll/payroll_employees/employees');
+    res.redirect('/admin/employees/employees_list/employees');
   } catch (err) {
     console.error('직원 수정 오류:', err);
     res.status(500).send('직원 수정 중 오류가 발생했습니다.');

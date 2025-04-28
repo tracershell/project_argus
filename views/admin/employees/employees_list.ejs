@@ -87,7 +87,7 @@
     <h2>Input, Search, Edit, Delete</h2>
   </div>
 
-  <form id="employeeForm" action="/admin/payroll/payroll_employees/add" method="post" class="form">
+  <form id="employeeForm" action="/admin/employees/employees_list/add" method="post" class="form">
     <!-- 인적사항 입력폼 전체 -->
     <input type="text" name="status" placeholder="Status" style="flex: 1 1 8%;" />
     <input type="text" name="eid" placeholder="EID" required style="flex: 1 1 8%;" />
@@ -271,7 +271,7 @@
       return;
     }
     const form = document.getElementById("employeeForm");
-    form.action = `/admin/payroll/payroll_employees/edit/${eid}`;
+    form.action = `/admin/employees/employees_list/edit/${eid}`;
     form.submit();
   }
 
@@ -285,7 +285,7 @@
     const confirmDelete = confirm(`정말 삭제하시겠습니까? EID: ${eid}`);
     if (!confirmDelete) return;
 
-    fetch(`/admin/payroll/payroll_employees/delete/${eid}`, {
+    fetch(`/admin/employees/employees_list/delete/${eid}`, {
       method: 'POST'
     })
     .then(response => response.text())

@@ -123,7 +123,6 @@ app.use('/admin/domestic_invoice_pdf', require('./server/routes/admin/domestic/d
 app.use('/admin/domestic_invoice_result_pdf', require('./server/routes/admin/domestic/domestic_invoice_result_pdf'));
 //====================================================================================================================
 
-app.use('/admin/payroll/payroll_employees', require('./server/routes/admin/payroll/payroll_employees'));
 
 app.use('/admin/payroll/payroll_tax', require('./server/routes/admin/payroll/payroll_tax'));
 
@@ -162,6 +161,8 @@ app.use('/admin/payroll/cashreceipt/cashreceipt_sheet', require('./server/routes
 app.use('/admin/payroll/cashreceipt/cashreceipt_sheet_viewpdf', require('./server/routes/admin/payroll/cashreceipt/cashreceipt_sheet_viewpdf'));
 
 //====================================================================================================================
+
+app.use('/admin/employees/employees_list', require('./server/routes/admin/employees/employees_list'));
 
 app.use('/admin/employees/employees_data', require('./server/routes/admin/employees/employees_data'));
 
