@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   nginx:
     image: nginx:latest
@@ -20,21 +18,21 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      # ✅ 코드 자동 반영을 위한 bind mount 추가
+            # ✅ 코드 자동 반영을 위한 bind mount 추가
       - .:/app
-      - /app/node_modules  # 컨테이너 안 node_modules 유지 (redis 사용)
-      # ✅ 업로드 데이터 폴더 연결
+            # ✅ 업로드 데이터 폴더 연결
+      - /app/node_modules
+            # ✅ nodemon 감시 제외를 위한 옵션 가능 (선택)
       - /home/tslinux0101/uploads-data:/app/public/uploads
-      # ✅ nodemon 감시 제외를 위한 옵션 가능 (선택)
-      # - /app/node_modules  # 로컬 node_modules 무시 (이미지 안에 설치됨)
     env_file:
       - .env
-    command: npm run dev  # ✅ nodemon 사용
+            # ✅ nodemon 사용
+    command: npm run dev
     depends_on:
       - mysql
       - redis
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5173" ]
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
       interval: 10s
       timeout: 5s
       retries: 5
