@@ -216,8 +216,13 @@ app.use('/admin/general/monthlycd_list', require('./server/routes/admin/general/
 
 app.use('/admin/general/board/board', require('./server/routes/admin/general/board/board'));
 
+app.use('/admin/general/board/board01/phone_list', require('./server/routes/admin/general/board/board01/phone_list'));
+
 //====================================================================================================================
 
+
+
+//====================================================================================================================
 // ===== user Routes 설정 ===== \\
 const u_dashboardRoutes = require('./server/routes/user/u_dashboard');
 app.use('/user', u_dashboardRoutes);   // url 이 /user 으로 시작하는 모든 요청은 u_dashboard.js 에서 처리됨

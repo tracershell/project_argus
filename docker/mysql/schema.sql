@@ -330,3 +330,17 @@ CREATE TABLE IF NOT EXISTS monthlycd_list (
   mcdremark TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE phone_list (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  department VARCHAR(100),   -- 부문 (회사명)
+  keyword VARCHAR(100),      -- 키워드 (송금 등)
+  importance TINYINT,        -- 중요도 (1~5 등)
+  name VARCHAR(100) NOT NULL, -- 이름
+  personal_phone VARCHAR(50), -- 개인 전화번호
+  office_phone VARCHAR(50),   -- 사무실 전화번호
+  email VARCHAR(100),
+  note TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

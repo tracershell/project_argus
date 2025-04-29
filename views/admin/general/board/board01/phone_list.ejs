@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phone List Management</title>
+  <style>
+    body.employee-page {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      font-size: 12px;
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #066da5;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      font-weight: normal;
+    }
+    input[type="text"], input[type="email"], input[type="number"], select {
+      padding: 4px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      height: 24px;
+    }
+    .top-section, .filter-section, .bottom-section {
+      padding: 10px;
+    }
+    .form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .form input, .form select {
+      flex: 1 1 auto;
+    }
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .compact-table th {
+      background-color: #f0f8ff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .compact-table tbody tr:hover {
+      background-color: #e9f5ff;
+    }
+    .highlight {
+      background-color: #ffff99;
+    }
+
+    .highlight {
+  background-color: #fff799; /* 좀 더 진한 부드러운 노란색 */
+}
+  </style>
+</head>
+
+<body class="employee-page">
+
+<!-- ✅ 1. 입력/수정/삭제 영역 -->
+<div class="top-section">
+  <div class="table-header">
+    <h2>Input / Edit / Delete</h2>
+  </div>
+
+  <form id="phoneForm" action="/admin/general/board/board01/phone_list/add" method="post" class="form">
+    <input type="text" name="department" placeholder="Department (부문)">
+    <input type="text" name="keyword" placeholder="Keyword (키워드)">
+    <input type="number" name="importance" placeholder="Importance (1~5)">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="text" name="personal_phone" placeholder="Personal Phone">
+    <input type="text" name="office_phone" placeholder="Office Phone">
+    <input type="email" name="email" placeholder="Email">
+    <input type="text" name="note" placeholder="Note">
+  </form>
+
+  <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1rem;">
+    <button type="button" onclick="clearFormInputs()">🧹 입력초기화</button>
+    <button form="phoneForm" type="submit">➕ 입력저장</button>
+    <input type="text" id="selectedIdInput" placeholder="ID 입력" style="padding: 0.3rem;">
+    <button type="button" onclick="selectPhone()">🔍 선택</button>
+    <button type="button" onclick="prepareEdit()">✏️ 수정</button>
+    <button type="button" onclick="prepareDelete()">🗑️ 삭제</button>
+  </div>
+</div>
+
+<!-- ✅ 2. 검색(Filter) 영역 -->
+<div class="filter-section">
+  <div class="table-header">
+    <h2>Phone List Filter</h2>
+  </div>
+
+  <div class="form">
+    <select id="departmentFilter" onchange="filterPhoneList()">
+      <option value="">Department (부문)</option>
+      <% departments.forEach(dep => { %>
+        <option value="<%= dep %>"><%= dep %></option>
+      <% }) %>
+    </select>
+
+    <select id="keywordFilter" onchange="filterPhoneList()">
+      <option value="">Keyword (키워드)</option>
+      <% keywords.forEach(kw => { %>
+        <option value="<%= kw %>"><%= kw %></option>
+      <% }) %>
+    </select>
+
+    <select id="importanceFilter" onchange="filterPhoneList()">
+      <option value="">Importance (중요도)</option>
+      <% importanceList.forEach(imp => { %>
+        <option value="<%= imp %>"><%= imp %></option>
+      <% }) %>
+    </select>
+  </div>
+</div>
+
+<!-- ✅ 3. 전화번호 리스트 테이블 -->
+<div class="bottom-section">
+  <div class="table-header">
+    <h2>Phone List</h2>
+    <div>
+      <button onclick="window.open('/admin/general/board/board01/phone_list/pdf-view', '_blank')">📄 View PDF</button>
+      <button onclick="window.open('/admin/general/board/board01/phone_list/pdf-print', '_blank')">🖨️ Print PDF</button>
+    </div>
+  </div>
+
+  <div style="max-height: 460px; overflow-y: auto; border: 1px solid #ccc;">
+    <table id="phoneTable" class="compact-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Department</th>
+          <th>Keyword</th>
+          <th>Importance</th>
+          <th>Name</th>
+          <th>Personal Phone</th>
+          <th>Office Phone</th>
+          <th>Email</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (phoneList && phoneList.length > 0) { %>
+          <% phoneList.forEach(item => { %>
+            <tr>
+              <td><%= item.id %></td>
+              <td><%= item.department || '' %></td>
+              <td><%= item.keyword || '' %></td>
+              <td><%= item.importance || '' %></td>
+              <td><%= item.name || '' %></td>
+              <td><%= item.personal_phone || '' %></td>
+              <td><%= item.office_phone || '' %></td>
+              <td><%= item.email || '' %></td>
+              <td><%= item.note || '' %></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="9">전화번호부 정보가 없습니다.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ✅ JavaScript 전체 기능 -->
+<script>
+function clearFormInputs() {
+  const form = document.getElementById("phoneForm");
+  const inputs = form.querySelectorAll("input, select");
+  inputs.forEach(input => input.value = "");
+}
+
+function selectPhone() {
+  const idInput = document.getElementById("selectedIdInput").value.trim();
+  const rows = document.querySelectorAll("#phoneTable tbody tr");
+  let found = false;
+
+  rows.forEach(row => {
+    const idCell = row.cells[0];
+    // 모든 highlight 초기화
+    for (let i = 0; i < row.cells.length; i++) {
+      row.cells[i].classList.remove('highlight');
+    }
+
+    if (idCell && idCell.innerText.trim() === idInput) {
+      found = true;
+      
+      // 🔥 Personal Phone, Office Phone 컬럼만 highlight 적용
+      row.cells[5].classList.add('highlight');
+      row.cells[6].classList.add('highlight');
+
+      // 입력폼에 값 채워넣기
+      const fields = ["department", "keyword", "importance", "name", "personal_phone", "office_phone", "email", "note"];
+      fields.forEach((field, idx) => {
+        const input = document.querySelector(`input[name="${field}"], select[name="${field}"]`);
+        const cell = row.cells[idx + 1];
+        if (input && cell) input.value = cell.innerText.trim();
+      });
+    }
+  });
+
+  if (!found) alert("해당 ID를 찾을 수 없습니다.");
+}
+
+
+function prepareEdit() {
+  const id = document.getElementById("selectedIdInput").value.trim();
+  if (!id) {
+    alert("수정할 ID를 입력하세요.");
+    return;
+  }
+  const form = document.getElementById("phoneForm");
+  form.action = `/admin/general/board/board01/phone_list/edit/${id}`;
+  form.submit();
+}
+
+function prepareDelete() {
+  const id = document.getElementById("selectedIdInput").value.trim();
+  if (!id) {
+    alert("삭제할 ID를 입력하세요.");
+    return;
+  }
+  if (confirm(`정말 삭제하시겠습니까? ID: ${id}`)) {
+    fetch(`/admin/general/board/board01/phone_list/delete/${id}`, { method: 'POST' })
+      .then(() => location.reload())
+      .catch(err => alert('삭제 실패: ' + err));
+  }
+}
+
+function filterPhoneList() {
+  const department = document.getElementById('departmentFilter').value;
+  const keyword = document.getElementById('keywordFilter').value;
+  const importance = document.getElementById('importanceFilter').value;
+  const rows = document.querySelectorAll("#phoneTable tbody tr");
+
+  rows.forEach(row => {
+    const dept = row.cells[1].innerText.trim();
+    const keyw = row.cells[2].innerText.trim();
+    const imp = row.cells[3].innerText.trim();
+
+    const matchDept = !department || dept === department;
+    const matchKeyw = !keyword || keyw === keyword;
+    const matchImp = !importance || imp === importance;
+
+    if (matchDept && matchKeyw && matchImp) {
+      row.style.display = "";
+
+      // ✅ Personal Phone, Office Phone 칸을 노란색 highlight 적용
+      row.cells[5].classList.add('highlight');
+      row.cells[6].classList.add('highlight');
+
+    } else {
+      row.style.display = "none";
+
+      // ✅ 숨기는 row는 highlight 지워주기
+      row.cells[5].classList.remove('highlight');
+      row.cells[6].classList.remove('highlight');
+    }
+  });
+}
+
+</script>
+
+</body>
+</html>
