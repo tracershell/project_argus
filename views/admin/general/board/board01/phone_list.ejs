@@ -75,6 +75,46 @@
     .highlight {
   background-color: #fff799; /* 좀 더 진한 부드러운 노란색 */
 }
+
+/* ✅ 테이블을 감싸는 영역 */
+.table-wrapper {
+  max-height: 450px; /* 450px까지만 보여주고 넘치면 스크롤 */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* ✅ 테이블 헤더 고정 */
+.compact-table th {
+  background-color: #f0f8ff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ✅ 테이블 전체 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+/* ✅ 셀 스타일 */
+th, td {
+  border: 1px solid #ccc;
+  padding: 4px;
+  text-align: center;
+  font-weight: normal;
+}
+
+/* ✅ 테이블 row hover 효과 */
+.compact-table tbody tr:hover {
+  background-color: #e9f5ff;
+}
+
+/* ✅ highlight 스타일 */
+.highlight {
+  background-color: #fff799;
+}
   </style>
 </head>
 
@@ -138,6 +178,7 @@
 </div>
 
 <!-- ✅ 3. 전화번호 리스트 테이블 -->
+<!-- ✅ 3. 전화번호 리스트 테이블 -->
 <div class="bottom-section">
   <div class="table-header">
     <h2>Phone List</h2>
@@ -147,7 +188,8 @@
     </div>
   </div>
 
-  <div style="max-height: 460px; overflow-y: auto; border: 1px solid #ccc;">
+  <!-- ✅ 여기 div에 class="table-wrapper" 적용 -->
+  <div class="table-wrapper">
     <table id="phoneTable" class="compact-table">
       <thead>
         <tr>
@@ -184,6 +226,7 @@
     </table>
   </div>
 </div>
+
 
 <!-- ✅ JavaScript 전체 기능 -->
 <script>

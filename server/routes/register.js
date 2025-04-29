@@ -1,8 +1,8 @@
-// server/routes/auth.js
+// server/routes/register.js
 
 const express = require('express');
 const router = express.Router();
-const authController = require('../../controllers/authController'); // 로그인/회원가입 처리 함수
+const authController = require('../controllers/authController'); // 로그인/회원가입 처리 함수
 const db = require('../db/mysql'); // DB 연결
 
 // ✅ 로그인 화면

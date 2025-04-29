@@ -5,7 +5,7 @@ const session = require('express-session'); // 세션 미들웨서 설정 (아�
 const RedisStore = require('connect-redis')(session); //  redis session 을 사용하기 위해 설정 1
 const { createClient } = require('redis'); // redis session 을 사용하기 위해 설정 2
 const expressLayouts = require('express-ejs-layouts');  // 공통 layout 설정 위해해
-const injectUser = require('./middleware/injectUser'); // res.render() 마다 user 를 넘기지 않아도/ isAuthenticated  자동으로 접근 가능하게 하는 미들웨어 
+const injectUser = require('./server/middleware/injectUser'); // res.render() 마다 user 를 넘기지 않아도/ isAuthenticated  자동으로 접근 가능하게 하는 미들웨어 
 
 const app = express();
 

@@ -1,6 +1,6 @@
 // =====  controllers/authController.js ===== \\
 const bcrypt = require('bcrypt'); // bcrypt 로 password 처리 위한 module      
-const db = require('../server/db/mysql'); // DB 연결
+const db = require('../db/mysql'); // DB 연결
 
 // ✅ 로그인 처리
 const loginUser = async (req, res) => {   // router 로 부터 연결된 loginUser 비동기 함수 <== async key word (await 사용 가능)

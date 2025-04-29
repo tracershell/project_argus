@@ -1,7 +1,7 @@
 // server/routes/auth.js
 const express = require('express');
 const router = express.Router();
-const authController = require('../../controllers/authController'); // 컨트롤러 가져오기
+const authController = require('../controllers/authController'); // 컨트롤러 가져오기
 
 // ✅ 로그인 페이지 : start page 에서 들어 온 login 을 login.ejs 로 라우팅
 router.get('/login', (req, res) => {
