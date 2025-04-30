@@ -1,11 +1,11 @@
 // server/routes/auth.js
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController'); // 컨트롤러 가져오기
+const authController = require('../../controllers/authController'); // 컨트롤러 가져오기
 
 // ✅ 로그인 페이지 : start page 에서 들어 온 login 을 login.ejs 로 라우팅
 router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login', error: null });
+  res.render('auth/login', { title: 'Login', error: null });
 });
 
 
@@ -40,7 +40,7 @@ router.post('/login', authController.loginUser); // authController 에서 loginU
 
 // ✅ 회원가입 페이지 : start page 에서 들어 온 register 를 register.ejs 로 라우팅팅
 router.get('/register', (req, res) => {
-  res.render('register', { title: 'Registration', error: null });
+  res.render('auth/register', { title: 'Registration', error: null });
 });
 
 // ✅ 회원가입 처리 : register.ejs 에서 입력된 값 처리

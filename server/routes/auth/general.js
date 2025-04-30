@@ -12,7 +12,7 @@ function isAuthenticated(req, res, next) {
 
 router.get('/general', isAuthenticated, (req, res) => {
   // ✅ 여기서 req.session.user 를 EJS에 user 변수로 전달
-  res.render('general', { user: req.session.user });
+  res.render('auth/general', { user: req.session.user });
 });  // ✅ req 전달 : res.render('dashboard') => res.render('dashboard',{user: req.session.user}) 세션 정보 담아 전달달
 
 

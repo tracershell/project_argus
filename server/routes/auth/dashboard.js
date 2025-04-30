@@ -11,7 +11,7 @@ function isAuthenticated(req, res, next) {
 }
 
 router.get('/dashboard', isAuthenticated, (req, res) => {  // ✅ 여기서 req.session.user 를 EJS에 user 변수로 전달
-  res.render('dashboard', {
+  res.render('auth/dashboard', {
     user: req.session.user,
     title: 'Dashboard'
   });

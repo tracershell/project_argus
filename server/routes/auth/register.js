@@ -2,12 +2,12 @@
 
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController'); // 로그인/회원가입 처리 함수
-const db = require('../db/mysql'); // DB 연결
+const authController = require('../../controllers/authController'); // 로그인/회원가입 처리 함수
+const db = require('../../db/mysql'); // DB 연결
 
 // ✅ 로그인 화면
 router.get('/login', (req, res) => {
-  res.render('login');
+  res.render('auth/login');
 });
 
 // ✅ 로그인 처리
@@ -15,7 +15,7 @@ router.post('/login', authController.loginUser);
 
 // ✅ 회원가입 화면
 router.get('/register', (req, res) => {
-  res.render('register');
+  res.render('auth/register');
 });
 
 // ✅ 회원가입 처리
